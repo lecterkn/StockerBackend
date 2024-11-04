@@ -2,14 +2,9 @@ package main
 
 import (
 	"fmt"
-	"h11/backend/internal/stocker"
-	"h11/backend/internal/stocker/application/service"
-	"h11/backend/internal/stocker/infrastructure/database"
-	"h11/backend/internal/stocker/infrastructure/implements"
-	"h11/backend/internal/stocker/presentation/controller"
-
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"h11/backend/internal/stocker"
 )
 
 func main() {
@@ -26,7 +21,8 @@ func main() {
 	// DI
 	controllerSets := stocker.InitializeController()
 
-	e.GET("/items", controllerSets.ItemController.GetItems)
+	e.GET("/items", controllerSets.ItemController.Index)
+	e.POST("/items", controllerSets.ItemController.Create)
 
 	e.Start(":")
 }

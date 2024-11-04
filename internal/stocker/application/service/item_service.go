@@ -18,7 +18,7 @@ func NewItemService(itemRepository repository.ItemRepository) ItemService {
 	}
 }
 
-type ItemServiceListItem struct {
+type ItemServiceOutput struct {
 	Id        uuid.UUID
 	Name      string
 	JanCode   string
@@ -26,8 +26,13 @@ type ItemServiceListItem struct {
 	UpdatedAt time.Time
 }
 
+type ItemServiceInput struct {
+	Name    string
+	JanCode string
+}
+
 type ItemServiceListOutput struct {
-	list []ItemServiceListItem
+	list []ItemServiceOutput
 }
 
 func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
@@ -38,12 +43,32 @@ func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
 	return s.toOutput(entities), nil
 }
 
+func (s ItemService) CreateItem(input ItemServiceInput) *ItemServiceOutput {
+	id, err := uuid.NewV7()
+	if err != nil {
+		return nil
+	}
+	entity := &entity.ItemEntity{
+		Id:        id,
+		Name:      input.Name,
+		JanCode:   input.JanCode,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	entity, err = s.ItemRepository.Create(*entity)
+	if err != nil {
+		return nil
+	}
+	output := ItemServiceOutput(*entity)
+	return &output
+}
+
 func (ItemService) toOutput(entities []entity.ItemEntity) *ItemServiceListOutput {
-	var list []ItemServiceListItem
+	var list []ItemServiceOutput
 	for _, entity := range entities {
 		list = append(
 			list,
-			ItemServiceListItem(entity),
+			ItemServiceOutput(entity),
 		)
 	}
 	return &ItemServiceListOutput{

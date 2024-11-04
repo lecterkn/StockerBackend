@@ -1,4 +1,4 @@
 development:
   dialect: mysql
   dir: migrations
-  datasource: "mysql:mysqlsecretpassword@tcp(127.0.0.1:3306)/stocker?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true"
+  datasource: "mysql:mysecretpassword@tcp(127.0.0.1:3308)/stocker?charset=utf8mb4&collation=utf8mb4_general_ci&parseTime=true"

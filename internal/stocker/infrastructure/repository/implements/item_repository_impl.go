@@ -31,6 +31,20 @@ func (r ItemRepositoryImpl) SelectItems() ([]entity.ItemEntity, error) {
     return list, nil
 }
 
+func (r ItemRepositoryImpl) Create(entity entity.ItemEntity) (*entity.ItemEntity, error) {
+    model := r.toModel(entity)
+    err := r.Database.Create(&model).Error
+    if err != nil {
+        return nil, err
+    }
+    entity = r.toEntity(model)
+    return &entity, nil
+}
+
 func (ItemRepositoryImpl) toEntity(model model.ItemModel) entity.ItemEntity {
     return entity.ItemEntity(model)
+}
+
+func (ItemRepositoryImpl) toModel(entity entity.ItemEntity) model.ItemModel {
+    return model.ItemModel(entity)
 }
