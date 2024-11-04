@@ -1,15 +1,21 @@
 package entity
 
 import (
-	"time"
+    "time"
 
-	"github.com/google/uuid"
+    "github.com/google/uuid"
 )
 
 type ItemEntity struct {
-	Id uuid.UUID
-	Name string
-	JanCode string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+    Id        uuid.UUID
+    Name      string
+    JanCode   string
+    CreatedAt time.Time
+    UpdatedAt time.Time
+}
+
+func (entity *ItemEntity) Update(name, janCode string) {
+    entity.Name = name
+    entity.JanCode = janCode
+    entity.UpdatedAt = time.Now()
 }

@@ -18,23 +18,6 @@ func NewItemService(itemRepository repository.ItemRepository) ItemService {
 	}
 }
 
-type ItemServiceOutput struct {
-	Id        uuid.UUID
-	Name      string
-	JanCode   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type ItemServiceInput struct {
-	Name    string
-	JanCode string
-}
-
-type ItemServiceListOutput struct {
-	List []ItemServiceOutput
-}
-
 func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
 	entities, err := s.ItemRepository.SelectItems()
 	if err != nil {
@@ -43,10 +26,10 @@ func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
 	return s.toOutput(entities), nil
 }
 
-func (s ItemService) CreateItem(input ItemServiceInput) *ItemServiceOutput {
+func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	entity := &entity.ItemEntity{
 		Id:        id,
@@ -57,10 +40,23 @@ func (s ItemService) CreateItem(input ItemServiceInput) *ItemServiceOutput {
 	}
 	entity, err = s.ItemRepository.Create(entity)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	output := ItemServiceOutput(*entity)
-	return &output
+	return &output, nil
+}
+
+func (s ItemService) UpdateItem(input ItemServiceUpdateInput) (*ItemServiceOutput, error) {
+	// 更新対象を取得
+	entity, err := s.ItemRepository.Select(input.Id)
+	if err != nil {
+		return nil, err
+	}
+	// 更新
+	entity.Update(input.Name, input.JanCode)
+	entity, err = s.ItemRepository.Update(entity)
+	output := ItemServiceOutput(*entity)
+	return &output, nil
 }
 
 func (ItemService) toOutput(entities []entity.ItemEntity) *ItemServiceListOutput {
@@ -74,4 +70,27 @@ func (ItemService) toOutput(entities []entity.ItemEntity) *ItemServiceListOutput
 	return &ItemServiceListOutput{
 		List: list,
 	}
+}
+
+type ItemServiceOutput struct {
+	Id        uuid.UUID
+	Name      string
+	JanCode   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type ItemServiceInput struct {
+	Name    string
+	JanCode string
+}
+
+type ItemServiceUpdateInput struct {
+	Id      uuid.UUID
+	Name    string
+	JanCode string
+}
+
+type ItemServiceListOutput struct {
+	List []ItemServiceOutput
 }

@@ -16,6 +16,7 @@ func main() {
 		return
 	}
 
+	// port番号 読み込み
 	port, ok := os.LookupEnv("ECHO_SERVER_PORT")
 	if !ok {
 		fmt.Println("\"ECHO_SERVER_PORT\" is not set")
@@ -24,12 +25,17 @@ func main() {
 
 	// echo作成
 	e := echo.New()
+	// routing
+	setRouting(e)
+	// start echo
+	e.Start(":" + port)
+}
 
-	// DI
+func setRouting(e *echo.Echo) {
+	// di
 	controllerSets := stocker.InitializeController()
 
 	e.GET("/items", controllerSets.ItemController.Index)
 	e.POST("/items", controllerSets.ItemController.Create)
-
-	e.Start(":" + port)
+	e.PATCH("/items/:id", controllerSets.ItemController.Update)
 }

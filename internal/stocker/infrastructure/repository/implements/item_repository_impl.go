@@ -36,9 +36,36 @@ func (r ItemRepositoryImpl) SelectItems() ([]entity.ItemEntity, error) {
     return list, nil
 }
 
+func (r ItemRepositoryImpl) Select(id uuid.UUID) (*entity.ItemEntity, error) {
+    var model model.ItemModel
+    err := r.Database.Where("id = ?", id[:]).First(&model).Error
+    if err != nil {
+        return nil, err
+    }
+    entity, err := r.toEntity(model)
+    if err != nil {
+        return nil, err
+    }
+    return entity, nil
+}
+
+// Create /** アイテムを作成する
 func (r ItemRepositoryImpl) Create(entity *entity.ItemEntity) (*entity.ItemEntity, error) {
     model := r.toModel(entity)
     err := r.Database.Create(&model).Error
+    if err != nil {
+        return nil, err
+    }
+    entity, err = r.toEntity(*model)
+    if err != nil {
+        return nil, err
+    }
+    return entity, nil
+}
+
+func (r ItemRepositoryImpl) Update(entity *entity.ItemEntity) (*entity.ItemEntity, error) {
+    model := r.toModel(entity)
+    err := r.Database.Save(&model).Error
     if err != nil {
         return nil, err
     }

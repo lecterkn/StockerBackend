@@ -34,15 +34,38 @@ func (c ItemController) Index(ctx echo.Context) error {
 }
 
 func (c ItemController) Create(ctx echo.Context) error {
-	var request ItemCreateRequest
+	var request ItemRequest
 	if err := ctx.Bind(&request); err != nil {
 		return err
 	}
-	output := c.ItemService.CreateItem(service.ItemServiceInput(request))
+	output, err := c.ItemService.CreateItem(service.ItemServiceInput(request))
+	if err != nil {
+		return err
+	}
 	return ctx.JSON(http.StatusOK, ItemResponse(*output))
 }
 
-type ItemCreateRequest struct {
+func (c ItemController) Update(ctx echo.Context) error {
+	id, err := uuid.Parse(ctx.Param("id"))
+	if err != nil {
+		return err
+	}
+	var request ItemRequest
+	if err := ctx.Bind(&request); err != nil {
+		return err
+	}
+	output, err := c.ItemService.UpdateItem(service.ItemServiceUpdateInput{
+		Id:      id,
+		Name:    request.Name,
+		JanCode: request.JanCode,
+	})
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, ItemResponse(*output))
+}
+
+type ItemRequest struct {
 	Name    string `json:"name"`
 	JanCode string `json:"janCode"`
 }
