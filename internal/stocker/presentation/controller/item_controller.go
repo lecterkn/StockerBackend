@@ -20,11 +20,17 @@ func NewItemController(itemService service.ItemService) ItemController {
 }
 
 func (c ItemController) Index(ctx echo.Context) error {
-	items, err := c.ItemService.GetItems()
+	listOutput, err := c.ItemService.GetItems()
 	if err != nil {
 		return ctx.String(http.StatusInternalServerError, "internal error")
 	}
-	return ctx.JSON(http.StatusOK, items)
+	var list []ItemResponse
+	for _, output := range listOutput.List {
+		list = append(list, ItemResponse(output))
+	}
+	return ctx.JSON(http.StatusOK, ItemListResponse{
+		List: list,
+	})
 }
 
 func (c ItemController) Create(ctx echo.Context) error {
@@ -33,7 +39,7 @@ func (c ItemController) Create(ctx echo.Context) error {
 		return err
 	}
 	output := c.ItemService.CreateItem(service.ItemServiceInput(request))
-	return ctx.JSON(http.StatusOK, ItemCreateResponse(*output))
+	return ctx.JSON(http.StatusOK, ItemResponse(*output))
 }
 
 type ItemCreateRequest struct {
@@ -41,10 +47,14 @@ type ItemCreateRequest struct {
 	JanCode string `json:"janCode"`
 }
 
-type ItemCreateResponse struct {
+type ItemResponse struct {
 	Id        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
 	JanCode   string    `json:"janCode"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type ItemListResponse struct {
+	List []ItemResponse `json:"list"`
 }

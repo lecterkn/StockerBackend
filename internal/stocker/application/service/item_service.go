@@ -32,7 +32,7 @@ type ItemServiceInput struct {
 }
 
 type ItemServiceListOutput struct {
-	list []ItemServiceOutput
+	List []ItemServiceOutput
 }
 
 func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
@@ -55,7 +55,7 @@ func (s ItemService) CreateItem(input ItemServiceInput) *ItemServiceOutput {
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
-	entity, err = s.ItemRepository.Create(*entity)
+	entity, err = s.ItemRepository.Create(entity)
 	if err != nil {
 		return nil
 	}
@@ -72,6 +72,6 @@ func (ItemService) toOutput(entities []entity.ItemEntity) *ItemServiceListOutput
 		)
 	}
 	return &ItemServiceListOutput{
-		list: list,
+		List: list,
 	}
 }
