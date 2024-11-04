@@ -44,4 +44,17 @@ gorm
 
 ```shell
 go get -u gorm.io/gorm
+go get -u gorm.io/driver/mysql
+```
+
+godotenv
+
+```shell
+go get github.com/joho/godotenv
+```
+
+wire
+```shell
+go get github.com/google/wire/cmd/wire@latest
+go install github.com/google/wire/cmd/wire@latest
 ```
