@@ -11,5 +11,5 @@ type ItemEntity struct {
 	Name string
 	JanCode string
 	CreatedAt time.Time
-	Updatedat time.Time
+	UpdatedAt time.Time
 }

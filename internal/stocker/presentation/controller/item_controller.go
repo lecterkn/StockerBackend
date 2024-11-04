@@ -8,7 +8,13 @@ import (
 )
 
 type ItemController struct {
-	ItemService service.ItemService	
+	ItemService service.ItemService
+}
+
+func NewItemController(itemService service.ItemService) ItemController {
+	return ItemController{
+		ItemService: itemService,
+	}
 }
 
 func (c ItemController) GetItems(ctx echo.Context) error {

@@ -10,7 +10,7 @@ import (
 var connector *gorm.DB = nil
 
 func GetMySQLConnection() *gorm.DB {
-	if (connector == nil) {
+	if connector == nil {
 		dsn := os.Getenv("DATABASE_URL")
 		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 		if err != nil {

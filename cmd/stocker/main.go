@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"h11/backend/internal/stocker"
 	"h11/backend/internal/stocker/application/service"
 	"h11/backend/internal/stocker/infrastructure/database"
 	"h11/backend/internal/stocker/infrastructure/implements"
@@ -13,27 +14,19 @@ import (
 
 func main() {
 	// .env 読み込み
-	err := godotenv.Load();
+	err := godotenv.Load()
 	if err != nil {
-		fmt.Println(err.Error());
+		fmt.Println(err.Error())
 		return
 	}
 
 	// echo作成
-	e := echo.New();
+	e := echo.New()
 
 	// DI
-	itemRepository := implements.ItemRepositoryImpl{
-		Database: database.GetMySQLConnection(),
-	}
-	itemService := service.ItemService{
-		ItemRepository: itemRepository,
-	}
-	itemController := controller.ItemController{
-		ItemService: itemService,
-	}
+	controllerSets := stocker.InitializeController()
 
-	e.GET("/items", itemController.GetItems)
+	e.GET("/items", controllerSets.ItemController.GetItems)
 
 	e.Start(":")
 }
