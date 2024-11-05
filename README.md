@@ -20,8 +20,18 @@ docker-compose exec mysql mysql -u root -p
 
 ## 実行方法
 
+依存関係
 ```shell
 go mod tidy
+```
+
+マイグレーション
+```shell
+sql-migrate up
+```
+
+実行
+```
 go run cmd/stocker/main.go
 ```
 

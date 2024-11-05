@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
-	"github.com/labstack/echo/v4"
 	"h11/backend/internal/stocker"
 	"os"
 )
@@ -24,18 +24,19 @@ func main() {
 	}
 
 	// echo作成
-	e := echo.New()
+	f := fiber.New()
+
 	// routing
-	setRouting(e)
+	setRouting(f)
 	// start echo
-	e.Start(":" + port)
+	f.Listen(":" + port)
 }
 
-func setRouting(e *echo.Echo) {
+func setRouting(f *fiber.App) {
 	// di
 	controllerSets := stocker.InitializeController()
 
-	e.GET("/items", controllerSets.ItemController.Index)
-	e.POST("/items", controllerSets.ItemController.Create)
-	e.PATCH("/items/:id", controllerSets.ItemController.Update)
+	f.Get("/items", controllerSets.ItemController.Index)
+	f.Post("/items", controllerSets.ItemController.Create)
+	f.Patch("/items/:id", controllerSets.ItemController.Update)
 }
