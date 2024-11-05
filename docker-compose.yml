@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  mysql:
+  stockergo-mysql:
     image: mysql:latest
     container_name: stockergo-mysql
     environment:
