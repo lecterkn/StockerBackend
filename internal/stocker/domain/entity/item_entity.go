@@ -14,7 +14,7 @@ type ItemEntity struct {
 	UpdatedAt time.Time
 }
 
-// NewItemEntity /* エンティティのインスタンスを作成
+// NewItemEntity /* エンティティのプロバイダ
 func NewItemEntity(name, janCode string) (*ItemEntity, error) {
 	id, err := uuid.NewV7()
 	if err != nil {

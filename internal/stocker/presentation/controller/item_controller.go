@@ -12,12 +12,14 @@ type ItemController struct {
 	ItemService service.ItemService
 }
 
+// NewItemController /* アイテムコントローラーのプロバイダ
 func NewItemController(itemService service.ItemService) ItemController {
 	return ItemController{
 		ItemService: itemService,
 	}
 }
 
+// Index /* アイテムを一覧取得
 func (c ItemController) Index(ctx fiber.Ctx) error {
 	listOutput, err := c.ItemService.GetItems()
 	if err != nil {
@@ -32,6 +34,7 @@ func (c ItemController) Index(ctx fiber.Ctx) error {
 	})
 }
 
+// Create /* アイテムを新規作成
 func (c ItemController) Create(ctx fiber.Ctx) error {
 	var request ItemRequest
 	if err := ctx.Bind().Body(&request); err != nil {
@@ -44,6 +47,7 @@ func (c ItemController) Create(ctx fiber.Ctx) error {
 	return ctx.JSON(ItemResponse(*output))
 }
 
+// Update /* アイテムを更新
 func (c ItemController) Update(ctx fiber.Ctx) error {
 	id, err := uuid.Parse(ctx.Params("id"))
 	if err != nil {

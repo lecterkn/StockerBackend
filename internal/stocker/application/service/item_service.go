@@ -12,6 +12,7 @@ type ItemService struct {
 	ItemRepository repository.ItemRepository
 }
 
+// NewItemService /* ItemServiceのプロバイダ
 func NewItemService(itemRepository repository.ItemRepository) ItemService {
 	return ItemService{
 		ItemRepository: itemRepository,
@@ -41,6 +42,7 @@ func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, err
 	return &output, nil
 }
 
+// UpdateItem /* アイテムを更新
 func (s ItemService) UpdateItem(input ItemServiceUpdateInput) (*ItemServiceOutput, error) {
 	// 更新対象を取得
 	entity, err := s.ItemRepository.Select(input.Id)

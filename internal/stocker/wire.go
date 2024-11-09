@@ -12,27 +12,33 @@ import (
 	"h11/backend/internal/stocker/presentation/controller"
 )
 
+// データベース
 var databaseSet = wire.NewSet(
 	database.GetMySQLConnection,
 )
 
+// リポジトリ
 var repositorySet = wire.NewSet(
 	implements.NewItemRepositoryImpl,
 	wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)),
 )
 
+// サービス
 var serviceSet = wire.NewSet(
 	service.NewItemService,
 )
 
+// コントローラー
 var controllerSet = wire.NewSet(
 	controller.NewItemController,
 )
 
+// コントローラーセット
 type ControllersSet struct {
 	ItemController controller.ItemController
 }
 
+// コントローラーセット作成
 func InitializeController() *ControllersSet {
 	wire.Build(
 		databaseSet,

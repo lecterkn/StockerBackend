@@ -23,7 +23,7 @@ func main() {
 		return
 	}
 
-	// echo作成
+	// fiber作成
 	f := fiber.New()
 
 	// routing
@@ -32,6 +32,7 @@ func main() {
 	f.Listen(":" + port)
 }
 
+// setRouting /* ルーティング設定
 func setRouting(f *fiber.App) {
 	// di
 	controllerSets := stocker.InitializeController()
