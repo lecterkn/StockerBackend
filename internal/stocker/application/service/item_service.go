@@ -12,12 +12,14 @@ type ItemService struct {
 	ItemRepository repository.ItemRepository
 }
 
+// NewItemService /* ItemServiceのプロバイダ
 func NewItemService(itemRepository repository.ItemRepository) ItemService {
 	return ItemService{
 		ItemRepository: itemRepository,
 	}
 }
 
+// GetItems /* アイテム一覧を取得する
 func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
 	entities, err := s.ItemRepository.SelectItems()
 	if err != nil {
@@ -26,17 +28,11 @@ func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
 	return s.toOutput(entities), nil
 }
 
+// CreateItem /* アイテムを作成する
 func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, error) {
-	id, err := uuid.NewV7()
+	entity, err := entity.NewItemEntity(input.Name, input.JanCode)
 	if err != nil {
 		return nil, err
-	}
-	entity := &entity.ItemEntity{
-		Id:        id,
-		Name:      input.Name,
-		JanCode:   input.JanCode,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
 	}
 	entity, err = s.ItemRepository.Create(entity)
 	if err != nil {
@@ -46,6 +42,7 @@ func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, err
 	return &output, nil
 }
 
+// UpdateItem /* アイテムを更新
 func (s ItemService) UpdateItem(input ItemServiceUpdateInput) (*ItemServiceOutput, error) {
 	// 更新対象を取得
 	entity, err := s.ItemRepository.Select(input.Id)

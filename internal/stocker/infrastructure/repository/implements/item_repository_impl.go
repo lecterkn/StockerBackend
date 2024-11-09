@@ -12,6 +12,7 @@ type ItemRepositoryImpl struct {
 	Database *gorm.DB
 }
 
+// NewItemRepositoryImpl /* ItemRepositoryImplのプロバイダ
 func NewItemRepositoryImpl(database *gorm.DB) ItemRepositoryImpl {
 	return ItemRepositoryImpl{
 		Database: database,
@@ -36,6 +37,7 @@ func (r ItemRepositoryImpl) SelectItems() ([]entity.ItemEntity, error) {
 	return list, nil
 }
 
+// Select /* idからアイテムを取得する
 func (r ItemRepositoryImpl) Select(id uuid.UUID) (*entity.ItemEntity, error) {
 	var model model.ItemModel
 	err := r.Database.Where("id = ?", id[:]).First(&model).Error
@@ -63,6 +65,7 @@ func (r ItemRepositoryImpl) Create(entity *entity.ItemEntity) (*entity.ItemEntit
 	return entity, nil
 }
 
+// Update /* アイテムを更新する
 func (r ItemRepositoryImpl) Update(entity *entity.ItemEntity) (*entity.ItemEntity, error) {
 	model := r.toModel(entity)
 	err := r.Database.Save(&model).Error

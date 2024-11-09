@@ -14,6 +14,22 @@ type ItemEntity struct {
 	UpdatedAt time.Time
 }
 
+// NewItemEntity /* エンティティのプロバイダ
+func NewItemEntity(name, janCode string) (*ItemEntity, error) {
+	id, err := uuid.NewV7()
+	if err != nil {
+		return nil, err
+	}
+	return &ItemEntity{
+		Id:        id,
+		Name:      name,
+		JanCode:   janCode,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}, nil
+}
+
+// Update /* エンティティを更新する
 func (entity *ItemEntity) Update(name, janCode string) {
 	entity.Name = name
 	entity.JanCode = janCode
