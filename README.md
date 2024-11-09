@@ -9,7 +9,7 @@
 ## MySQL接続
 
 ```shell
-docker-compose exec mysql mysql -u root -p
+docker-compose exec stockergo-mysql mysql -u root -p
 ```
 
 ## 仕様ライブラリ
