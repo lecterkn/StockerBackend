@@ -18,6 +18,7 @@ var databaseSet = wire.NewSet(
 
 var repositorySet = wire.NewSet(
 	implements.NewItemRepositoryImpl,
+	wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)),
 )
 
 var serviceSet = wire.NewSet(
@@ -36,7 +37,6 @@ func InitializeController() *ControllersSet {
 	wire.Build(
 		databaseSet,
 		repositorySet,
-		wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)),
 		serviceSet,
 		controllerSet,
 		wire.Struct(new(ControllersSet), "*"),
