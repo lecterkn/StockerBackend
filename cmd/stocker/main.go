@@ -2,24 +2,24 @@ package main
 
 import (
 	"fmt"
+	"h11/backend/internal/stocker/presentation/routing"
+	"os"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
-	"h11/backend/internal/stocker"
-	"os"
 )
 
 func main() {
 	// .env 読み込み
-	err := godotenv.Load()
-	if err != nil {
+	if err := godotenv.Load(); err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
 	// port番号 読み込み
-	port, ok := os.LookupEnv("ECHO_SERVER_PORT")
+	port, ok := os.LookupEnv("FIBER_SERVER_PORT")
 	if !ok {
-		fmt.Println("\"ECHO_SERVER_PORT\" is not set")
+		fmt.Println("\"FIBER_SERVER_PORT\" is not set")
 		return
 	}
 
@@ -27,17 +27,8 @@ func main() {
 	f := fiber.New()
 
 	// routing
-	setRouting(f)
+	routing.SetRouting(f)
+
 	// start echo
 	f.Listen(":" + port)
-}
-
-// setRouting /* ルーティング設定
-func setRouting(f *fiber.App) {
-	// di
-	controllerSets := stocker.InitializeController()
-
-	f.Get("/items", controllerSets.ItemController.Index)
-	f.Post("/items", controllerSets.ItemController.Create)
-	f.Patch("/items/:id", controllerSets.ItemController.Update)
 }

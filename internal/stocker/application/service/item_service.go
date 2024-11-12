@@ -9,19 +9,19 @@ import (
 )
 
 type ItemService struct {
-	ItemRepository repository.ItemRepository
+	itemRepository repository.ItemRepository
 }
 
 // NewItemService /* ItemServiceのプロバイダ
 func NewItemService(itemRepository repository.ItemRepository) ItemService {
 	return ItemService{
-		ItemRepository: itemRepository,
+		itemRepository,
 	}
 }
 
 // GetItems /* アイテム一覧を取得する
 func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
-	entities, err := s.ItemRepository.SelectItems()
+	entities, err := s.itemRepository.SelectItems()
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, err
 	if err != nil {
 		return nil, err
 	}
-	entity, err = s.ItemRepository.Create(entity)
+	entity, err = s.itemRepository.Create(entity)
 	if err != nil {
 		return nil, err
 	}
@@ -45,13 +45,13 @@ func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, err
 // UpdateItem /* アイテムを更新
 func (s ItemService) UpdateItem(input ItemServiceUpdateInput) (*ItemServiceOutput, error) {
 	// 更新対象を取得
-	entity, err := s.ItemRepository.Select(input.Id)
+	entity, err := s.itemRepository.Select(input.Id)
 	if err != nil {
 		return nil, err
 	}
 	// 更新
 	entity.Update(input.Name, input.JanCode)
-	entity, err = s.ItemRepository.Update(entity)
+	entity, err = s.itemRepository.Update(entity)
 	output := ItemServiceOutput(*entity)
 	return &output, nil
 }
