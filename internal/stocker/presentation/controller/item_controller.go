@@ -9,19 +9,19 @@ import (
 )
 
 type ItemController struct {
-	ItemService service.ItemService
+	itemService service.ItemService
 }
 
 // NewItemController /* アイテムコントローラーのプロバイダ
 func NewItemController(itemService service.ItemService) ItemController {
 	return ItemController{
-		ItemService: itemService,
+		itemService,
 	}
 }
 
 // Index /* アイテムを一覧取得
 func (c ItemController) Index(ctx fiber.Ctx) error {
-	listOutput, err := c.ItemService.GetItems()
+	listOutput, err := c.itemService.GetItems()
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).SendString("internal error")
 	}
@@ -40,7 +40,7 @@ func (c ItemController) Create(ctx fiber.Ctx) error {
 	if err := ctx.Bind().Body(&request); err != nil {
 		return err
 	}
-	output, err := c.ItemService.CreateItem(service.ItemServiceInput(request))
+	output, err := c.itemService.CreateItem(service.ItemServiceInput(request))
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (c ItemController) Update(ctx fiber.Ctx) error {
 	if err := ctx.Bind().Body(&request); err != nil {
 		return err
 	}
-	output, err := c.ItemService.UpdateItem(service.ItemServiceUpdateInput{
+	output, err := c.itemService.UpdateItem(service.ItemServiceUpdateInput{
 		Id:      id,
 		Name:    request.Name,
 		JanCode: request.JanCode,
