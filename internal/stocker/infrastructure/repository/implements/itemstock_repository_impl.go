@@ -19,6 +19,24 @@ func NewItemStockRepositoryImpl(database *gorm.DB) ItemStockRepositoryImpl {
 	}
 }
 
+// Index /* 商品詳細一覧を取得
+func (r ItemStockRepositoryImpl) Index() ([]entity.ItemStockEntity, error) {
+	var models []model.ItemStockModel
+	err := r.database.Find(&models).Error
+	if err != nil {
+		return nil, err
+	}
+	var entities []entity.ItemStockEntity
+	for _, model := range models {
+		entity, err := r.ToEntity(&model)
+		if err != nil {
+			return nil, err
+		}
+		entities = append(entities, *entity)
+	}
+	return entities, nil
+}
+
 // Select /* IDから商品を取得
 func (r ItemStockRepositoryImpl) Select(id uuid.UUID) (*entity.ItemStockEntity, error) {
 	var model model.ItemStockModel

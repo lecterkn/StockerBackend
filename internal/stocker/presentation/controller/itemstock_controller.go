@@ -20,6 +20,21 @@ func NewItemStockController(itemStockService service.ItemStockService) ItemStock
 	}
 }
 
+// Index /* 商品詳細一覧取得用エンドポイント
+func (c ItemStockController) Index(ctx fiber.Ctx) error {
+	listOutput, err := c.itemStockService.Index()
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).SendString("internal error")
+	}
+	var list []ItemStockResponse
+	for _, output := range listOutput.List {
+		list = append(list, ItemStockResponse(output))
+	}
+	return ctx.JSON(ItemStockListResponse{
+		list,
+	})
+}
+
 // Select /* 商品詳細取得用エンドポイント
 func (c ItemStockController) Select(ctx fiber.Ctx) error {
 	id, err := uuid.Parse(ctx.Params("id"))
@@ -74,6 +89,10 @@ func (c ItemStockController) Update(ctx fiber.Ctx) error {
 		return ctx.Status(http.StatusBadRequest).SendString("internal error")
 	}
 	return ctx.JSON(ItemStockResponse(*output))
+}
+
+type ItemStockListResponse struct {
+	List []ItemStockResponse `json:"list"`
 }
 
 type ItemStockResponse struct {

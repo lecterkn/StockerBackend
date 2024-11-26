@@ -19,6 +19,21 @@ func NewItemStockService(itemStockRepository repository.ItemStockRepository) Ite
 	}
 }
 
+// Index /* 商品詳細一覧を取得する
+func (s ItemStockService) Index() (*ItemStockServiceListOutput, error) {
+	entities, err := s.itemStockRepository.Index()
+	if err != nil {
+		return nil, err
+	}
+	var list []ItemStockServiceOutput
+	for _, entity := range entities {
+		list = append(list, ItemStockServiceOutput(entity))
+	}
+	return &ItemStockServiceListOutput{
+		list,
+	}, nil
+}
+
 // Select /* 商品詳細を取得
 func (s ItemStockService) Select(id uuid.UUID) (*ItemStockServiceOutput, error) {
 	entity, err := s.itemStockRepository.Select(id)
@@ -64,6 +79,10 @@ type ItemStockServiceInput struct {
 	Place    string
 	Stock    int
 	StockMin int
+}
+
+type ItemStockServiceListOutput struct {
+	List []ItemStockServiceOutput
 }
 
 type ItemStockServiceOutput struct {
