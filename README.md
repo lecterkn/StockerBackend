@@ -2,73 +2,53 @@
 
 ## 開発環境
 
-開発言語：`go言語`
+開発言語：`go 1.23.1`
 データベース：`MySQL`
-仮想環境：`docker`
+フレームワーク：`fiber`
 
-## 仕様ライブラリ
+## 前提条件
 
-- github.com/google/uuid
-- github.com/rubenv/sql-migrate/...
-- gorm.io/gorm
+- go言語がインストールされていること
+- dockerがインストールされていること
 
-## 実行方法
+## 実行手順
 
-依存関係
+1. 依存関係を取得する
 
 ```shell
 go mod tidy
 ```
 
-マイグレーション
+2. MySQLのサーバーを起動する
+
+```shell
+docker compose up -d
+```
+
+3. データベースのマイグレーションを行う
 
 ```shell
 sql-migrate up
 ```
 
-実行
+4. .envを用意する
+
+.env.exampleを.envとしてフォルダ内にコピーする
+
+```shell
+cp .env.example .env
+```
+
+5. アプリケーションを実行
 
 ```shell
 go run cmd/stocker/main.go
 ```
 
-## MySQL接続
+## MySQL接続方法
+
+直接データベースを確認したい場合の確認方法
 
 ```shell
 docker-compose exec stockergo-mysql mysql -u root -p
-```
-
-## 作業ログ
-
-UUID
-
-```shell
-go get github.com/google/uuid
-```
-
-sql-migrate
-
-```shell
-go get -v github.com/rubenv/sql-migrate/...
-go install github.com/rubenv/sql-migrate/...@latest
-```
-
-gorm
-
-```shell
-go get -u gorm.io/gorm
-go get -u gorm.io/driver/mysql
-```
-
-godotenv
-
-```shell
-go get github.com/joho/godotenv
-```
-
-wire
-
-```shell
-go get github.com/google/wire/cmd/wire@latest
-go install github.com/google/wire/cmd/wire@latest
 ```
