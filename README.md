@@ -6,12 +6,6 @@
 データベース：`MySQL`
 仮想環境：`docker`
 
-## MySQL接続
-
-```shell
-docker-compose exec stockergo-mysql mysql -u root -p
-```
-
 ## 仕様ライブラリ
 
 - github.com/google/uuid
@@ -21,18 +15,27 @@ docker-compose exec stockergo-mysql mysql -u root -p
 ## 実行方法
 
 依存関係
+
 ```shell
 go mod tidy
 ```
 
 マイグレーション
+
 ```shell
 sql-migrate up
 ```
 
 実行
-```
+
+```shell
 go run cmd/stocker/main.go
+```
+
+## MySQL接続
+
+```shell
+docker-compose exec stockergo-mysql mysql -u root -p
 ```
 
 ## 作業ログ
@@ -64,6 +67,7 @@ go get github.com/joho/godotenv
 ```
 
 wire
+
 ```shell
 go get github.com/google/wire/cmd/wire@latest
 go install github.com/google/wire/cmd/wire@latest
