@@ -9,4 +9,5 @@ import (
 type ItemStockRepository interface {
 	Select(id uuid.UUID) (*entity.ItemStockEntity, error)
 	Insert(entity *entity.ItemStockEntity) (*entity.ItemStockEntity, error)
+	Update(entity *entity.ItemStockEntity) (*entity.ItemStockEntity, error)
 }

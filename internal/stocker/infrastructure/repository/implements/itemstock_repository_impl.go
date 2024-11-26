@@ -47,6 +47,19 @@ func (r ItemStockRepositoryImpl) Insert(entity *entity.ItemStockEntity) (*entity
 	return entity, nil
 }
 
+func (r ItemStockRepositoryImpl) Update(entity *entity.ItemStockEntity) (*entity.ItemStockEntity, error) {
+	model := r.ToModel(entity)
+	err := r.database.Save(model).Error
+	if err != nil {
+		return nil, err
+	}
+	entity, err = r.ToEntity(model)
+	if err != nil {
+		return nil, err
+	}
+	return entity, nil
+}
+
 func (ItemStockRepositoryImpl) ToModel(entity *entity.ItemStockEntity) *model.ItemStockModel {
 	return &model.ItemStockModel{
 		ItemId:    entity.ItemId[:],
