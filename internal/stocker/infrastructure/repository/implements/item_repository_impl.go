@@ -9,20 +9,20 @@ import (
 )
 
 type ItemRepositoryImpl struct {
-	Database *gorm.DB
+	database *gorm.DB
 }
 
 // NewItemRepositoryImpl /* ItemRepositoryImplのプロバイダ
 func NewItemRepositoryImpl(database *gorm.DB) ItemRepositoryImpl {
 	return ItemRepositoryImpl{
-		Database: database,
+		database,
 	}
 }
 
 // SelectItems /** アイテムを取得する
 func (r ItemRepositoryImpl) SelectItems() ([]entity.ItemEntity, error) {
 	var models []model.ItemModel
-	err := r.Database.Find(&models).Error
+	err := r.database.Find(&models).Error
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (r ItemRepositoryImpl) SelectItems() ([]entity.ItemEntity, error) {
 // Select /* idからアイテムを取得する
 func (r ItemRepositoryImpl) Select(id uuid.UUID) (*entity.ItemEntity, error) {
 	var model model.ItemModel
-	err := r.Database.Where("id = ?", id[:]).First(&model).Error
+	err := r.database.Where("id = ?", id[:]).First(&model).Error
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (r ItemRepositoryImpl) Select(id uuid.UUID) (*entity.ItemEntity, error) {
 // Create /** アイテムを作成する
 func (r ItemRepositoryImpl) Create(entity *entity.ItemEntity) (*entity.ItemEntity, error) {
 	model := r.toModel(entity)
-	err := r.Database.Create(&model).Error
+	err := r.database.Create(&model).Error
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (r ItemRepositoryImpl) Create(entity *entity.ItemEntity) (*entity.ItemEntit
 // Update /* アイテムを更新する
 func (r ItemRepositoryImpl) Update(entity *entity.ItemEntity) (*entity.ItemEntity, error) {
 	model := r.toModel(entity)
-	err := r.Database.Save(&model).Error
+	err := r.database.Save(&model).Error
 	if err != nil {
 		return nil, err
 	}

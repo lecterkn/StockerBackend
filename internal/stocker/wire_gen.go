@@ -17,27 +17,38 @@ import (
 
 // Injectors from wire.go:
 
+// コントローラーセット作成
 func InitializeController() *ControllersSet {
 	db := database.GetMySQLConnection()
 	itemRepositoryImpl := implements.NewItemRepositoryImpl(db)
 	itemService := service.NewItemService(itemRepositoryImpl)
 	itemController := controller.NewItemController(itemService)
+	itemStockRepositoryImpl := implements.NewItemStockRepositoryImpl(db)
+	itemStockService := service.NewItemStockService(itemStockRepositoryImpl)
+	itemStockController := controller.NewItemStockController(itemStockService)
 	controllersSet := &ControllersSet{
-		ItemController: itemController,
+		ItemController:      itemController,
+		ItemStockController: itemStockController,
 	}
 	return controllersSet
 }
 
 // wire.go:
 
+// データベース
 var databaseSet = wire.NewSet(database.GetMySQLConnection)
 
-var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)))
+// リポジトリ
+var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)), implements.NewItemStockRepositoryImpl, wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)))
 
-var serviceSet = wire.NewSet(service.NewItemService)
+// サービス
+var serviceSet = wire.NewSet(service.NewItemService, service.NewItemStockService)
 
-var controllerSet = wire.NewSet(controller.NewItemController)
+// コントローラー
+var controllerSet = wire.NewSet(controller.NewItemController, controller.NewItemStockController)
 
+// コントローラーセット
 type ControllersSet struct {
-	ItemController controller.ItemController
+	ItemController      controller.ItemController
+	ItemStockController controller.ItemStockController
 }
