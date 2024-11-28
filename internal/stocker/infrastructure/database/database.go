@@ -7,16 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
-var connector *gorm.DB = nil
-
 func GetMySQLConnection() *gorm.DB {
-	if connector == nil {
-		dsn := os.Getenv("DATABASE_URL")
-		db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-		if err != nil {
-			return nil
-		}
-		connector = db
+    dsn, ok := os.LookupEnv("DATABASE_URL")
+    if !ok {
+        panic("\"DATABASE_URL\" is not set!")
+    }
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return nil
 	}
-	return connector
+    return db
 }
