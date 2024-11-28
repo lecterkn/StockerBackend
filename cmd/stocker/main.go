@@ -5,10 +5,16 @@ import (
 	"h11/backend/internal/stocker/presentation/routing"
 	"os"
 
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+    _ "h11/backend/docs"
 )
 
+//	@title			StockerAPI
+//	@version		1.0
+//	@description	stocker application server.
+//	@host			localhost:8810
+//	@BasePath		/
 func main() {
 	// .env 読み込み
 	if err := godotenv.Load(); err != nil {
