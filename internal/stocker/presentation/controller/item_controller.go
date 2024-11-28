@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"h11/backend/internal/stocker/application/service"
 	"net/http"
@@ -20,7 +20,12 @@ func NewItemController(itemService service.ItemService) ItemController {
 }
 
 // Index /* アイテムを一覧取得
-func (c ItemController) Index(ctx fiber.Ctx) error {
+//	@Summary	商品一覧取得
+//	@Tags		item
+//	@Produce	json
+//	@Success	200	{object}	ItemListResponse{list=[]ItemResponse}
+//	@Router		/items [get]
+func (c ItemController) Index(ctx *fiber.Ctx) error {
 	listOutput, err := c.itemService.GetItems()
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).SendString("internal error")
@@ -35,9 +40,15 @@ func (c ItemController) Index(ctx fiber.Ctx) error {
 }
 
 // Create /* アイテムを新規作成
-func (c ItemController) Create(ctx fiber.Ctx) error {
+//	@Summary	商品新規作成
+//	@Tags		item
+//	@Produce	json
+//	@Param		request	body		ItemRequest false "アイテム作成リクエスト"
+//	@Success	200		{object}	ItemResponse
+//	@Router		/items [post]
+func (c ItemController) Create(ctx *fiber.Ctx) error {
 	var request ItemRequest
-	if err := ctx.Bind().Body(&request); err != nil {
+	if err := ctx.BodyParser(&request); err != nil {
 		return err
 	}
 	output, err := c.itemService.CreateItem(service.ItemServiceInput(request))
@@ -48,13 +59,19 @@ func (c ItemController) Create(ctx fiber.Ctx) error {
 }
 
 // Update /* アイテムを更新
-func (c ItemController) Update(ctx fiber.Ctx) error {
+//	@Summary	商品更新
+//	@Tags		item
+//	@Produce	json
+//	@Param		request	body		ItemRequest false "アイテム作成リクエスト"
+//	@Success	200		{object}	ItemResponse
+//	@Router		/items [patch]
+func (c ItemController) Update(ctx *fiber.Ctx) error {
 	id, err := uuid.Parse(ctx.Params("id"))
 	if err != nil {
 		return err
 	}
 	var request ItemRequest
-	if err := ctx.Bind().Body(&request); err != nil {
+	if err := ctx.BodyParser(&request); err != nil {
 		return err
 	}
 	output, err := c.itemService.UpdateItem(service.ItemServiceUpdateInput{

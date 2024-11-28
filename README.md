@@ -16,7 +16,15 @@
 1. 依存関係を取得する
 
 ```shell
+# 依存関係ダウンロード
 go mod tidy
+
+# swag インストール
+go install github.com/swaggo/swag/cmd/swag@latest
+
+#sql-migrate インストール
+
+go install github.com/rubenv/sql-migrate/...@latest
 ```
 
 2. MySQLのサーバーを起動する

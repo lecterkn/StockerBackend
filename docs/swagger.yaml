@@ -1,0 +1,186 @@
+basePath: /
+definitions:
+  controller.ItemListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/controller.ItemResponse'
+        type: array
+    type: object
+  controller.ItemRequest:
+    properties:
+      janCode:
+        type: string
+      name:
+        type: string
+    type: object
+  controller.ItemResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      janCode:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  controller.ItemStockListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/controller.ItemStockResponse'
+        type: array
+    type: object
+  controller.ItemStockRequest:
+    properties:
+      place:
+        type: string
+      stock:
+        type: integer
+      stock_min:
+        type: integer
+    type: object
+  controller.ItemStockResponse:
+    properties:
+      created_at:
+        type: string
+      item_id:
+        type: string
+      place:
+        type: string
+      stock:
+        type: integer
+      stock_min:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+host: localhost:8810
+info:
+  contact: {}
+  description: stocker application server.
+  title: StockerAPI
+  version: "1.0"
+paths:
+  /items:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controller.ItemListResponse'
+            - properties:
+                list:
+                  items:
+                    $ref: '#/definitions/controller.ItemResponse'
+                  type: array
+              type: object
+      summary: 商品一覧取得
+      tags:
+      - item
+    patch:
+      parameters:
+      - description: アイテム作成リクエスト
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/controller.ItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemResponse'
+      summary: 商品更新
+      tags:
+      - item
+    post:
+      parameters:
+      - description: アイテム作成リクエスト
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/controller.ItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemResponse'
+      summary: 商品新規作成
+      tags:
+      - item
+  /items/{item_id}/stocks:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemStockResponse'
+      summary: 商品詳細取得
+      tags:
+      - item_stock
+    patch:
+      parameters:
+      - description: 商品詳細更新リクエスト
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/controller.ItemStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemStockResponse'
+      summary: 商品詳細更新
+      tags:
+      - item_stock
+    post:
+      parameters:
+      - description: 商品詳細作成リクエスト
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/controller.ItemStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemStockResponse'
+      summary: 商品詳細登録
+      tags:
+      - item_stock
+  /itemsStocks:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controller.ItemStockListResponse'
+            - properties:
+                list:
+                  items:
+                    $ref: '#/definitions/controller.ItemStockResponse'
+                  type: array
+              type: object
+      summary: 商品詳細一覧取得
+      tags:
+      - item_stock
+swagger: "2.0"

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
@@ -21,7 +21,12 @@ func NewItemStockController(itemStockService service.ItemStockService) ItemStock
 }
 
 // Index /* 商品詳細一覧取得用エンドポイント
-func (c ItemStockController) Index(ctx fiber.Ctx) error {
+//	@Summary	商品詳細一覧取得
+//	@Tags		item_stock
+//	@Produce	json
+//	@Success	200	{object}	ItemStockListResponse{list=[]ItemStockResponse}
+//	@Router		/itemsStocks [get]
+func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 	listOutput, err := c.itemStockService.Index()
 	if err != nil {
 		return ctx.Status(http.StatusBadRequest).SendString("internal error")
@@ -36,7 +41,12 @@ func (c ItemStockController) Index(ctx fiber.Ctx) error {
 }
 
 // Select /* 商品詳細取得用エンドポイント
-func (c ItemStockController) Select(ctx fiber.Ctx) error {
+//	@Summary	商品詳細取得
+//	@Tags		item_stock
+//	@Produce	json
+//	@Success	200	{object}	ItemStockResponse
+//	@Router		/items/{item_id}/stocks [get]
+func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 	id, err := uuid.Parse(ctx.Params("id"))
 	if err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid id")
@@ -49,13 +59,19 @@ func (c ItemStockController) Select(ctx fiber.Ctx) error {
 }
 
 // Create /* 商品詳細作成用エンドポイント
-func (c ItemStockController) Create(ctx fiber.Ctx) error {
+//	@Summary	商品詳細登録
+//	@Tags		item_stock
+//	@Produce	json
+//	@Param		request	body		ItemStockRequest	false	"商品詳細作成リクエスト"
+//	@Success	200		{object}	ItemStockResponse
+//	@Router		/items/{item_id}/stocks [post]
+func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 	id, err := uuid.Parse(ctx.Params("id"))
 	if err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid id")
 	}
 	var request ItemStockRequest
-	if err = ctx.Bind().Body(&request); err != nil {
+	if err = ctx.BodyParser(&request); err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid requestBody")
 	}
 	output, err := c.itemStockService.Create(service.ItemStockServiceInput{
@@ -70,13 +86,20 @@ func (c ItemStockController) Create(ctx fiber.Ctx) error {
 	return ctx.JSON(ItemStockResponse(*output))
 }
 
-func (c ItemStockController) Update(ctx fiber.Ctx) error {
+// Update /* 商品詳細更新
+//	@Summary	商品詳細更新
+//	@Tags		item_stock
+//	@Produce	json
+//	@Param		request	body		ItemStockRequest	false	"商品詳細更新リクエスト"
+//	@Success	200		{object}	ItemStockResponse
+//	@Router		/items/{item_id}/stocks [patch]
+func (c ItemStockController) Update(ctx *fiber.Ctx) error {
 	id, err := uuid.Parse(ctx.Params("id"))
 	if err != nil {
 		return ctx.Status(http.StatusBadRequest).SendString("invalid id")
 	}
 	var request ItemStockRequest
-	if err = ctx.Bind().Body(&request); err != nil {
+	if err = ctx.BodyParser(&request); err != nil {
 		return ctx.Status(http.StatusBadRequest).SendString("invalid requestBody")
 	}
 	output, err := c.itemStockService.Update(service.ItemStockServiceInput{
