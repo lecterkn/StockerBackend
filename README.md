@@ -53,6 +53,14 @@ cp .env.example .env
 go run cmd/stocker/main.go
 ```
 
+## APIドキュメント
+
+アプリケーションを開いた状態で[Swaggerのページ](http://127.0.0.1:8810/swagger/index.html)を開く
+
+```
+http://127.0.0.1:8810/swagger/index.html
+```
+
 ## MySQL接続方法
 
 直接データベースを確認したい場合の確認方法
