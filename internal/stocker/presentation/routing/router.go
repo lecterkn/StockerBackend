@@ -44,6 +44,10 @@ func SetRouting(f *fiber.App) {
 	f.Post("/items/:itemId/stocks", controllerSets.ItemStockController.Create)
 	f.Patch("/items/:itemId/stocks", controllerSets.ItemController.Update)
 
+	// StoreController
+	f.Get("/stores", controllerSets.StoreController.Index)
+	f.Post("/stores", controllerSets.StoreController.Create)
+	f.Patch("/stores/:storeId", controllerSets.StoreController.Update)
 }
 
 func setSwagger(f *fiber.App) {

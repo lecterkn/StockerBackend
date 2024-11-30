@@ -25,6 +25,8 @@ var repositorySet = wire.NewSet(
 	wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)),
 	implements.NewUserRepositoryImpl,
 	wire.Bind(new(repository.UserRepository), new(implements.UserRepositoryImpl)),
+	implements.NewStoreRepositoryImpl,
+	wire.Bind(new(repository.StoreRepository), new(implements.StoreRepositoryImpl)),
 )
 
 // サービス
@@ -33,6 +35,7 @@ var serviceSet = wire.NewSet(
 	service.NewItemStockService,
 	service.NewUserService,
 	service.NewAuthorizationService,
+	service.NewStoreService,
 )
 
 // コントローラー
@@ -40,6 +43,7 @@ var controllerSet = wire.NewSet(
 	controller.NewItemController,
 	controller.NewItemStockController,
 	controller.NewUserController,
+	controller.NewStoreController,
 )
 
 // コントローラーセット
@@ -47,6 +51,7 @@ type ControllersSet struct {
 	ItemController      controller.ItemController
 	ItemStockController controller.ItemStockController
 	UserController controller.UserController
+	StoreController controller.StoreController
 }
 
 // コントローラーセット作成
