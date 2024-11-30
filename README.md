@@ -61,6 +61,16 @@ go run cmd/stocker/main.go
 http://127.0.0.1:8810/swagger/index.html
 ```
 
+## 依存性注入
+
+- wireを使用して依存性注入を行う
+- `internal\stocker\wire.go`に依存関係を記載する
+- 下記のコマンドで`wire_gen.go`を生成する
+
+```shell
+wire gen ./internal/stocker/
+```
+
 ## MySQL接続方法
 
 直接データベースを確認したい場合の確認方法
