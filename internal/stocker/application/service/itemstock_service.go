@@ -65,7 +65,7 @@ func (s ItemStockService) Update(input ItemStockServiceInput) (*ItemStockService
 		return nil, err
 	}
 	// 商品詳細を更新
-	entity = entity.Update(input.Place, input.Stock, input.StockMin)
+	entity.Update(input.Place, input.Stock, input.StockMin)
 	entity, err = s.itemStockRepository.Update(entity)
 	if err != nil {
 		return nil, err

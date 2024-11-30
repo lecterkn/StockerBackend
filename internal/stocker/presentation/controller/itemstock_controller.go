@@ -45,9 +45,9 @@ func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 //	@Tags		item_stock
 //	@Produce	json
 //	@Success	200	{object}	ItemStockResponse
-//	@Router		/items/{item_id}/stocks [get]
+//	@Router		/items/{itemId}/stocks [get]
 func (c ItemStockController) Select(ctx *fiber.Ctx) error {
-	id, err := uuid.Parse(ctx.Params("id"))
+	id, err := uuid.Parse(ctx.Params("itemId"))
 	if err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid id")
 	}
@@ -64,9 +64,9 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 //	@Produce	json
 //	@Param		request	body		ItemStockRequest	false	"商品詳細作成リクエスト"
 //	@Success	200		{object}	ItemStockResponse
-//	@Router		/items/{item_id}/stocks [post]
+//	@Router		/items/{itemId}/stocks [post]
 func (c ItemStockController) Create(ctx *fiber.Ctx) error {
-	id, err := uuid.Parse(ctx.Params("id"))
+	id, err := uuid.Parse(ctx.Params("itemId"))
 	if err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid id")
 	}
@@ -92,9 +92,9 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 //	@Produce	json
 //	@Param		request	body		ItemStockRequest	false	"商品詳細更新リクエスト"
 //	@Success	200		{object}	ItemStockResponse
-//	@Router		/items/{item_id}/stocks [patch]
+//	@Router		/items/{itemId}/stocks [patch]
 func (c ItemStockController) Update(ctx *fiber.Ctx) error {
-	id, err := uuid.Parse(ctx.Params("id"))
+	id, err := uuid.Parse(ctx.Params("itemId"))
 	if err != nil {
 		return ctx.Status(http.StatusBadRequest).SendString("invalid id")
 	}

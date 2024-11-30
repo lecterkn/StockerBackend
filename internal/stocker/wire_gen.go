@@ -26,9 +26,14 @@ func InitializeController() *ControllersSet {
 	itemStockRepositoryImpl := implements.NewItemStockRepositoryImpl(db)
 	itemStockService := service.NewItemStockService(itemStockRepositoryImpl)
 	itemStockController := controller.NewItemStockController(itemStockService)
+	userRepositoryImpl := implements.NewUserRepositoryImpl(db)
+	userService := service.NewUserService(userRepositoryImpl)
+	authorizationService := service.NewAuthorizationService(userRepositoryImpl)
+	userController := controller.NewUserController(userService, authorizationService)
 	controllersSet := &ControllersSet{
 		ItemController:      itemController,
 		ItemStockController: itemStockController,
+		UserController:      userController,
 	}
 	return controllersSet
 }
@@ -39,16 +44,17 @@ func InitializeController() *ControllersSet {
 var databaseSet = wire.NewSet(database.GetMySQLConnection)
 
 // リポジトリ
-var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)), implements.NewItemStockRepositoryImpl, wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)))
+var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)), implements.NewItemStockRepositoryImpl, wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)), implements.NewUserRepositoryImpl, wire.Bind(new(repository.UserRepository), new(implements.UserRepositoryImpl)))
 
 // サービス
-var serviceSet = wire.NewSet(service.NewItemService, service.NewItemStockService)
+var serviceSet = wire.NewSet(service.NewItemService, service.NewItemStockService, service.NewUserService, service.NewAuthorizationService)
 
 // コントローラー
-var controllerSet = wire.NewSet(controller.NewItemController, controller.NewItemStockController)
+var controllerSet = wire.NewSet(controller.NewItemController, controller.NewItemStockController, controller.NewUserController)
 
 // コントローラーセット
 type ControllersSet struct {
 	ItemController      controller.ItemController
 	ItemStockController controller.ItemStockController
+	UserController      controller.UserController
 }

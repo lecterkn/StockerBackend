@@ -52,6 +52,9 @@ func (s ItemService) UpdateItem(input ItemServiceUpdateInput) (*ItemServiceOutpu
 	// 更新
 	entity.Update(input.Name, input.JanCode)
 	entity, err = s.itemRepository.Update(entity)
+	if err != nil {
+		return nil, err
+	}
 	output := ItemServiceOutput(*entity)
 	return &output, nil
 }

@@ -57,8 +57,14 @@ go run cmd/stocker/main.go
 
 アプリケーションを開いた状態で[Swaggerのページ](http://127.0.0.1:8810/swagger/index.html)を開く
 
-```
+```http
 http://127.0.0.1:8810/swagger/index.html
+```
+
+生成方法
+
+```shell
+swag init -g cmd/stocker/main.go 
 ```
 
 ## 依存性注入

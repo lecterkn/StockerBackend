@@ -35,6 +35,6 @@ func main() {
 	// routing
 	routing.SetRouting(f)
 
-	// start echo
+	// start fiber
 	f.Listen(":" + port)
 }

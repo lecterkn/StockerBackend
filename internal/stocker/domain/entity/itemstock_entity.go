@@ -26,13 +26,9 @@ func NewItemStockEntity(itemId uuid.UUID, place string, stock, stockMin int) (*I
 	}, nil
 }
 
-func (entity ItemStockEntity) Update(place string, stock, stockMin int) *ItemStockEntity {
-	return &ItemStockEntity{
-		ItemId:    entity.ItemId,
-		Place:     place,
-		Stock:     stock,
-		StockMin:  stockMin,
-		CreatedAt: entity.CreatedAt,
-		UpdatedAt: time.Now(),
-	}
+func (entity *ItemStockEntity) Update(place string, stock, stockMin int) {
+	entity.Place = place
+	entity.Stock = stock
+	entity.StockMin = stockMin
+	entity.UpdatedAt = time.Now()
 }

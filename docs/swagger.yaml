@@ -58,6 +58,29 @@ definitions:
       updated_at:
         type: string
     type: object
+  controller.UserLoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  controller.UserRequest:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  controller.UserResponse:
+    properties:
+      createAt:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
 host: localhost:8810
 info:
   contact: {}
@@ -84,23 +107,6 @@ paths:
       summary: 商品一覧取得
       tags:
       - item
-    patch:
-      parameters:
-      - description: アイテム作成リクエスト
-        in: body
-        name: request
-        schema:
-          $ref: '#/definitions/controller.ItemRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.ItemResponse'
-      summary: 商品更新
-      tags:
-      - item
     post:
       parameters:
       - description: アイテム作成リクエスト
@@ -118,7 +124,25 @@ paths:
       summary: 商品新規作成
       tags:
       - item
-  /items/{item_id}/stocks:
+  /items/{itemId}:
+    patch:
+      parameters:
+      - description: アイテム作成リクエスト
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/controller.ItemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemResponse'
+      summary: 商品更新
+      tags:
+      - item
+  /items/{itemId}/stocks:
     get:
       produces:
       - application/json
@@ -183,4 +207,40 @@ paths:
       summary: 商品詳細一覧取得
       tags:
       - item_stock
+  /login:
+    post:
+      parameters:
+      - description: ユーザーログインリクエスト
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/controller.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.UserLoginResponse'
+      summary: ユーザーログイン
+      tags:
+      - user
+  /register:
+    post:
+      parameters:
+      - description: ユーザー作成リクエスト
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/controller.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.UserResponse'
+      summary: ユーザー作成
+      tags:
+      - user
 swagger: "2.0"

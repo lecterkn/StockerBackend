@@ -64,9 +64,9 @@ func (c ItemController) Create(ctx *fiber.Ctx) error {
 //	@Produce	json
 //	@Param		request	body		ItemRequest false "アイテム作成リクエスト"
 //	@Success	200		{object}	ItemResponse
-//	@Router		/items [patch]
+//	@Router		/items/{itemId} [patch]
 func (c ItemController) Update(ctx *fiber.Ctx) error {
-	id, err := uuid.Parse(ctx.Params("id"))
+	id, err := uuid.Parse(ctx.Params("itemId"))
 	if err != nil {
 		return err
 	}
