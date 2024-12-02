@@ -76,13 +76,13 @@ type UserRequest struct {
 }
 
 type UserResponse struct {
-    Id string
-    Name string
+    Id string `json:"id"`
+    Name string `json:"name"`
     Password string `json:"-"`
-    CreateAt time.Time
-    UpdatedAt time.Time
+    CreateAt time.Time `json:"createdAt"`
+    UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type UserLoginResponse struct {
-    Token string
+    Token string `json:"token"`
 }

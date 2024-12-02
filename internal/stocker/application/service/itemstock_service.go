@@ -20,8 +20,8 @@ func NewItemStockService(itemStockRepository repository.ItemStockRepository) Ite
 }
 
 // Index /* 商品詳細一覧を取得する
-func (s ItemStockService) Index() (*ItemStockServiceListOutput, error) {
-	entities, err := s.itemStockRepository.Index()
+func (s ItemStockService) Index(input ItemStockServiceQueryListInput) (*ItemStockServiceListOutput, error) {
+	entities, err := s.itemStockRepository.Index(input.StoreId)
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +35,8 @@ func (s ItemStockService) Index() (*ItemStockServiceListOutput, error) {
 }
 
 // Select /* 商品詳細を取得
-func (s ItemStockService) Select(id uuid.UUID) (*ItemStockServiceOutput, error) {
-	entity, err := s.itemStockRepository.Select(id)
+func (s ItemStockService) Select(input ItemStockServiceQueryInput) (*ItemStockServiceOutput, error) {
+	entity, err := s.itemStockRepository.Select(input.StoreId, input.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s ItemStockService) Select(id uuid.UUID) (*ItemStockServiceOutput, error) 
 
 // Create /* 商品詳細を作成
 func (s ItemStockService) Create(input ItemStockServiceInput) (*ItemStockServiceOutput, error) {
-	entity, err := entity.NewItemStockEntity(input.ItemId, input.Place, input.Stock, input.StockMin)
+	entity, err := entity.NewItemStockEntity(input.ItemId, input.StoreId, input.Place, input.Stock, input.StockMin)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func (s ItemStockService) Create(input ItemStockServiceInput) (*ItemStockService
 
 func (s ItemStockService) Update(input ItemStockServiceInput) (*ItemStockServiceOutput, error) {
 	// 商品詳細を取得
-	entity, err := s.itemStockRepository.Select(input.ItemId)
+	entity, err := s.itemStockRepository.Select(input.StoreId, input.ItemId)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,17 @@ func (s ItemStockService) Update(input ItemStockServiceInput) (*ItemStockService
 	return &output, nil
 }
 
+type ItemStockServiceQueryListInput struct {
+	StoreId uuid.UUID
+}
+
+type ItemStockServiceQueryInput struct {
+	StoreId uuid.UUID
+	Id uuid.UUID
+}
+
 type ItemStockServiceInput struct {
+	StoreId uuid.UUID
 	ItemId   uuid.UUID
 	Place    string
 	Stock    int
@@ -87,6 +97,7 @@ type ItemStockServiceListOutput struct {
 
 type ItemStockServiceOutput struct {
 	ItemId    uuid.UUID
+	StoreId uuid.UUID
 	Place     string
 	Stock     int
 	StockMin  int

@@ -6,8 +6,8 @@ import (
 )
 
 type ItemRepository interface {
-	SelectItems() ([]entity.ItemEntity, error)
-	Select(id uuid.UUID) (*entity.ItemEntity, error)
+	Index(storeId uuid.UUID) ([]entity.ItemEntity, error)
+	Select(storeId, id uuid.UUID) (*entity.ItemEntity, error)
 	// TODO rename to Insert
 	Create(entity *entity.ItemEntity) (*entity.ItemEntity, error)
 	Update(entity *entity.ItemEntity) (*entity.ItemEntity, error)

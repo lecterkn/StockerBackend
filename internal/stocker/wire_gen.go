@@ -22,15 +22,16 @@ func InitializeController() *ControllersSet {
 	db := database.GetMySQLConnection()
 	itemRepositoryImpl := implements.NewItemRepositoryImpl(db)
 	itemService := service.NewItemService(itemRepositoryImpl)
-	itemController := controller.NewItemController(itemService)
+	storeRepositoryImpl := implements.NewStoreRepositoryImpl(db)
+	storeAuthorizationService := service.NewStoreAuthorizationService(storeRepositoryImpl)
+	itemController := controller.NewItemController(itemService, storeAuthorizationService)
 	itemStockRepositoryImpl := implements.NewItemStockRepositoryImpl(db)
 	itemStockService := service.NewItemStockService(itemStockRepositoryImpl)
-	itemStockController := controller.NewItemStockController(itemStockService)
+	itemStockController := controller.NewItemStockController(itemStockService, storeAuthorizationService)
 	userRepositoryImpl := implements.NewUserRepositoryImpl(db)
 	userService := service.NewUserService(userRepositoryImpl)
 	authorizationService := service.NewAuthorizationService(userRepositoryImpl)
 	userController := controller.NewUserController(userService, authorizationService)
-	storeRepositoryImpl := implements.NewStoreRepositoryImpl(db)
 	storeService := service.NewStoreService(userRepositoryImpl, storeRepositoryImpl)
 	storeController := controller.NewStoreController(storeService)
 	controllersSet := &ControllersSet{
@@ -51,7 +52,7 @@ var databaseSet = wire.NewSet(database.GetMySQLConnection)
 var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)), implements.NewItemStockRepositoryImpl, wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)), implements.NewUserRepositoryImpl, wire.Bind(new(repository.UserRepository), new(implements.UserRepositoryImpl)), implements.NewStoreRepositoryImpl, wire.Bind(new(repository.StoreRepository), new(implements.StoreRepositoryImpl)))
 
 // サービス
-var serviceSet = wire.NewSet(service.NewItemService, service.NewItemStockService, service.NewUserService, service.NewAuthorizationService, service.NewStoreService)
+var serviceSet = wire.NewSet(service.NewItemService, service.NewItemStockService, service.NewUserService, service.NewAuthorizationService, service.NewStoreService, service.NewStoreAuthorizationService)
 
 // コントローラー
 var controllerSet = wire.NewSet(controller.NewItemController, controller.NewItemStockController, controller.NewUserController, controller.NewStoreController)

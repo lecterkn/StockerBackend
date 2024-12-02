@@ -8,6 +8,7 @@ import (
 
 type ItemStockEntity struct {
 	ItemId    uuid.UUID
+	StoreId uuid.UUID
 	Place     string
 	Stock     int
 	StockMin  int
@@ -15,9 +16,10 @@ type ItemStockEntity struct {
 	UpdatedAt time.Time
 }
 
-func NewItemStockEntity(itemId uuid.UUID, place string, stock, stockMin int) (*ItemStockEntity, error) {
+func NewItemStockEntity(itemId, storeId uuid.UUID, place string, stock, stockMin int) (*ItemStockEntity, error) {
 	return &ItemStockEntity{
 		ItemId:    itemId,
+		StoreId: storeId,
 		Place:     place,
 		Stock:     stock,
 		StockMin:  stockMin,

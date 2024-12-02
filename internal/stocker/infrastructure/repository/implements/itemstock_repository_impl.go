@@ -20,9 +20,9 @@ func NewItemStockRepositoryImpl(database *gorm.DB) ItemStockRepositoryImpl {
 }
 
 // Index /* 商品詳細一覧を取得
-func (r ItemStockRepositoryImpl) Index() ([]entity.ItemStockEntity, error) {
+func (r ItemStockRepositoryImpl) Index(storeId uuid.UUID) ([]entity.ItemStockEntity, error) {
 	var models []model.ItemStockModel
-	err := r.database.Find(&models).Error
+	err := r.database.Where("store_id = ?", storeId[:]).Find(&models).Error
 	if err != nil {
 		return nil, err
 	}
@@ -38,9 +38,9 @@ func (r ItemStockRepositoryImpl) Index() ([]entity.ItemStockEntity, error) {
 }
 
 // Select /* IDから商品を取得
-func (r ItemStockRepositoryImpl) Select(id uuid.UUID) (*entity.ItemStockEntity, error) {
+func (r ItemStockRepositoryImpl) Select(storeId, id uuid.UUID) (*entity.ItemStockEntity, error) {
 	var model model.ItemStockModel
-	err := r.database.Where("id = ?", id[:]).Select(&model).Error
+	err := r.database.Where("store_id = ? AND id = ?", storeId[:], id[:]).Select(&model).Error
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +81,7 @@ func (r ItemStockRepositoryImpl) Update(entity *entity.ItemStockEntity) (*entity
 func (ItemStockRepositoryImpl) ToModel(entity *entity.ItemStockEntity) *model.ItemStockModel {
 	return &model.ItemStockModel{
 		ItemId:    entity.ItemId[:],
+		StoreId: entity.StoreId[:],
 		Place:     entity.Place,
 		Stock:     entity.Stock,
 		StockMin:  entity.StockMin,
@@ -89,12 +90,17 @@ func (ItemStockRepositoryImpl) ToModel(entity *entity.ItemStockEntity) *model.It
 	}
 }
 func (ItemStockRepositoryImpl) ToEntity(model *model.ItemStockModel) (*entity.ItemStockEntity, error) {
-	id, err := uuid.ParseBytes(model.ItemId)
+	id, err := uuid.FromBytes(model.ItemId)
+	if err != nil {
+		return nil, err
+	}
+	storeId, err := uuid.FromBytes(model.StoreId)
 	if err != nil {
 		return nil, err
 	}
 	return &entity.ItemStockEntity{
 		ItemId:    id,
+		StoreId: storeId,
 		Place:     model.Place,
 		Stock:     model.Stock,
 		StockMin:  model.StockMin,

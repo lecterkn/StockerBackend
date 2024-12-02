@@ -20,8 +20,8 @@ func NewItemService(itemRepository repository.ItemRepository) ItemService {
 }
 
 // GetItems /* アイテム一覧を取得する
-func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
-	entities, err := s.itemRepository.SelectItems()
+func (s ItemService) GetItems(input ItemServiceQueryListInput) (*ItemServiceListOutput, error) {
+	entities, err := s.itemRepository.Index(input.StoreId)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (s ItemService) GetItems() (*ItemServiceListOutput, error) {
 
 // CreateItem /* アイテムを作成する
 func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, error) {
-	entity, err := entity.NewItemEntity(input.Name, input.JanCode)
+	entity, err := entity.NewItemEntity(input.StoreId, input.Name, input.JanCode)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, err
 // UpdateItem /* アイテムを更新
 func (s ItemService) UpdateItem(input ItemServiceUpdateInput) (*ItemServiceOutput, error) {
 	// 更新対象を取得
-	entity, err := s.itemRepository.Select(input.Id)
+	entity, err := s.itemRepository.Select(input.StoreId, input.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +72,13 @@ func (ItemService) toOutput(entities []entity.ItemEntity) *ItemServiceListOutput
 	}
 }
 
+type ItemServiceQueryListInput struct {
+	StoreId uuid.UUID
+}
+
 type ItemServiceOutput struct {
 	Id        uuid.UUID
+	StoreId uuid.UUID
 	Name      string
 	JanCode   string
 	CreatedAt time.Time
@@ -81,12 +86,14 @@ type ItemServiceOutput struct {
 }
 
 type ItemServiceInput struct {
+	StoreId uuid.UUID
 	Name    string
 	JanCode string
 }
 
 type ItemServiceUpdateInput struct {
 	Id      uuid.UUID
+	StoreId uuid.UUID
 	Name    string
 	JanCode string
 }

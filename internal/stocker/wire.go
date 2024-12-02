@@ -36,6 +36,7 @@ var serviceSet = wire.NewSet(
 	service.NewUserService,
 	service.NewAuthorizationService,
 	service.NewStoreService,
+	service.NewStoreAuthorizationService,
 )
 
 // コントローラー

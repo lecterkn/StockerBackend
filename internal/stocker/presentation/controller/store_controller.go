@@ -80,9 +80,10 @@ func (c StoreController) Create(ctx *fiber.Ctx) error {
 //	@Summary	店舗更新
 //	@Tags		store
 //	@Produce	json
+//	@Param		storeId	path		string				true	"店舗ID"
 //	@Param		request	body		StoreUpdateRequest	false	"店舗更新リクエスト"
 //	@Success	200		{object}	StoreResponse
-//	@Router		/stores [post]
+//	@Router		/stores/{storeId} [patch]
 func (c StoreController) Update(ctx *fiber.Ctx) error {
     // JWTトークンからユーザーIDを取得
     userId, err := common.GetUserIdByContext(ctx)
@@ -121,25 +122,25 @@ func (StoreController) toResponse(output *service.StoreServiceOutput) *StoreResp
 }
 
 type StoreRequest struct {
-    Id uuid.UUID
+    Id uuid.UUID `json:"id"`
 }
 
 type StoreCreateRequest struct {
-    Name string
+    Name string `json:"name"`
 }
 
 type StoreUpdateRequest struct {
-    Name string
+    Name string `json:"name"`
 }
 
 type StoreListResponse struct {
-    List []StoreResponse
+    List []StoreResponse `json:"list"`
 }
 
 type StoreResponse struct {
-    Id string
+    Id string `json:"id"`
     UserId string `json:"userId"`
-    Name string
+    Name string `json:"name"`
     CreatedAt time.Time `json:"createdAt"`
     UpdatedAt time.Time `json:"updatedAt"`
 }

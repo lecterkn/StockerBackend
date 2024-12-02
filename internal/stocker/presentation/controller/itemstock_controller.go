@@ -2,6 +2,7 @@ package controller
 
 import (
 	"h11/backend/internal/stocker/application/service"
+	"h11/backend/internal/stocker/common"
 	"net/http"
 	"time"
 
@@ -11,12 +12,14 @@ import (
 
 type ItemStockController struct {
 	itemStockService service.ItemStockService
+	authorizationService service.StoreAuthorizationService
 }
 
 // NewItemStockController /* プロバイダ
-func NewItemStockController(itemStockService service.ItemStockService) ItemStockController {
+func NewItemStockController(itemStockService service.ItemStockService, authorizationService service.StoreAuthorizationService) ItemStockController {
 	return ItemStockController{
 		itemStockService,
+		authorizationService,
 	}
 }
 
@@ -24,13 +27,32 @@ func NewItemStockController(itemStockService service.ItemStockService) ItemStock
 //	@Summary	商品詳細一覧取得
 //	@Tags		item_stock
 //	@Produce	json
-//	@Success	200	{object}	ItemStockListResponse{list=[]ItemStockResponse}
-//	@Router		/itemsStocks [get]
+//	@Param		storeId	path string		true	"店舗ID"
+//	@Success	200		{object}	ItemStockListResponse{list=[]ItemStockResponse}
+//	@Router		/stores/{storeId}/itemsStocks [get]
 func (c ItemStockController) Index(ctx *fiber.Ctx) error {
-	listOutput, err := c.itemStockService.Index()
+	// ユーザーID取得
+	userId, err := common.GetUserIdByContext(ctx)
+	if err != nil {
+		return err
+	}
+	// 店舗ID
+	storeId, err := uuid.Parse(ctx.Params("storeId"))
+	if err != nil {
+		return err
+	}
+	// 店舗とユーザーの認証
+	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+		return err
+	}
+	// 商品詳細一覧取得
+	listOutput, err := c.itemStockService.Index(service.ItemStockServiceQueryListInput{
+		StoreId: storeId,
+	})
 	if err != nil {
 		return ctx.Status(http.StatusBadRequest).SendString("internal error")
 	}
+	// レスポンスに変換
 	var list []ItemStockResponse
 	for _, output := range listOutput.List {
 		list = append(list, ItemStockResponse(output))
@@ -44,14 +66,35 @@ func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 //	@Summary	商品詳細取得
 //	@Tags		item_stock
 //	@Produce	json
-//	@Success	200	{object}	ItemStockResponse
-//	@Router		/items/{itemId}/stocks [get]
+//	@Param		storeId	path string		true	"店舗ID"
+//	@Param		itemId	path string		true	"商品ID"
+//	@Success	200		{object}	ItemStockResponse
+//	@Router		/stores/{storeId}/items/{itemId}/stocks [get]
 func (c ItemStockController) Select(ctx *fiber.Ctx) error {
+	// ユーザーID取得
+	userId, err := common.GetUserIdByContext(ctx)
+	if err != nil {
+		return err
+	}
+	// 店舗ID取得
+	storeId, err := uuid.Parse(ctx.Params("storeId"))
+	if err != nil {
+		return err
+	}
+	// 商品ID取得
 	id, err := uuid.Parse(ctx.Params("itemId"))
 	if err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid id")
 	}
-	output, err := c.itemStockService.Select(id)
+	// 店舗とユーザーの認証
+	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+		return err
+	}
+	// 商品詳細取得
+	output, err := c.itemStockService.Select(service.ItemStockServiceQueryInput{
+		StoreId: storeId,
+		Id: id,
+	})
 	if err != nil {
 		return ctx.Status(http.StatusNotFound).SendString("not found")
 	}
@@ -62,19 +105,39 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 //	@Summary	商品詳細登録
 //	@Tags		item_stock
 //	@Produce	json
+//	@Param		storeId	path string		true				"店舗ID"
+//	@Param		itemId	path string		true				"商品ID"
 //	@Param		request	body		ItemStockRequest	false	"商品詳細作成リクエスト"
 //	@Success	200		{object}	ItemStockResponse
-//	@Router		/items/{itemId}/stocks [post]
+//	@Router		/stores/{storeId}/items/{itemId}/stocks [post]
 func (c ItemStockController) Create(ctx *fiber.Ctx) error {
+	// ユーザーID取得
+	userId, err := common.GetUserIdByContext(ctx)
+	if err != nil {
+		return err
+	}
+	// 店舗ID取得
+	storeId, err := uuid.Parse(ctx.Params("storeId"))
+	if err != nil {
+		return err
+	}
+	// 商品ID取得
 	id, err := uuid.Parse(ctx.Params("itemId"))
 	if err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid id")
 	}
+	// 商品詳細作成リクエスト取得
 	var request ItemStockRequest
 	if err = ctx.BodyParser(&request); err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid requestBody")
 	}
+	// 店舗とユーザーの認証
+	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+		return err
+	}
+	// 商品詳細作成
 	output, err := c.itemStockService.Create(service.ItemStockServiceInput{
+		StoreId: storeId,
 		ItemId:   id,
 		Place:    request.Place,
 		Stock:    request.Stock,
@@ -90,19 +153,39 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 //	@Summary	商品詳細更新
 //	@Tags		item_stock
 //	@Produce	json
+//	@Param		storeId	path string		true				"店舗ID"
+//	@Param		itemId	path string		true				"商品ID"
 //	@Param		request	body		ItemStockRequest	false	"商品詳細更新リクエスト"
 //	@Success	200		{object}	ItemStockResponse
-//	@Router		/items/{itemId}/stocks [patch]
+//	@Router		/stores/{storeId}/items/{itemId}/stocks [patch]
 func (c ItemStockController) Update(ctx *fiber.Ctx) error {
+	// ユーザーID取得
+	userId, err := common.GetUserIdByContext(ctx)
+	if err != nil {
+		return err
+	}
+	// 店舗ID取得
+	storeId, err := uuid.Parse(ctx.Params("storeId"))
+	if err != nil {
+		return err
+	}
+	// 商品ID取得
 	id, err := uuid.Parse(ctx.Params("itemId"))
 	if err != nil {
 		return ctx.Status(http.StatusBadRequest).SendString("invalid id")
 	}
+	// 商品詳細更新リクエスト取得
 	var request ItemStockRequest
 	if err = ctx.BodyParser(&request); err != nil {
 		return ctx.Status(http.StatusBadRequest).SendString("invalid requestBody")
 	}
+	// 店舗とユーザーの認証
+	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+		return err
+	}
+	// 商品詳細更新
 	output, err := c.itemStockService.Update(service.ItemStockServiceInput{
+		StoreId: storeId,
 		ItemId:   id,
 		Place:    request.Place,
 		Stock:    request.Stock,
@@ -119,16 +202,17 @@ type ItemStockListResponse struct {
 }
 
 type ItemStockResponse struct {
-	ItemId    uuid.UUID `json:"item_id"`
+	ItemId    uuid.UUID `json:"itemId"`
+	StoreId uuid.UUID `json:"storeId"`
 	Place     string    `json:"place"`
 	Stock     int       `json:"stock"`
-	StockMin  int       `json:"stock_min"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	StockMin  int       `json:"stockMin"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type ItemStockRequest struct {
 	Place    string `json:"place"`
 	Stock    int    `json:"stock"`
-	StockMin int    `json:"stock_min"`
+	StockMin int    `json:"stockMin"`
 }

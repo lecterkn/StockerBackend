@@ -3,7 +3,8 @@ package model
 import "time"
 
 type ItemStockModel struct {
-	ItemId    []byte `gorm:"type:uuid;column:item_id;"`
+	ItemId    []byte `gorm:"column:item_id"`
+	StoreId []byte `gorm:"column:store_id"`
 	Place     string
 	Stock     int
 	StockMin  int       `gorm:"column:stock_min"`
