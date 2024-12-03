@@ -2,7 +2,7 @@ package routing
 
 import (
 	"h11/backend/internal/stocker"
-	//"h11/backend/internal/stocker/common"
+	"h11/backend/internal/stocker/common"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -11,7 +11,7 @@ import (
 	// jwtware
 	_ "h11/backend/docs"
 
-	//jwtware "github.com/gofiber/contrib/jwt"
+	jwtware "github.com/gofiber/contrib/jwt"
 )
 
 func SetRouting(f *fiber.App) {
@@ -30,14 +30,12 @@ func SetRouting(f *fiber.App) {
 
 	// JWT Middleware
 	// このコードより後述のエンドポイントにJWT認証が適応される
-    /*
 	f.Use(jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{
 			JWTAlg: jwtware.HS256,
 			Key: common.GetJwtSecretKey(),
 		},
 	}))
-    */
 
 	// ItemController
 	f.Get("/stores/:storeId/items", controllerSets.ItemController.Index)
