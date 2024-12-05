@@ -22,9 +22,12 @@ go mod tidy
 # swag インストール
 go install github.com/swaggo/swag/cmd/swag@latest
 
-#sql-migrate インストール
+# sql-migrate インストール
 
 go install github.com/rubenv/sql-migrate/...@latest
+
+# wire インストール
+go install github.com/google/wire/cmd/wire@latest
 ```
 
 2. MySQLのサーバーを起動する

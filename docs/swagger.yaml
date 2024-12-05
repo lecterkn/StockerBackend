@@ -62,6 +62,15 @@ definitions:
       updatedAt:
         type: string
     type: object
+  controller.JancodeResponse:
+    properties:
+      brandName:
+        type: string
+      makerName:
+        type: string
+      name:
+        type: string
+    type: object
   controller.StoreCreateRequest:
     properties:
       name:
@@ -140,6 +149,24 @@ paths:
       summary: ユーザーログイン
       tags:
       - user
+  /products/{janCode}:
+    get:
+      parameters:
+      - description: JANコード
+        in: path
+        name: janCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.JancodeResponse'
+      summary: 製品情報取得
+      tags:
+      - jancode
   /register:
     post:
       parameters:

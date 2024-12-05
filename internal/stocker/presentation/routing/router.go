@@ -37,6 +37,9 @@ func SetRouting(f *fiber.App) {
 		},
 	}))
 
+    // JancodeController
+    f.Get("/products/:janCode", controllerSets.JancodeController.Select)
+
 	// ItemController
 	f.Get("/stores/:storeId/items", controllerSets.ItemController.Index)
 	f.Post("/stores/:storeId/items", controllerSets.ItemController.Create)

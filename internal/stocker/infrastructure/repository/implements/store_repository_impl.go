@@ -20,7 +20,7 @@ func NewStoreRepositoryImpl(database *gorm.DB) StoreRepositoryImpl {
 
 func (r StoreRepositoryImpl) Index(userId uuid.UUID) ([]entity.StoreEntity, error) {
     var models []model.StoreModel
-    if err := r.database.Where("userId = ?", userId[:]).Find(&models).Error; err != nil {
+    if err := r.database.Where("user_id = ?", userId[:]).Find(&models).Error; err != nil {
         return nil, err
     }
     var entities []entity.StoreEntity

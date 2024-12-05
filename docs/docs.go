@@ -44,6 +44,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/products/{janCode}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jancode"
+                ],
+                "summary": "製品情報取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JANコード",
+                        "name": "janCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.JancodeResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/register": {
             "post": {
                 "produces": [
@@ -546,6 +574,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.JancodeResponse": {
+            "type": "object",
+            "properties": {
+                "brandName": {
+                    "type": "string"
+                },
+                "makerName": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }

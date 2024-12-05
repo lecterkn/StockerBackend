@@ -19,6 +19,8 @@ import (
 
 // コントローラーセット作成
 func InitializeController() *ControllersSet {
+	jancodeService := service.NewJancodeService()
+	jancodeController := controller.NewJancodeController(jancodeService)
 	db := database.GetMySQLConnection()
 	itemRepositoryImpl := implements.NewItemRepositoryImpl(db)
 	itemService := service.NewItemService(itemRepositoryImpl)
@@ -35,6 +37,7 @@ func InitializeController() *ControllersSet {
 	storeService := service.NewStoreService(userRepositoryImpl, storeRepositoryImpl)
 	storeController := controller.NewStoreController(storeService)
 	controllersSet := &ControllersSet{
+		JancodeController:   jancodeController,
 		ItemController:      itemController,
 		ItemStockController: itemStockController,
 		UserController:      userController,
@@ -52,13 +55,14 @@ var databaseSet = wire.NewSet(database.GetMySQLConnection)
 var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)), implements.NewItemStockRepositoryImpl, wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)), implements.NewUserRepositoryImpl, wire.Bind(new(repository.UserRepository), new(implements.UserRepositoryImpl)), implements.NewStoreRepositoryImpl, wire.Bind(new(repository.StoreRepository), new(implements.StoreRepositoryImpl)))
 
 // サービス
-var serviceSet = wire.NewSet(service.NewItemService, service.NewItemStockService, service.NewUserService, service.NewAuthorizationService, service.NewStoreService, service.NewStoreAuthorizationService)
+var serviceSet = wire.NewSet(service.NewJancodeService, service.NewItemService, service.NewItemStockService, service.NewUserService, service.NewAuthorizationService, service.NewStoreService, service.NewStoreAuthorizationService)
 
 // コントローラー
-var controllerSet = wire.NewSet(controller.NewItemController, controller.NewItemStockController, controller.NewUserController, controller.NewStoreController)
+var controllerSet = wire.NewSet(controller.NewJancodeController, controller.NewItemController, controller.NewItemStockController, controller.NewUserController, controller.NewStoreController)
 
 // コントローラーセット
 type ControllersSet struct {
+	JancodeController   controller.JancodeController
 	ItemController      controller.ItemController
 	ItemStockController controller.ItemStockController
 	UserController      controller.UserController
