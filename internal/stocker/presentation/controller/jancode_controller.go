@@ -33,7 +33,7 @@ func (c JancodeController) Select(ctx *fiber.Ctx) error {
 }
 
 type JancodeResponse struct {
-    Name string `json:"name"`
-    BrandName string `json:"brandName"`
-    MakerName string `json:"makerName"`
+    Name string `json:"name" validate:"required"`
+    BrandName string `json:"brandName" validate:"required"`
+    MakerName string `json:"makerName" validate:"required"`
 }

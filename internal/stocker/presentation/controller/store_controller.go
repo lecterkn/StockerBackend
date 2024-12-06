@@ -122,25 +122,25 @@ func (StoreController) toResponse(output *service.StoreServiceOutput) *StoreResp
 }
 
 type StoreRequest struct {
-    Id uuid.UUID `json:"id"`
+    Id uuid.UUID `json:"id" validate:"required"`
 }
 
 type StoreCreateRequest struct {
-    Name string `json:"name"`
+    Name string `json:"name" validate:"required"`
 }
 
 type StoreUpdateRequest struct {
-    Name string `json:"name"`
+    Name string `json:"name" validate:"required"`
 }
 
 type StoreListResponse struct {
-    List []StoreResponse `json:"list"`
+    List []StoreResponse `json:"list" validate:"required"`
 }
 
 type StoreResponse struct {
-    Id string `json:"id"`
-    UserId string `json:"userId"`
-    Name string `json:"name"`
-    CreatedAt time.Time `json:"createdAt"`
-    UpdatedAt time.Time `json:"updatedAt"`
+    Id string `json:"id" validate:"required"`
+    UserId string `json:"userId" validate:"required"`
+    Name string `json:"name" validate:"required"`
+    CreatedAt time.Time `json:"createdAt" validate:"required"`
+    UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }

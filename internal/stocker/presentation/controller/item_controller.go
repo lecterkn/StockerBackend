@@ -150,19 +150,19 @@ func (c ItemController) Update(ctx *fiber.Ctx) error {
 }
 
 type ItemRequest struct {
-	Name    string `json:"name"`
-	JanCode string `json:"janCode"`
+	Name    string `json:"name" validate:"required"`
+	JanCode string `json:"janCode" validate:"required"`
 }
 
 type ItemResponse struct {
-	Id        uuid.UUID `json:"id"`
-	StoreId 	uuid.UUID `json:"storeId"`
-	Name      string    `json:"name"`
-	JanCode   string    `json:"janCode"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	Id        uuid.UUID `json:"id" validate:"required"`
+	StoreId 	uuid.UUID `json:"storeId" validate:"required"`
+	Name      string    `json:"name" validate:"required"`
+	JanCode   string    `json:"janCode" validate:"required"`
+	CreatedAt time.Time `json:"createdAt" validate:"required"`
+	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
 type ItemListResponse struct {
-	List []ItemResponse `json:"list"`
+	List []ItemResponse `json:"list" validate:"required"`
 }

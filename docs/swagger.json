@@ -478,6 +478,9 @@
     "definitions": {
         "controller.ItemListResponse": {
             "type": "object",
+            "required": [
+                "list"
+            ],
             "properties": {
                 "list": {
                     "type": "array",
@@ -489,6 +492,10 @@
         },
         "controller.ItemRequest": {
             "type": "object",
+            "required": [
+                "janCode",
+                "name"
+            ],
             "properties": {
                 "janCode": {
                     "type": "string"
@@ -500,6 +507,14 @@
         },
         "controller.ItemResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "janCode",
+                "name",
+                "storeId",
+                "updatedAt"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -523,6 +538,9 @@
         },
         "controller.ItemStockListResponse": {
             "type": "object",
+            "required": [
+                "list"
+            ],
             "properties": {
                 "list": {
                     "type": "array",
@@ -534,6 +552,11 @@
         },
         "controller.ItemStockRequest": {
             "type": "object",
+            "required": [
+                "place",
+                "stock",
+                "stockMin"
+            ],
             "properties": {
                 "place": {
                     "type": "string"
@@ -548,6 +571,15 @@
         },
         "controller.ItemStockResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "itemId",
+                "place",
+                "stock",
+                "stockMin",
+                "storeId",
+                "updatedAt"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -574,6 +606,11 @@
         },
         "controller.JancodeResponse": {
             "type": "object",
+            "required": [
+                "brandName",
+                "makerName",
+                "name"
+            ],
             "properties": {
                 "brandName": {
                     "type": "string"
@@ -588,6 +625,9 @@
         },
         "controller.StoreCreateRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -596,6 +636,9 @@
         },
         "controller.StoreListResponse": {
             "type": "object",
+            "required": [
+                "list"
+            ],
             "properties": {
                 "list": {
                     "type": "array",
@@ -607,6 +650,13 @@
         },
         "controller.StoreResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "name",
+                "updatedAt",
+                "userId"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -627,6 +677,9 @@
         },
         "controller.StoreUpdateRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -635,6 +688,9 @@
         },
         "controller.UserLoginResponse": {
             "type": "object",
+            "required": [
+                "token"
+            ],
             "properties": {
                 "token": {
                     "type": "string"
@@ -643,6 +699,10 @@
         },
         "controller.UserRequest": {
             "type": "object",
+            "required": [
+                "name",
+                "password"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -654,6 +714,12 @@
         },
         "controller.UserResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "name",
+                "updatedAt"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"

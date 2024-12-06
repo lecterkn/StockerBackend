@@ -71,18 +71,18 @@ func (UserController) toResponse(output *service.UserServiceOutput) *UserRespons
 }
 
 type UserRequest struct {
-    Name string `json:"name"`
-    Password string `json:"password"`
+    Name string `json:"name" validate:"required"`
+    Password string `json:"password" validate:"required"`
 }
 
 type UserResponse struct {
-    Id string `json:"id"`
-    Name string `json:"name"`
-    Password string `json:"-"`
-    CreateAt time.Time `json:"createdAt"`
-    UpdatedAt time.Time `json:"updatedAt"`
+    Id string `json:"id" validate:"required"`
+    Name string `json:"name" validate:"required"`
+    Password string `json:"-" validate:"required"`
+    CreateAt time.Time `json:"createdAt" validate:"required"`
+    UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
 type UserLoginResponse struct {
-    Token string `json:"token"`
+    Token string `json:"token" validate:"required"`
 }

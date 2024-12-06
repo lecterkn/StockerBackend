@@ -6,6 +6,8 @@ definitions:
         items:
           $ref: '#/definitions/controller.ItemResponse'
         type: array
+    required:
+    - list
     type: object
   controller.ItemRequest:
     properties:
@@ -13,6 +15,9 @@ definitions:
         type: string
       name:
         type: string
+    required:
+    - janCode
+    - name
     type: object
   controller.ItemResponse:
     properties:
@@ -28,6 +33,13 @@ definitions:
         type: string
       updatedAt:
         type: string
+    required:
+    - createdAt
+    - id
+    - janCode
+    - name
+    - storeId
+    - updatedAt
     type: object
   controller.ItemStockListResponse:
     properties:
@@ -35,6 +47,8 @@ definitions:
         items:
           $ref: '#/definitions/controller.ItemStockResponse'
         type: array
+    required:
+    - list
     type: object
   controller.ItemStockRequest:
     properties:
@@ -44,6 +58,10 @@ definitions:
         type: integer
       stockMin:
         type: integer
+    required:
+    - place
+    - stock
+    - stockMin
     type: object
   controller.ItemStockResponse:
     properties:
@@ -61,6 +79,14 @@ definitions:
         type: string
       updatedAt:
         type: string
+    required:
+    - createdAt
+    - itemId
+    - place
+    - stock
+    - stockMin
+    - storeId
+    - updatedAt
     type: object
   controller.JancodeResponse:
     properties:
@@ -70,11 +96,17 @@ definitions:
         type: string
       name:
         type: string
+    required:
+    - brandName
+    - makerName
+    - name
     type: object
   controller.StoreCreateRequest:
     properties:
       name:
         type: string
+    required:
+    - name
     type: object
   controller.StoreListResponse:
     properties:
@@ -82,6 +114,8 @@ definitions:
         items:
           $ref: '#/definitions/controller.StoreResponse'
         type: array
+    required:
+    - list
     type: object
   controller.StoreResponse:
     properties:
@@ -95,16 +129,26 @@ definitions:
         type: string
       userId:
         type: string
+    required:
+    - createdAt
+    - id
+    - name
+    - updatedAt
+    - userId
     type: object
   controller.StoreUpdateRequest:
     properties:
       name:
         type: string
+    required:
+    - name
     type: object
   controller.UserLoginResponse:
     properties:
       token:
         type: string
+    required:
+    - token
     type: object
   controller.UserRequest:
     properties:
@@ -112,6 +156,9 @@ definitions:
         type: string
       password:
         type: string
+    required:
+    - name
+    - password
     type: object
   controller.UserResponse:
     properties:
@@ -123,6 +170,11 @@ definitions:
         type: string
       updatedAt:
         type: string
+    required:
+    - createdAt
+    - id
+    - name
+    - updatedAt
     type: object
 host: localhost:8810
 info:

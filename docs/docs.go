@@ -484,6 +484,9 @@ const docTemplate = `{
     "definitions": {
         "controller.ItemListResponse": {
             "type": "object",
+            "required": [
+                "list"
+            ],
             "properties": {
                 "list": {
                     "type": "array",
@@ -495,6 +498,10 @@ const docTemplate = `{
         },
         "controller.ItemRequest": {
             "type": "object",
+            "required": [
+                "janCode",
+                "name"
+            ],
             "properties": {
                 "janCode": {
                     "type": "string"
@@ -506,6 +513,14 @@ const docTemplate = `{
         },
         "controller.ItemResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "janCode",
+                "name",
+                "storeId",
+                "updatedAt"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -529,6 +544,9 @@ const docTemplate = `{
         },
         "controller.ItemStockListResponse": {
             "type": "object",
+            "required": [
+                "list"
+            ],
             "properties": {
                 "list": {
                     "type": "array",
@@ -540,6 +558,11 @@ const docTemplate = `{
         },
         "controller.ItemStockRequest": {
             "type": "object",
+            "required": [
+                "place",
+                "stock",
+                "stockMin"
+            ],
             "properties": {
                 "place": {
                     "type": "string"
@@ -554,6 +577,15 @@ const docTemplate = `{
         },
         "controller.ItemStockResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "itemId",
+                "place",
+                "stock",
+                "stockMin",
+                "storeId",
+                "updatedAt"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -580,6 +612,11 @@ const docTemplate = `{
         },
         "controller.JancodeResponse": {
             "type": "object",
+            "required": [
+                "brandName",
+                "makerName",
+                "name"
+            ],
             "properties": {
                 "brandName": {
                     "type": "string"
@@ -594,6 +631,9 @@ const docTemplate = `{
         },
         "controller.StoreCreateRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -602,6 +642,9 @@ const docTemplate = `{
         },
         "controller.StoreListResponse": {
             "type": "object",
+            "required": [
+                "list"
+            ],
             "properties": {
                 "list": {
                     "type": "array",
@@ -613,6 +656,13 @@ const docTemplate = `{
         },
         "controller.StoreResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "name",
+                "updatedAt",
+                "userId"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -633,6 +683,9 @@ const docTemplate = `{
         },
         "controller.StoreUpdateRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -641,6 +694,9 @@ const docTemplate = `{
         },
         "controller.UserLoginResponse": {
             "type": "object",
+            "required": [
+                "token"
+            ],
             "properties": {
                 "token": {
                     "type": "string"
@@ -649,6 +705,10 @@ const docTemplate = `{
         },
         "controller.UserRequest": {
             "type": "object",
+            "required": [
+                "name",
+                "password"
+            ],
             "properties": {
                 "name": {
                     "type": "string"
@@ -660,6 +720,12 @@ const docTemplate = `{
         },
         "controller.UserResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "name",
+                "updatedAt"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"

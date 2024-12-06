@@ -198,21 +198,21 @@ func (c ItemStockController) Update(ctx *fiber.Ctx) error {
 }
 
 type ItemStockListResponse struct {
-	List []ItemStockResponse `json:"list"`
+	List []ItemStockResponse `json:"list" validate:"required"`
 }
 
 type ItemStockResponse struct {
-	ItemId    uuid.UUID `json:"itemId"`
-	StoreId uuid.UUID `json:"storeId"`
-	Place     string    `json:"place"`
-	Stock     int       `json:"stock"`
-	StockMin  int       `json:"stockMin"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ItemId    uuid.UUID `json:"itemId" validate:"required"`
+	StoreId uuid.UUID `json:"storeId" validate:"required"`
+	Place     string    `json:"place" validate:"required"`
+	Stock     int       `json:"stock" validate:"required"`
+	StockMin  int       `json:"stockMin" validate:"required"`
+	CreatedAt time.Time `json:"createdAt" validate:"required"`
+	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
 type ItemStockRequest struct {
-	Place    string `json:"place"`
-	Stock    int    `json:"stock"`
-	StockMin int    `json:"stockMin"`
+	Place    string `json:"place" validate:"required"`
+	Stock    int    `json:"stock" validate:"required"`
+	StockMin int    `json:"stockMin" validate:"required"`
 }
