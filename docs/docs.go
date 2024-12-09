@@ -15,22 +15,108 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/items": {
+        "/login": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ユーザーログイン",
+                "parameters": [
+                    {
+                        "description": "ユーザーログインリクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/controller.UserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.UserLoginResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{janCode}": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "item"
+                    "jancode"
                 ],
-                "summary": "商品一覧取得",
+                "summary": "製品情報取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JANコード",
+                        "name": "janCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.JancodeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "ユーザー作成",
+                "parameters": [
+                    {
+                        "description": "ユーザー作成リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/controller.UserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.UserResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "store"
+                ],
+                "summary": "店舗一覧取得",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/controller.ItemListResponse"
+                                    "$ref": "#/definitions/controller.StoreListResponse"
                                 },
                                 {
                                     "type": "object",
@@ -38,7 +124,7 @@ const docTemplate = `{
                                         "list": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/controller.ItemResponse"
+                                                "$ref": "#/definitions/controller.StoreResponse"
                                             }
                                         }
                                     }
@@ -53,17 +139,88 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "item"
+                    "store"
                 ],
-                "summary": "商品新規作成",
+                "summary": "店舗新規作成",
                 "parameters": [
                     {
-                        "description": "アイテム作成リクエスト",
+                        "description": "店舗新規作成リクエスト",
                         "name": "request",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/controller.ItemRequest"
+                            "$ref": "#/definitions/controller.StoreCreateRequest"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.StoreResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/{storeId}": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "store"
+                ],
+                "summary": "店舗更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "店舗更新リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/controller.StoreUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.StoreResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/{storeId}/items": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item"
+                ],
+                "summary": "商品をJanCodeから取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Jancodeによる商品取得リクエスト",
+                        "name": "request",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -75,6 +232,43 @@ const docTemplate = `{
                     }
                 }
             },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item"
+                ],
+                "summary": "商品新規作成",
+                "parameters": [
+                    {
+                        "description": "商品作成リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ItemRequest"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ItemResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/{storeId}/items/{itemId}": {
             "patch": {
                 "produces": [
                     "application/json"
@@ -85,9 +279,24 @@ const docTemplate = `{
                 "summary": "商品更新",
                 "parameters": [
                     {
-                        "description": "アイテム作成リクエスト",
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品ID",
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "商品更新リクエスト",
                         "name": "request",
                         "in": "body",
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/controller.ItemRequest"
                         }
@@ -103,7 +312,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/items/{item_id}/stocks": {
+        "/stores/{storeId}/items/{itemId}/stocks": {
             "get": {
                 "produces": [
                     "application/json"
@@ -112,6 +321,22 @@ const docTemplate = `{
                     "item_stock"
                 ],
                 "summary": "商品詳細取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品ID",
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -130,6 +355,20 @@ const docTemplate = `{
                 ],
                 "summary": "商品詳細登録",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品ID",
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "商品詳細作成リクエスト",
                         "name": "request",
@@ -158,6 +397,20 @@ const docTemplate = `{
                 "summary": "商品詳細更新",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品ID",
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "商品詳細更新リクエスト",
                         "name": "request",
                         "in": "body",
@@ -176,7 +429,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/itemsStocks": {
+        "/stores/{storeId}/itemsStocks": {
             "get": {
                 "produces": [
                     "application/json"
@@ -185,6 +438,15 @@ const docTemplate = `{
                     "item_stock"
                 ],
                 "summary": "商品詳細一覧取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -214,6 +476,9 @@ const docTemplate = `{
     "definitions": {
         "controller.ItemListResponse": {
             "type": "object",
+            "required": [
+                "list"
+            ],
             "properties": {
                 "list": {
                     "type": "array",
@@ -225,6 +490,10 @@ const docTemplate = `{
         },
         "controller.ItemRequest": {
             "type": "object",
+            "required": [
+                "janCode",
+                "name"
+            ],
             "properties": {
                 "janCode": {
                     "type": "string"
@@ -236,6 +505,14 @@ const docTemplate = `{
         },
         "controller.ItemResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "janCode",
+                "name",
+                "storeId",
+                "updatedAt"
+            ],
             "properties": {
                 "createdAt": {
                     "type": "string"
@@ -249,6 +526,9 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
+                "storeId": {
+                    "type": "string"
+                },
                 "updatedAt": {
                     "type": "string"
                 }
@@ -256,6 +536,9 @@ const docTemplate = `{
         },
         "controller.ItemStockListResponse": {
             "type": "object",
+            "required": [
+                "list"
+            ],
             "properties": {
                 "list": {
                     "type": "array",
@@ -267,37 +550,191 @@ const docTemplate = `{
         },
         "controller.ItemStockRequest": {
             "type": "object",
+            "required": [
+                "place",
+                "stock",
+                "stockMin"
+            ],
             "properties": {
                 "place": {
                     "type": "string"
                 },
+                "price": {
+                    "type": "integer"
+                },
                 "stock": {
                     "type": "integer"
                 },
-                "stock_min": {
+                "stockMin": {
                     "type": "integer"
                 }
             }
         },
         "controller.ItemStockResponse": {
             "type": "object",
+            "required": [
+                "createdAt",
+                "itemId",
+                "place",
+                "stock",
+                "stockMin",
+                "storeId",
+                "updatedAt"
+            ],
             "properties": {
-                "created_at": {
+                "createdAt": {
                     "type": "string"
                 },
-                "item_id": {
+                "itemId": {
                     "type": "string"
                 },
                 "place": {
                     "type": "string"
                 },
+                "price": {
+                    "type": "integer"
+                },
                 "stock": {
                     "type": "integer"
                 },
-                "stock_min": {
+                "stockMin": {
                     "type": "integer"
                 },
-                "updated_at": {
+                "storeId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.JancodeResponse": {
+            "type": "object",
+            "required": [
+                "brandName",
+                "makerName",
+                "name"
+            ],
+            "properties": {
+                "brandName": {
+                    "type": "string"
+                },
+                "makerName": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.StoreCreateRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.StoreListResponse": {
+            "type": "object",
+            "required": [
+                "list"
+            ],
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.StoreResponse"
+                    }
+                }
+            }
+        },
+        "controller.StoreResponse": {
+            "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "name",
+                "updatedAt",
+                "userId"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.StoreUpdateRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.UserLoginResponse": {
+            "type": "object",
+            "required": [
+                "token"
+            ],
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.UserRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "password"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.UserResponse": {
+            "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "name",
+                "updatedAt"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }

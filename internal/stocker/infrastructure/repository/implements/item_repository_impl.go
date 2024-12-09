@@ -20,9 +20,9 @@ func NewItemRepositoryImpl(database *gorm.DB) ItemRepositoryImpl {
 }
 
 // SelectItems /** アイテムを取得する
-func (r ItemRepositoryImpl) SelectItems() ([]entity.ItemEntity, error) {
+func (r ItemRepositoryImpl) Index(storeId uuid.UUID) ([]entity.ItemEntity, error) {
 	var models []model.ItemModel
-	err := r.database.Find(&models).Error
+	err := r.database.Where("store_id = ?", storeId[:]).Find(&models).Error
 	if err != nil {
 		return nil, err
 	}
@@ -38,9 +38,23 @@ func (r ItemRepositoryImpl) SelectItems() ([]entity.ItemEntity, error) {
 }
 
 // Select /* idからアイテムを取得する
-func (r ItemRepositoryImpl) Select(id uuid.UUID) (*entity.ItemEntity, error) {
+func (r ItemRepositoryImpl) Select(storeId, id uuid.UUID) (*entity.ItemEntity, error) {
 	var model model.ItemModel
-	err := r.database.Where("id = ?", id[:]).First(&model).Error
+	err := r.database.Where("store_id = ? AND id = ?", storeId[:], id[:]).First(&model).Error
+	if err != nil {
+		return nil, err
+	}
+	entity, err := r.toEntity(model)
+	if err != nil {
+		return nil, err
+	}
+	return entity, nil
+}
+
+// SelectByJancode /* idからアイテムを取得する
+func (r ItemRepositoryImpl) SelectByJancode(storeId uuid.UUID, jancode string) (*entity.ItemEntity, error) {
+	var model model.ItemModel
+	err := r.database.Where("store_id = ? AND jancode = ?", storeId[:], jancode).First(&model).Error
 	if err != nil {
 		return nil, err
 	}
@@ -84,8 +98,13 @@ func (ItemRepositoryImpl) toEntity(model model.ItemModel) (*entity.ItemEntity, e
 	if err != nil {
 		return nil, err
 	}
+	storeId, err := uuid.FromBytes(model.StoreId)
+	if err != nil {
+		return nil, err
+	}
 	return &entity.ItemEntity{
 		Id:        id,
+		StoreId:   storeId,
 		Name:      model.Name,
 		JanCode:   model.JanCode,
 		CreatedAt: model.CreatedAt,
@@ -96,6 +115,7 @@ func (ItemRepositoryImpl) toEntity(model model.ItemModel) (*entity.ItemEntity, e
 func (ItemRepositoryImpl) toModel(entity *entity.ItemEntity) *model.ItemModel {
 	return &model.ItemModel{
 		Id:        entity.Id[:],
+		StoreId:   entity.StoreId[:],
 		Name:      entity.Name,
 		JanCode:   entity.JanCode,
 		CreatedAt: entity.CreatedAt,
