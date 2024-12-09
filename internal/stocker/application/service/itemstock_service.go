@@ -87,7 +87,7 @@ type ItemStockServiceInput struct {
 	StoreId  uuid.UUID
 	ItemId   uuid.UUID
 	Place    string
-	Price    int
+	Price    *int
 	Stock    int
 	StockMin int
 }
@@ -100,7 +100,7 @@ type ItemStockServiceOutput struct {
 	ItemId    uuid.UUID
 	StoreId   uuid.UUID
 	Place     string
-	Price     int
+	Price     *int
 	Stock     int
 	StockMin  int
 	CreatedAt time.Time

@@ -10,14 +10,14 @@ type ItemStockEntity struct {
 	ItemId    uuid.UUID
 	StoreId   uuid.UUID
 	Place     string
-	Price     int
+	Price     *int
 	Stock     int
 	StockMin  int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func NewItemStockEntity(itemId, storeId uuid.UUID, place string, price, stock, stockMin int) (*ItemStockEntity, error) {
+func NewItemStockEntity(itemId, storeId uuid.UUID, place string, price *int, stock, stockMin int) (*ItemStockEntity, error) {
 	return &ItemStockEntity{
 		ItemId:    itemId,
 		StoreId:   storeId,
@@ -30,7 +30,7 @@ func NewItemStockEntity(itemId, storeId uuid.UUID, place string, price, stock, s
 	}, nil
 }
 
-func (entity *ItemStockEntity) Update(place string, price, stock, stockMin int) {
+func (entity *ItemStockEntity) Update(place string, price *int, stock, stockMin int) {
 	entity.Place = place
 	entity.Price = price
 	entity.Stock = stock

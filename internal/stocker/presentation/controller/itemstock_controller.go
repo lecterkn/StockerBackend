@@ -211,7 +211,7 @@ type ItemStockResponse struct {
 	ItemId    uuid.UUID `json:"itemId" validate:"required"`
 	StoreId   uuid.UUID `json:"storeId" validate:"required"`
 	Place     string    `json:"place" validate:"required"`
-	Price     int       `json:"price" validate:"required"`
+	Price     *int      `json:"price"`
 	Stock     int       `json:"stock" validate:"required"`
 	StockMin  int       `json:"stockMin" validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
@@ -220,7 +220,7 @@ type ItemStockResponse struct {
 
 type ItemStockRequest struct {
 	Place    string `json:"place" validate:"required"`
-	Price    int    `json:"price" validate:"required"`
+	Price    *int    `json:"price"`
 	Stock    int    `json:"stock" validate:"required"`
 	StockMin int    `json:"stockMin" validate:"required"`
 }

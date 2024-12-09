@@ -20,10 +20,11 @@ func NewUserController(userService service.UserService, authorizationService ser
 }
 
 // Create /* ユーザーを新規作成
+//
 //	@Summary	ユーザー作成
 //	@Tags		user
 //	@Produce	json
-//	@Param		request	body		UserRequest		false	"ユーザー作成リクエスト"
+//	@Param		request	body		UserRequest	false	"ユーザー作成リクエスト"
 //	@Success	200		{object}	UserResponse
 //	@Router		/register [post]
 func (c UserController) Create(ctx *fiber.Ctx) error {
@@ -42,10 +43,11 @@ func (c UserController) Create(ctx *fiber.Ctx) error {
 }
 
 // Login /* ユーザーにログイン
+//
 //	@Summary	ユーザーログイン
 //	@Tags		user
 //	@Produce	json
-//	@Param		request	body		UserRequest			false	"ユーザーログインリクエスト"
+//	@Param		request	body		UserRequest	false	"ユーザーログインリクエスト"
 //	@Success	200		{object}	UserLoginResponse
 //	@Router		/login [post]
 func (c UserController) Login(ctx *fiber.Ctx) error {

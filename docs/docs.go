@@ -552,7 +552,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "place",
-                "price",
                 "stock",
                 "stockMin"
             ],
@@ -577,7 +576,6 @@ const docTemplate = `{
                 "createdAt",
                 "itemId",
                 "place",
-                "price",
                 "stock",
                 "stockMin",
                 "storeId",

@@ -62,7 +62,6 @@ definitions:
         type: integer
     required:
     - place
-    - price
     - stock
     - stockMin
     type: object
@@ -88,7 +87,6 @@ definitions:
     - createdAt
     - itemId
     - place
-    - price
     - stock
     - stockMin
     - storeId

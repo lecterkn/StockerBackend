@@ -20,6 +20,7 @@ func NewStoreController(storeService service.StoreService) StoreController {
 }
 
 // Index /* 店舗を一覧取得
+//
 //	@Summary	店舗一覧取得
 //	@Tags		store
 //	@Produce	json
@@ -49,6 +50,7 @@ func (c StoreController) Index(ctx *fiber.Ctx) error {
 }
 
 // Create /* 店舗を作成
+//
 //	@Summary	店舗新規作成
 //	@Tags		store
 //	@Produce	json
@@ -77,6 +79,7 @@ func (c StoreController) Create(ctx *fiber.Ctx) error {
 }
 
 // Update /* 店舗を更新
+//
 //	@Summary	店舗更新
 //	@Tags		store
 //	@Produce	json

@@ -546,7 +546,6 @@
             "type": "object",
             "required": [
                 "place",
-                "price",
                 "stock",
                 "stockMin"
             ],
@@ -571,7 +570,6 @@
                 "createdAt",
                 "itemId",
                 "place",
-                "price",
                 "stock",
                 "stockMin",
                 "storeId",
