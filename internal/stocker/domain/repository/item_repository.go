@@ -8,6 +8,7 @@ import (
 type ItemRepository interface {
 	Index(storeId uuid.UUID) ([]entity.ItemEntity, error)
 	Select(storeId, id uuid.UUID) (*entity.ItemEntity, error)
+	SelectByJancode(storeId uuid.UUID, jancode string) (*entity.ItemEntity, error)
 	// TODO rename to Insert
 	Create(entity *entity.ItemEntity) (*entity.ItemEntity, error)
 	Update(entity *entity.ItemEntity) (*entity.ItemEntity, error)

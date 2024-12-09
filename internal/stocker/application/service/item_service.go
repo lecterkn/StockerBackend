@@ -28,6 +28,16 @@ func (s ItemService) GetItems(input ItemServiceQueryListInput) (*ItemServiceList
 	return s.toOutput(entities), nil
 }
 
+// SelectByJancode /* 商品詳細を取得
+func (s ItemService) SelectByJancode(storeId uuid.UUID, jancode string) (*ItemServiceOutput, error) {
+	entity, err := s.itemRepository.SelectByJancode(storeId, jancode)
+	if err != nil {
+		return nil, err
+	}
+	output := ItemServiceOutput(*entity)
+	return &output, nil
+}
+
 // CreateItem /* アイテムを作成する
 func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, error) {
 	entity, err := entity.NewItemEntity(input.StoreId, input.Name, input.JanCode)

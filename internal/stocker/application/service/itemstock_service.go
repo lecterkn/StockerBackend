@@ -44,9 +44,10 @@ func (s ItemStockService) Select(input ItemStockServiceQueryInput) (*ItemStockSe
 	return &output, nil
 }
 
+
 // Create /* 商品詳細を作成
 func (s ItemStockService) Create(input ItemStockServiceInput) (*ItemStockServiceOutput, error) {
-	entity, err := entity.NewItemStockEntity(input.ItemId, input.StoreId, input.Place, input.Stock, input.StockMin)
+	entity, err := entity.NewItemStockEntity(input.ItemId, input.StoreId, input.Place, input.Price, input.Stock, input.StockMin)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +66,7 @@ func (s ItemStockService) Update(input ItemStockServiceInput) (*ItemStockService
 		return nil, err
 	}
 	// 商品詳細を更新
-	entity.Update(input.Place, input.Stock, input.StockMin)
+	entity.Update(input.Place, input.Price, input.Stock, input.StockMin)
 	entity, err = s.itemStockRepository.Update(entity)
 	if err != nil {
 		return nil, err
@@ -87,6 +88,7 @@ type ItemStockServiceInput struct {
 	StoreId uuid.UUID
 	ItemId   uuid.UUID
 	Place    string
+	Price    int
 	Stock    int
 	StockMin int
 }
@@ -99,6 +101,7 @@ type ItemStockServiceOutput struct {
 	ItemId    uuid.UUID
 	StoreId uuid.UUID
 	Place     string
+	Price     int
 	Stock     int
 	StockMin  int
 	CreatedAt time.Time

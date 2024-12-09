@@ -51,6 +51,20 @@ func (r ItemRepositoryImpl) Select(storeId, id uuid.UUID) (*entity.ItemEntity, e
 	return entity, nil
 }
 
+// SelectByJancode /* idからアイテムを取得する
+func (r ItemRepositoryImpl) SelectByJancode(storeId uuid.UUID, jancode string) (*entity.ItemEntity, error) {
+	var model model.ItemModel
+	err := r.database.Where("store_id = ? AND jancode = ?", storeId[:], jancode).First(&model).Error
+	if err != nil {
+		return nil, err
+	}
+	entity, err := r.toEntity(model)
+	if err != nil {
+		return nil, err
+	}
+	return entity, nil
+}
+
 // Create /** アイテムを作成する
 func (r ItemRepositoryImpl) Create(entity *entity.ItemEntity) (*entity.ItemEntity, error) {
 	model := r.toModel(entity)

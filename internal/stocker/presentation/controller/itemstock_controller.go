@@ -140,6 +140,7 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 		StoreId: storeId,
 		ItemId:   id,
 		Place:    request.Place,
+		Price:    request.Price,
 		Stock:    request.Stock,
 		StockMin: request.StockMin,
 	})
@@ -188,6 +189,7 @@ func (c ItemStockController) Update(ctx *fiber.Ctx) error {
 		StoreId: storeId,
 		ItemId:   id,
 		Place:    request.Place,
+        Price: request.Price,
 		Stock:    request.Stock,
 		StockMin: request.StockMin,
 	})
@@ -205,6 +207,7 @@ type ItemStockResponse struct {
 	ItemId    uuid.UUID `json:"itemId" validate:"required"`
 	StoreId uuid.UUID `json:"storeId" validate:"required"`
 	Place     string    `json:"place" validate:"required"`
+	Price     int       `json:"price" validate:"required"`
 	Stock     int       `json:"stock" validate:"required"`
 	StockMin  int       `json:"stockMin" validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
@@ -213,6 +216,7 @@ type ItemStockResponse struct {
 
 type ItemStockRequest struct {
 	Place    string `json:"place" validate:"required"`
+	Price    int    `json:"price" validate:"required"`
 	Stock    int    `json:"stock" validate:"required"`
 	StockMin int    `json:"stockMin" validate:"required"`
 }

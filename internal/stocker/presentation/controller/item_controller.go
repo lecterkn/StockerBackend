@@ -62,6 +62,38 @@ func (c ItemController) Index(ctx *fiber.Ctx) error {
 	})
 }
 
+// SelectByJancode /* 商品をJanCodeから取得
+//  @Summary    商品をJanCodeから取得
+//  @Tags   item
+//  @Produce    json
+//  @Param request query string true "Jancodeによる商品取得リクエスト"
+//  @Param storeId path string true "店舗ID"
+//  @Success 200 {object} ItemResponse
+//  @Router /stores/{storeId}/items [get]
+func (c ItemController) SelectByJancode(ctx *fiber.Ctx) error {
+	// ユーザーID取得
+	userId, err := common.GetUserIdByContext(ctx)
+	if err != nil {
+		return err
+	}
+	// 店舗ID
+	storeId, err := uuid.Parse(ctx.Params("storeId"))
+	if err != nil {
+		return err
+	}
+    // Jancode取得
+    jancode := ctx.Query("janCode")
+	// 店舗とユーザーの認証
+	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+		return err
+	}
+    output, err := c.itemService.SelectByJancode(storeId, jancode)
+    if err != nil {
+        return err
+    }
+    return ctx.JSON(ItemResponse(*output))
+}
+
 // Create /* 商品を新規作成
 //	@Summary	商品新規作成
 //	@Tags		item
