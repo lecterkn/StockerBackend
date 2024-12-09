@@ -200,8 +200,15 @@
                 "tags": [
                     "item"
                 ],
-                "summary": "商品一覧取得",
+                "summary": "商品をJanCodeから取得",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Jancodeによる商品取得リクエスト",
+                        "name": "request",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "店舗ID",
@@ -214,22 +221,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controller.ItemListResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "list": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/controller.ItemResponse"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/controller.ItemResponse"
                         }
                     }
                 }
@@ -554,12 +546,16 @@
             "type": "object",
             "required": [
                 "place",
+                "price",
                 "stock",
                 "stockMin"
             ],
             "properties": {
                 "place": {
                     "type": "string"
+                },
+                "price": {
+                    "type": "integer"
                 },
                 "stock": {
                     "type": "integer"
@@ -575,6 +571,7 @@
                 "createdAt",
                 "itemId",
                 "place",
+                "price",
                 "stock",
                 "stockMin",
                 "storeId",
@@ -589,6 +586,9 @@
                 },
                 "place": {
                     "type": "string"
+                },
+                "price": {
+                    "type": "integer"
                 },
                 "stock": {
                     "type": "integer"

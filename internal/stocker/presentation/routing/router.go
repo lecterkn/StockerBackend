@@ -18,11 +18,11 @@ func SetRouting(f *fiber.App) {
 	// di
 	controllerSets := stocker.InitializeController()
 
-    // CORS
-    setCors(f)
+	// CORS
+	setCors(f)
 
 	// Swaggger
-    setSwagger(f)
+	setSwagger(f)
 
 	// UserController
 	f.Post("/register", controllerSets.UserController.Create)
@@ -33,12 +33,12 @@ func SetRouting(f *fiber.App) {
 	f.Use(jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{
 			JWTAlg: jwtware.HS256,
-			Key: common.GetJwtSecretKey(),
+			Key:    common.GetJwtSecretKey(),
 		},
 	}))
 
-    // JancodeController
-    f.Get("/products/:janCode", controllerSets.JancodeController.Select)
+	// JancodeController
+	f.Get("/products/:janCode", controllerSets.JancodeController.Select)
 
 	// ItemController
 	f.Get("/stores/:storeId/items", controllerSets.ItemController.Index)
@@ -58,14 +58,14 @@ func SetRouting(f *fiber.App) {
 }
 
 func setCors(f *fiber.App) {
-    f.Use(cors.New(
-        cors.Config{
-            AllowOrigins: "http://localhost:5173",
-            AllowHeaders: "Authorization, Content-Type, Origin, Accept",
-            AllowMethods: "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+	f.Use(cors.New(
+		cors.Config{
+			AllowOrigins: "http://localhost:5173",
+			AllowHeaders: "Authorization, Content-Type, Origin, Accept",
+			AllowMethods: "GET, POST, PATCH, PUT, DELETE, OPTIONS",
 		}))
 }
 
 func setSwagger(f *fiber.App) {
-    f.Get("/swagger/*", swagger.HandlerDefault) // default
+	f.Get("/swagger/*", swagger.HandlerDefault) // default
 }

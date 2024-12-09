@@ -8,7 +8,7 @@ import (
 
 type ItemEntity struct {
 	Id        uuid.UUID
-	StoreId	uuid.UUID
+	StoreId   uuid.UUID
 	Name      string
 	JanCode   string
 	CreatedAt time.Time
@@ -23,7 +23,7 @@ func NewItemEntity(storeId uuid.UUID, name, janCode string) (*ItemEntity, error)
 	}
 	return &ItemEntity{
 		Id:        id,
-		StoreId: storeId,
+		StoreId:   storeId,
 		Name:      name,
 		JanCode:   janCode,
 		CreatedAt: time.Now(),

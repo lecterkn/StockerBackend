@@ -44,7 +44,6 @@ func (s ItemStockService) Select(input ItemStockServiceQueryInput) (*ItemStockSe
 	return &output, nil
 }
 
-
 // Create /* 商品詳細を作成
 func (s ItemStockService) Create(input ItemStockServiceInput) (*ItemStockServiceOutput, error) {
 	entity, err := entity.NewItemStockEntity(input.ItemId, input.StoreId, input.Place, input.Price, input.Stock, input.StockMin)
@@ -81,11 +80,11 @@ type ItemStockServiceQueryListInput struct {
 
 type ItemStockServiceQueryInput struct {
 	StoreId uuid.UUID
-	Id uuid.UUID
+	Id      uuid.UUID
 }
 
 type ItemStockServiceInput struct {
-	StoreId uuid.UUID
+	StoreId  uuid.UUID
 	ItemId   uuid.UUID
 	Place    string
 	Price    int
@@ -99,7 +98,7 @@ type ItemStockServiceListOutput struct {
 
 type ItemStockServiceOutput struct {
 	ItemId    uuid.UUID
-	StoreId uuid.UUID
+	StoreId   uuid.UUID
 	Place     string
 	Price     int
 	Stock     int

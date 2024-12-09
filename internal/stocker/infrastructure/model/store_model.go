@@ -7,9 +7,9 @@ type StoreModel struct {
 	UserId    []byte `gorm:"column:user_id"`
 	Name      string
 	CreatedAt time.Time
-    UpdatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (StoreModel) TableName() string {
-    return "stores"
+	return "stores"
 }

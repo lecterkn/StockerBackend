@@ -4,7 +4,7 @@ import "time"
 
 type ItemStockModel struct {
 	ItemId    []byte `gorm:"column:item_id"`
-	StoreId []byte `gorm:"column:store_id"`
+	StoreId   []byte `gorm:"column:store_id"`
 	Place     string
 	Price     int
 	Stock     int

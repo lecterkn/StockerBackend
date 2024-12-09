@@ -7,8 +7,8 @@ import (
 )
 
 type StoreRepository interface {
-    Index(userId uuid.UUID) ([]entity.StoreEntity, error)
+	Index(userId uuid.UUID) ([]entity.StoreEntity, error)
 	Select(id uuid.UUID) (*entity.StoreEntity, error)
-    Insert(entity *entity.StoreEntity) (*entity.StoreEntity, error)
-    Update(entity *entity.StoreEntity) (*entity.StoreEntity, error)
+	Insert(entity *entity.StoreEntity) (*entity.StoreEntity, error)
+	Update(entity *entity.StoreEntity) (*entity.StoreEntity, error)
 }

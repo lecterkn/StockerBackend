@@ -104,7 +104,7 @@ func (ItemRepositoryImpl) toEntity(model model.ItemModel) (*entity.ItemEntity, e
 	}
 	return &entity.ItemEntity{
 		Id:        id,
-		StoreId: storeId,
+		StoreId:   storeId,
 		Name:      model.Name,
 		JanCode:   model.JanCode,
 		CreatedAt: model.CreatedAt,
@@ -115,7 +115,7 @@ func (ItemRepositoryImpl) toEntity(model model.ItemModel) (*entity.ItemEntity, e
 func (ItemRepositoryImpl) toModel(entity *entity.ItemEntity) *model.ItemModel {
 	return &model.ItemModel{
 		Id:        entity.Id[:],
-		StoreId: entity.StoreId[:],
+		StoreId:   entity.StoreId[:],
 		Name:      entity.Name,
 		JanCode:   entity.JanCode,
 		CreatedAt: entity.CreatedAt,

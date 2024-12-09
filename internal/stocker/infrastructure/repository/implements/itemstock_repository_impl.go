@@ -81,7 +81,7 @@ func (r ItemStockRepositoryImpl) Update(entity *entity.ItemStockEntity) (*entity
 func (ItemStockRepositoryImpl) ToModel(entity *entity.ItemStockEntity) *model.ItemStockModel {
 	return &model.ItemStockModel{
 		ItemId:    entity.ItemId[:],
-		StoreId: entity.StoreId[:],
+		StoreId:   entity.StoreId[:],
 		Place:     entity.Place,
 		Price:     entity.Price,
 		Stock:     entity.Stock,
@@ -101,7 +101,7 @@ func (ItemStockRepositoryImpl) ToEntity(model *model.ItemStockModel) (*entity.It
 	}
 	return &entity.ItemStockEntity{
 		ItemId:    id,
-		StoreId: storeId,
+		StoreId:   storeId,
 		Place:     model.Place,
 		Price:     model.Price,
 		Stock:     model.Stock,

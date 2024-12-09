@@ -88,7 +88,7 @@ type ItemServiceQueryListInput struct {
 
 type ItemServiceOutput struct {
 	Id        uuid.UUID
-	StoreId uuid.UUID
+	StoreId   uuid.UUID
 	Name      string
 	JanCode   string
 	CreatedAt time.Time

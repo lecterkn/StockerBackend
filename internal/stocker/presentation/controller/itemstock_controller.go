@@ -11,7 +11,7 @@ import (
 )
 
 type ItemStockController struct {
-	itemStockService service.ItemStockService
+	itemStockService     service.ItemStockService
 	authorizationService service.StoreAuthorizationService
 }
 
@@ -24,6 +24,7 @@ func NewItemStockController(itemStockService service.ItemStockService, authoriza
 }
 
 // Index /* 商品詳細一覧取得用エンドポイント
+//
 //	@Summary	商品詳細一覧取得
 //	@Tags		item_stock
 //	@Produce	json
@@ -63,6 +64,7 @@ func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 }
 
 // Select /* 商品詳細取得用エンドポイント
+//
 //	@Summary	商品詳細取得
 //	@Tags		item_stock
 //	@Produce	json
@@ -93,7 +95,7 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 	// 商品詳細取得
 	output, err := c.itemStockService.Select(service.ItemStockServiceQueryInput{
 		StoreId: storeId,
-		Id: id,
+		Id:      id,
 	})
 	if err != nil {
 		return ctx.Status(http.StatusNotFound).SendString("not found")
@@ -102,6 +104,7 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 }
 
 // Create /* 商品詳細作成用エンドポイント
+//
 //	@Summary	商品詳細登録
 //	@Tags		item_stock
 //	@Produce	json
@@ -137,7 +140,7 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 	}
 	// 商品詳細作成
 	output, err := c.itemStockService.Create(service.ItemStockServiceInput{
-		StoreId: storeId,
+		StoreId:  storeId,
 		ItemId:   id,
 		Place:    request.Place,
 		Price:    request.Price,
@@ -151,6 +154,7 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 }
 
 // Update /* 商品詳細更新
+//
 //	@Summary	商品詳細更新
 //	@Tags		item_stock
 //	@Produce	json
@@ -186,10 +190,10 @@ func (c ItemStockController) Update(ctx *fiber.Ctx) error {
 	}
 	// 商品詳細更新
 	output, err := c.itemStockService.Update(service.ItemStockServiceInput{
-		StoreId: storeId,
+		StoreId:  storeId,
 		ItemId:   id,
 		Place:    request.Place,
-        Price: request.Price,
+		Price:    request.Price,
 		Stock:    request.Stock,
 		StockMin: request.StockMin,
 	})
@@ -205,7 +209,7 @@ type ItemStockListResponse struct {
 
 type ItemStockResponse struct {
 	ItemId    uuid.UUID `json:"itemId" validate:"required"`
-	StoreId uuid.UUID `json:"storeId" validate:"required"`
+	StoreId   uuid.UUID `json:"storeId" validate:"required"`
 	Place     string    `json:"place" validate:"required"`
 	Price     int       `json:"price" validate:"required"`
 	Stock     int       `json:"stock" validate:"required"`

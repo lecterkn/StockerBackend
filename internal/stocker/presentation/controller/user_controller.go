@@ -8,15 +8,15 @@ import (
 )
 
 type UserController struct {
-	userService service.UserService
-    authorizationService service.AuthorizationService
+	userService          service.UserService
+	authorizationService service.AuthorizationService
 }
 
 func NewUserController(userService service.UserService, authorizationService service.AuthorizationService) UserController {
-    return UserController{
-        userService,
-        authorizationService,
-    }
+	return UserController{
+		userService,
+		authorizationService,
+	}
 }
 
 // Create /* ユーザーを新規作成
@@ -24,21 +24,21 @@ func NewUserController(userService service.UserService, authorizationService ser
 //	@Tags		user
 //	@Produce	json
 //	@Param		request	body		UserRequest		false	"ユーザー作成リクエスト"
-//	@Success	200		{object}	UserResponse	
+//	@Success	200		{object}	UserResponse
 //	@Router		/register [post]
 func (c UserController) Create(ctx *fiber.Ctx) error {
-    var request UserRequest
-    if err := ctx.BodyParser(&request); err != nil {
-        return err
-    }
-    output, err := c.userService.CreateUser(service.UserServiceInput{
-        Name: request.Name,
-        Password: request.Password,
-    })
-    if err != nil {
-        return err
-    }
-    return ctx.JSON(UserResponse(*c.toResponse(output)))
+	var request UserRequest
+	if err := ctx.BodyParser(&request); err != nil {
+		return err
+	}
+	output, err := c.userService.CreateUser(service.UserServiceInput{
+		Name:     request.Name,
+		Password: request.Password,
+	})
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(UserResponse(*c.toResponse(output)))
 }
 
 // Login /* ユーザーにログイン
@@ -46,43 +46,43 @@ func (c UserController) Create(ctx *fiber.Ctx) error {
 //	@Tags		user
 //	@Produce	json
 //	@Param		request	body		UserRequest			false	"ユーザーログインリクエスト"
-//	@Success	200		{object}	UserLoginResponse	
+//	@Success	200		{object}	UserLoginResponse
 //	@Router		/login [post]
 func (c UserController) Login(ctx *fiber.Ctx) error {
-    var request UserRequest
-    if err := ctx.BodyParser(&request); err != nil {
-        return err
-    }
-    output, err := c.authorizationService.Login(service.AuthorizationServiceInput(request))
-    if err != nil {
-        return err
-    }
-    return ctx.JSON(UserLoginResponse(*output))
+	var request UserRequest
+	if err := ctx.BodyParser(&request); err != nil {
+		return err
+	}
+	output, err := c.authorizationService.Login(service.AuthorizationServiceInput(request))
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(UserLoginResponse(*output))
 }
 
 func (UserController) toResponse(output *service.UserServiceOutput) *UserResponse {
-    return &UserResponse{
-        Id: output.Id.String(),
-        Name: output.Name,
-        Password: string(output.Password),
-        CreateAt: output.CreatedAt,
-        UpdatedAt: output.UpdatedAt,
-    }
+	return &UserResponse{
+		Id:        output.Id.String(),
+		Name:      output.Name,
+		Password:  string(output.Password),
+		CreateAt:  output.CreatedAt,
+		UpdatedAt: output.UpdatedAt,
+	}
 }
 
 type UserRequest struct {
-    Name string `json:"name" validate:"required"`
-    Password string `json:"password" validate:"required"`
+	Name     string `json:"name" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 type UserResponse struct {
-    Id string `json:"id" validate:"required"`
-    Name string `json:"name" validate:"required"`
-    Password string `json:"-" validate:"required"`
-    CreateAt time.Time `json:"createdAt" validate:"required"`
-    UpdatedAt time.Time `json:"updatedAt" validate:"required"`
+	Id        string    `json:"id" validate:"required"`
+	Name      string    `json:"name" validate:"required"`
+	Password  string    `json:"-" validate:"required"`
+	CreateAt  time.Time `json:"createdAt" validate:"required"`
+	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
 type UserLoginResponse struct {
-    Token string `json:"token" validate:"required"`
+	Token string `json:"token" validate:"required"`
 }

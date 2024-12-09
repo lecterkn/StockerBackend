@@ -5,8 +5,8 @@ import (
 )
 
 type ItemModel struct {
-	Id        []byte 
-	StoreId []byte `gorm:"column:store_id"`
+	Id        []byte
+	StoreId   []byte `gorm:"column:store_id"`
 	Name      string
 	JanCode   string    `gorm:"column:jan_code"`
 	CreatedAt time.Time `gorm:"column:created_at"`

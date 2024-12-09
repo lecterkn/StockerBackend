@@ -206,8 +206,15 @@ const docTemplate = `{
                 "tags": [
                     "item"
                 ],
-                "summary": "商品一覧取得",
+                "summary": "商品をJanCodeから取得",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Jancodeによる商品取得リクエスト",
+                        "name": "request",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "店舗ID",
@@ -220,22 +227,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controller.ItemListResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "list": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/controller.ItemResponse"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/controller.ItemResponse"
                         }
                     }
                 }
@@ -560,12 +552,16 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "place",
+                "price",
                 "stock",
                 "stockMin"
             ],
             "properties": {
                 "place": {
                     "type": "string"
+                },
+                "price": {
+                    "type": "integer"
                 },
                 "stock": {
                     "type": "integer"
@@ -581,6 +577,7 @@ const docTemplate = `{
                 "createdAt",
                 "itemId",
                 "place",
+                "price",
                 "stock",
                 "stockMin",
                 "storeId",
@@ -595,6 +592,9 @@ const docTemplate = `{
                 },
                 "place": {
                     "type": "string"
+                },
+                "price": {
+                    "type": "integer"
                 },
                 "stock": {
                     "type": "integer"

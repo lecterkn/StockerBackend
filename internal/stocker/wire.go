@@ -31,7 +31,7 @@ var repositorySet = wire.NewSet(
 
 // サービス
 var serviceSet = wire.NewSet(
-    service.NewJancodeService,
+	service.NewJancodeService,
 	service.NewItemService,
 	service.NewItemStockService,
 	service.NewUserService,
@@ -42,7 +42,7 @@ var serviceSet = wire.NewSet(
 
 // コントローラー
 var controllerSet = wire.NewSet(
-    controller.NewJancodeController,
+	controller.NewJancodeController,
 	controller.NewItemController,
 	controller.NewItemStockController,
 	controller.NewUserController,
@@ -51,11 +51,11 @@ var controllerSet = wire.NewSet(
 
 // コントローラーセット
 type ControllersSet struct {
-    JancodeController controller.JancodeController
+	JancodeController   controller.JancodeController
 	ItemController      controller.ItemController
 	ItemStockController controller.ItemStockController
-	UserController controller.UserController
-	StoreController controller.StoreController
+	UserController      controller.UserController
+	StoreController     controller.StoreController
 }
 
 // コントローラーセット作成

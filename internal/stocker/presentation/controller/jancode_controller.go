@@ -7,16 +7,17 @@ import (
 )
 
 type JancodeController struct {
-    jancodeService service.JancodeService
+	jancodeService service.JancodeService
 }
 
 func NewJancodeController(jancodeService service.JancodeService) JancodeController {
-    return JancodeController{
-        jancodeService,
-    }
+	return JancodeController{
+		jancodeService,
+	}
 }
 
 // Select /* 製品情報取得エンドポイント
+//
 //	@Summary	製品情報取得
 //	@Tags		jancode
 //	@Produce	json
@@ -24,16 +25,16 @@ func NewJancodeController(jancodeService service.JancodeService) JancodeControll
 //	@Success	200		{object}	JancodeResponse
 //	@Router		/products/{janCode} [get]
 func (c JancodeController) Select(ctx *fiber.Ctx) error {
-    janCode := ctx.Params("janCode")
-    output, err := c.jancodeService.GetProductByCode(janCode)
-    if err != nil {
-        return err
-    }
-    return ctx.JSON(JancodeResponse(*output))
+	janCode := ctx.Params("janCode")
+	output, err := c.jancodeService.GetProductByCode(janCode)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(JancodeResponse(*output))
 }
 
 type JancodeResponse struct {
-    Name string `json:"name" validate:"required"`
-    BrandName string `json:"brandName" validate:"required"`
-    MakerName string `json:"makerName" validate:"required"`
+	Name      string `json:"name" validate:"required"`
+	BrandName string `json:"brandName" validate:"required"`
+	MakerName string `json:"makerName" validate:"required"`
 }

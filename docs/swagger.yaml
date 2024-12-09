@@ -54,12 +54,15 @@ definitions:
     properties:
       place:
         type: string
+      price:
+        type: integer
       stock:
         type: integer
       stockMin:
         type: integer
     required:
     - place
+    - price
     - stock
     - stockMin
     type: object
@@ -71,6 +74,8 @@ definitions:
         type: string
       place:
         type: string
+      price:
+        type: integer
       stock:
         type: integer
       stockMin:
@@ -83,6 +88,7 @@ definitions:
     - createdAt
     - itemId
     - place
+    - price
     - stock
     - stockMin
     - storeId
@@ -299,6 +305,11 @@ paths:
   /stores/{storeId}/items:
     get:
       parameters:
+      - description: Jancodeによる商品取得リクエスト
+        in: query
+        name: request
+        required: true
+        type: string
       - description: 店舗ID
         in: path
         name: storeId
@@ -310,15 +321,8 @@ paths:
         "200":
           description: OK
           schema:
-            allOf:
-            - $ref: '#/definitions/controller.ItemListResponse'
-            - properties:
-                list:
-                  items:
-                    $ref: '#/definitions/controller.ItemResponse'
-                  type: array
-              type: object
-      summary: 商品一覧取得
+            $ref: '#/definitions/controller.ItemResponse'
+      summary: 商品をJanCodeから取得
       tags:
       - item
     post:
