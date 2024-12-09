@@ -55,6 +55,10 @@ func SetRouting(f *fiber.App) {
 	f.Get("/stores", controllerSets.StoreController.Index)
 	f.Post("/stores", controllerSets.StoreController.Create)
 	f.Patch("/stores/:storeId", controllerSets.StoreController.Update)
+
+	// StockInController
+	f.Get("/stores/:storeId/stockIns", controllerSets.StockInController.Index)
+	f.Post("/stores/:storeId/stockIns", controllerSets.StockInController.Create)
 }
 
 func setCors(f *fiber.App) {

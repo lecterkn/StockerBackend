@@ -105,6 +105,59 @@ definitions:
     - makerName
     - name
     type: object
+  controller.StockInCreateRequest:
+    properties:
+      itemId:
+        type: string
+      place:
+        type: string
+      price:
+        type: integer
+      stocks:
+        type: integer
+    required:
+    - itemId
+    - place
+    - price
+    - stocks
+    type: object
+  controller.StockInListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/controller.StockInResponse'
+        type: array
+    required:
+    - list
+    type: object
+  controller.StockInResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      itemId:
+        type: string
+      place:
+        type: string
+      price:
+        type: integer
+      stocks:
+        type: integer
+      storeId:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - createdAt
+    - id
+    - itemId
+    - place
+    - price
+    - stocks
+    - storeId
+    - updatedAt
+    type: object
   controller.StoreCreateRequest:
     properties:
       name:
@@ -440,6 +493,7 @@ paths:
       - description: 商品詳細作成リクエスト
         in: body
         name: request
+        required: true
         schema:
           $ref: '#/definitions/controller.ItemStockRequest'
       produces:
@@ -477,4 +531,45 @@ paths:
       summary: 商品詳細一覧取得
       tags:
       - item_stock
+  /stores/{storeId}/stockIns:
+    get:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.StockInListResponse'
+      summary: 入荷履歴一覧取得
+      tags:
+      - stock_ins
+    post:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      - description: 入荷履歴作成リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.StockInCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.StockInResponse'
+      summary: 入荷履歴作成取得
+      tags:
+      - stock_ins
 swagger: "2.0"

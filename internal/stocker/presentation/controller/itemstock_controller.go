@@ -110,7 +110,7 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 //	@Produce	json
 //	@Param		storeId	path string		true				"店舗ID"
 //	@Param		itemId	path string		true				"商品ID"
-//	@Param		request	body		ItemStockRequest	false	"商品詳細作成リクエスト"
+//	@Param		request	body		ItemStockRequest	true	"商品詳細作成リクエスト"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/items/{itemId}/stocks [post]
 func (c ItemStockController) Create(ctx *fiber.Ctx) error {
@@ -220,7 +220,7 @@ type ItemStockResponse struct {
 
 type ItemStockRequest struct {
 	Place    string `json:"place" validate:"required"`
-	Price    *int    `json:"price"`
+	Price    *int   `json:"price"`
 	Stock    int    `json:"stock" validate:"required"`
 	StockMin int    `json:"stockMin" validate:"required"`
 }
