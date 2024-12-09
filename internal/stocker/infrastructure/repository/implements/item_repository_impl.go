@@ -1,9 +1,10 @@
 package implements
 
 import (
-	"github.com/google/uuid"
 	"h11/backend/internal/stocker/domain/entity"
 	"h11/backend/internal/stocker/infrastructure/model"
+
+	"github.com/google/uuid"
 
 	"gorm.io/gorm"
 )
@@ -20,9 +21,8 @@ func NewItemRepositoryImpl(database *gorm.DB) ItemRepositoryImpl {
 }
 
 // SelectItems /** アイテムを取得する
-func (r ItemRepositoryImpl) Index(storeId uuid.UUID) ([]entity.ItemEntity, error) {
-	var models []model.ItemModel
-	err := r.database.Where("store_id = ?", storeId[:]).Find(&models).Error
+func (r ItemRepositoryImpl) Index(storeId uuid.UUID, jancode, name *string) ([]entity.ItemEntity, error) {
+	models, err := r.finds(storeId, jancode, name)
 	if err != nil {
 		return nil, err
 	}
@@ -37,25 +37,25 @@ func (r ItemRepositoryImpl) Index(storeId uuid.UUID) ([]entity.ItemEntity, error
 	return list, nil
 }
 
+func (r ItemRepositoryImpl) finds(storeId uuid.UUID, jancode, name *string) ([]model.ItemModel, error) {
+    var models []model.ItemModel
+    r.database.Where("store_id = ?", storeId[:])
+    if jancode != nil {
+        r.database.Where("jan_code = ?", *jancode)
+    }
+    if name != nil {
+        r.database.Where("name = ?", *name)
+    }
+    if err := r.database.Find(&models).Error; err != nil {
+        return nil, err
+    }
+    return models, nil
+}
+
 // Select /* idからアイテムを取得する
 func (r ItemRepositoryImpl) Select(storeId, id uuid.UUID) (*entity.ItemEntity, error) {
 	var model model.ItemModel
-	err := r.database.Where("store_id = ? AND id = ?", storeId[:], id[:]).First(&model).Error
-	if err != nil {
-		return nil, err
-	}
-	entity, err := r.toEntity(model)
-	if err != nil {
-		return nil, err
-	}
-	return entity, nil
-}
-
-// SelectByJancode /* idからアイテムを取得する
-func (r ItemRepositoryImpl) SelectByJancode(storeId uuid.UUID, jancode string) (*entity.ItemEntity, error) {
-	var model model.ItemModel
-	err := r.database.Where("store_id = ? AND jancode = ?", storeId[:], jancode).First(&model).Error
-	if err != nil {
+	if err := r.database.Where("store_id = ? AND id = ?", storeId[:], id[:]).First(&model).Error; err != nil {
 		return nil, err
 	}
 	entity, err := r.toEntity(model)
@@ -68,11 +68,10 @@ func (r ItemRepositoryImpl) SelectByJancode(storeId uuid.UUID, jancode string) (
 // Create /** アイテムを作成する
 func (r ItemRepositoryImpl) Create(entity *entity.ItemEntity) (*entity.ItemEntity, error) {
 	model := r.toModel(entity)
-	err := r.database.Create(&model).Error
-	if err != nil {
+	if err := r.database.Create(&model).Error; err != nil {
 		return nil, err
 	}
-	entity, err = r.toEntity(*model)
+	entity, err := r.toEntity(*model)
 	if err != nil {
 		return nil, err
 	}
@@ -82,11 +81,10 @@ func (r ItemRepositoryImpl) Create(entity *entity.ItemEntity) (*entity.ItemEntit
 // Update /* アイテムを更新する
 func (r ItemRepositoryImpl) Update(entity *entity.ItemEntity) (*entity.ItemEntity, error) {
 	model := r.toModel(entity)
-	err := r.database.Save(&model).Error
-	if err != nil {
+	if err := r.database.Save(&model).Error; err != nil {
 		return nil, err
 	}
-	entity, err = r.toEntity(*model)
+	entity, err := r.toEntity(*model)
 	if err != nil {
 		return nil, err
 	}

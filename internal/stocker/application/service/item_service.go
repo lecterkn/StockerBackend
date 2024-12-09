@@ -20,22 +20,12 @@ func NewItemService(itemRepository repository.ItemRepository) ItemService {
 }
 
 // GetItems /* アイテム一覧を取得する
-func (s ItemService) GetItems(input ItemServiceQueryListInput) (*ItemServiceListOutput, error) {
-	entities, err := s.itemRepository.Index(input.StoreId)
+func (s ItemService) GetItems(storeId uuid.UUID, jancode, name *string) (*ItemServiceListOutput, error) {
+	entities, err := s.itemRepository.Index(storeId, jancode, name)
 	if err != nil {
 		return nil, err
 	}
 	return s.toOutput(entities), nil
-}
-
-// SelectByJancode /* 商品詳細を取得
-func (s ItemService) SelectByJancode(storeId uuid.UUID, jancode string) (*ItemServiceOutput, error) {
-	entity, err := s.itemRepository.SelectByJancode(storeId, jancode)
-	if err != nil {
-		return nil, err
-	}
-	output := ItemServiceOutput(*entity)
-	return &output, nil
 }
 
 // CreateItem /* アイテムを作成する
@@ -80,10 +70,6 @@ func (ItemService) toOutput(entities []entity.ItemEntity) *ItemServiceListOutput
 	return &ItemServiceListOutput{
 		List: list,
 	}
-}
-
-type ItemServiceQueryListInput struct {
-	StoreId uuid.UUID
 }
 
 type ItemServiceOutput struct {

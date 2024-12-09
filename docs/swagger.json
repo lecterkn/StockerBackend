@@ -200,28 +200,48 @@
                 "tags": [
                     "item"
                 ],
-                "summary": "商品をJanCodeから取得",
+                "summary": "商品一覧取得",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Jancodeによる商品取得リクエスト",
-                        "name": "request",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "店舗ID",
                         "name": "storeId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品名",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Janコード",
+                        "name": "janCode",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.ItemResponse"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controller.ItemListResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "list": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/controller.ItemResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }

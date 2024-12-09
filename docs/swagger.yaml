@@ -356,15 +356,18 @@ paths:
   /stores/{storeId}/items:
     get:
       parameters:
-      - description: Jancodeによる商品取得リクエスト
-        in: query
-        name: request
-        required: true
-        type: string
       - description: 店舗ID
         in: path
         name: storeId
         required: true
+        type: string
+      - description: 商品名
+        in: query
+        name: name
+        type: string
+      - description: Janコード
+        in: query
+        name: janCode
         type: string
       produces:
       - application/json
@@ -372,8 +375,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.ItemResponse'
-      summary: 商品をJanCodeから取得
+            allOf:
+            - $ref: '#/definitions/controller.ItemListResponse'
+            - properties:
+                list:
+                  items:
+                    $ref: '#/definitions/controller.ItemResponse'
+                  type: array
+              type: object
+      summary: 商品一覧取得
       tags:
       - item
     post:

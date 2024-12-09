@@ -35,11 +35,11 @@ func (r StoreRepositoryImpl) Index(userId uuid.UUID) ([]entity.StoreEntity, erro
 }
 
 func (r StoreRepositoryImpl) Select(id uuid.UUID) (*entity.StoreEntity, error) {
-	var model *model.StoreModel
-	if err := r.database.Where("id = ?", id[:]).First(model).Error; err != nil {
+	var model model.StoreModel
+	if err := r.database.Where("id = ?", id[:]).First(&model).Error; err != nil {
 		return nil, err
 	}
-	entity, err := r.toEntity(model)
+	entity, err := r.toEntity(&model)
 	if err != nil {
 		return nil, err
 	}
