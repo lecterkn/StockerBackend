@@ -34,7 +34,7 @@ CREATE TABLE stock_ins (
     updated_at DATETIME NOT NULL COMMENT "更新日時",
     FOREIGN KEY (item_id) REFERENCES items(id),
     FOREIGN KEY (store_id) REFERENCES stores(id),
-    UNIQUE INDEX idx_si_item_id_and_s_store_id (`item_id`, `store_id`)
+    INDEX idx_si_item_id_and_s_store_id (`item_id`, `store_id`)
 ) COMMENT = "入荷履歴";
 
 CREATE TABLE stock_outs (
