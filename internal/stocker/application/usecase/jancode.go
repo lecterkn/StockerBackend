@@ -1,4 +1,4 @@
-package service
+package usecase
 
 import (
 	"encoding/json"
@@ -9,16 +9,18 @@ import (
 	"os"
 )
 
-type JancodeService struct{}
+type JancodeUsecase struct{}
 
-func NewJancodeService() JancodeService {
-	return JancodeService{}
+func NewJancodeUsecase() JancodeUsecase {
+	return JancodeUsecase{}
 }
 
-const JANCODE_LOOKUP_API_URL = "https://api.jancodelookup.com/"
-const JANCODE_LOOKUP_API_QUERY_TYPE = "code"
+const (
+	JANCODE_LOOKUP_API_URL        = "https://api.jancodelookup.com/"
+	JANCODE_LOOKUP_API_QUERY_TYPE = "code"
+)
 
-func (s JancodeService) GetProductByCode(janCode string) (*JancodeServiceOutput, error) {
+func (s JancodeUsecase) GetProductByCode(janCode string) (*JancodeUsecaseOutput, error) {
 	// AppId取得
 	appId := s.getAppId()
 
@@ -50,15 +52,14 @@ func (s JancodeService) GetProductByCode(janCode string) (*JancodeServiceOutput,
 		return nil, err
 	}
 
-	return &JancodeServiceOutput{
+	return &JancodeUsecaseOutput{
 		Name:      jsonBody.Products[0].ItemName,
 		BrandName: jsonBody.Products[0].BrandName,
 		MakerName: jsonBody.Products[0].MakerName,
 	}, nil
-
 }
 
-func (JancodeService) getAppId() string {
+func (JancodeUsecase) getAppId() string {
 	appId, exists := os.LookupEnv("JANCODELOOKUP_APP_ID")
 	if !exists {
 		panic("\"JANCODELOOKUP_APP_ID\" is not set")
@@ -76,7 +77,7 @@ type jancodeApiResponseJson struct {
 	Products []jancodeApiResponseJsonProduct `json:"product"`
 }
 
-type JancodeServiceOutput struct {
+type JancodeUsecaseOutput struct {
 	Name      string
 	BrandName string
 	MakerName string

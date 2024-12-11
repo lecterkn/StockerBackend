@@ -38,18 +38,18 @@ func (r ItemRepositoryImpl) Index(storeId uuid.UUID, jancode, name *string) ([]e
 }
 
 func (r ItemRepositoryImpl) finds(storeId uuid.UUID, jancode, name *string) ([]model.ItemModel, error) {
-    var models []model.ItemModel
-    r.database.Where("store_id = ?", storeId[:])
-    if jancode != nil {
-        r.database.Where("jan_code = ?", *jancode)
-    }
-    if name != nil {
-        r.database.Where("name = ?", *name)
-    }
-    if err := r.database.Find(&models).Error; err != nil {
-        return nil, err
-    }
-    return models, nil
+	var models []model.ItemModel
+	r.database.Where("store_id = ?", storeId[:])
+	if jancode != nil {
+		r.database.Where("jan_code = ?", *jancode)
+	}
+	if name != nil {
+		r.database.Where("name = ?", *name)
+	}
+	if err := r.database.Find(&models).Error; err != nil {
+		return nil, err
+	}
+	return models, nil
 }
 
 // Select /* idからアイテムを取得する

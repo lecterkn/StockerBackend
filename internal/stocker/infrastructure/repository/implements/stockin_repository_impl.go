@@ -24,7 +24,7 @@ func (r StockInRepositoryImpl) Create(entity *entity.StockInEntity) (*entity.Sto
 	if err := r.database.Create(&model).Error; err != nil {
 		return nil, err
 	}
-	entity, err := r.toEntity(model)
+	entity, err := r.toEntity(model, entity.Item)
 	if err != nil {
 		return nil, err
 	}
@@ -33,13 +33,19 @@ func (r StockInRepositoryImpl) Create(entity *entity.StockInEntity) (*entity.Sto
 
 // Index /* 入庫履歴を取得
 func (r StockInRepositoryImpl) Index(storeId uuid.UUID) ([]entity.StockInEntity, error) {
-	var models []model.StockInModel
-	if err := r.database.Where("store_id = ?", storeId[:]).Find(&models).Error; err != nil {
+	var models []model.StockInQueryModel
+	if err := r.database.
+		Model(&model.StockInModel{}).
+		Select("stock_ins.*, items.name, items.jan_code, items.created_at as item_created_at, items.updated_at as item_updated_at").
+		Joins("join items on stock_ins.item_id = items.id").
+		Where("stock_ins.store_id = ?", storeId[:]).
+		Order("stock_ins.id DESC").
+		Find(&models).Error; err != nil {
 		return nil, err
 	}
 	var entities []entity.StockInEntity
 	for _, model := range models {
-		entity, err := r.toEntity(&model)
+		entity, err := r.queryModelToEntity(&model)
 		if err != nil {
 			continue
 		}
@@ -48,28 +54,50 @@ func (r StockInRepositoryImpl) Index(storeId uuid.UUID) ([]entity.StockInEntity,
 	return entities, nil
 }
 
-func (StockInRepositoryImpl) toEntity(model *model.StockInModel) (*entity.StockInEntity, error) {
-	id, err := uuid.FromBytes(model.Id)
+func (StockInRepositoryImpl) queryModelToEntity(queryModel *model.StockInQueryModel) (*entity.StockInEntity, error) {
+	id, err := uuid.FromBytes(queryModel.Id)
 	if err != nil {
 		return nil, err
 	}
-	storeId, err := uuid.FromBytes(model.StoreId)
+	storeId, err := uuid.FromBytes(queryModel.StoreId)
 	if err != nil {
 		return nil, err
 	}
-	itemId, err := uuid.FromBytes(model.ItemId)
+	itemId, err := uuid.FromBytes(queryModel.ItemId)
+	if err != nil {
+		return nil, err
+	}
+	return &entity.StockInEntity{
+		Id:     id,
+		Place:  queryModel.Place,
+		Price:  queryModel.Price,
+		Stocks: queryModel.Stocks,
+		Item: entity.ItemEntity{
+			Id:        itemId,
+			StoreId:   storeId,
+			Name:      queryModel.Name,
+			JanCode:   queryModel.JanCode,
+			CreatedAt: queryModel.ItemCreatedAt,
+			UpdatedAt: queryModel.ItemUpdatedAt,
+		},
+		CreatedAt: queryModel.CreatedAt,
+		UpdatedAt: queryModel.UpdatedAt,
+	}, nil
+}
+
+func (StockInRepositoryImpl) toEntity(stockInModel *model.StockInModel, itemEntity entity.ItemEntity) (*entity.StockInEntity, error) {
+	id, err := uuid.FromBytes(stockInModel.Id)
 	if err != nil {
 		return nil, err
 	}
 	return &entity.StockInEntity{
 		Id:        id,
-		Place:     model.Place,
-		StoreId:   storeId,
-		ItemId:    itemId,
-		Stocks:    model.Stocks,
-		Price:     model.Price,
-		CreatedAt: model.CreatedAt,
-		UpdatedAt: model.UpdatedAt,
+		Place:     stockInModel.Place,
+		Stocks:    stockInModel.Stocks,
+		Price:     stockInModel.Price,
+		Item:      itemEntity,
+		CreatedAt: stockInModel.CreatedAt,
+		UpdatedAt: stockInModel.UpdatedAt,
 	}, nil
 }
 
@@ -77,8 +105,8 @@ func (StockInRepositoryImpl) toModel(entity *entity.StockInEntity) *model.StockI
 	return &model.StockInModel{
 		Id:        entity.Id[:],
 		Place:     entity.Place,
-		StoreId:   entity.StoreId[:],
-		ItemId:    entity.ItemId[:],
+		StoreId:   entity.Item.StoreId[:],
+		ItemId:    entity.Item.Id[:],
 		Stocks:    entity.Stocks,
 		Price:     entity.Price,
 		CreatedAt: entity.CreatedAt,

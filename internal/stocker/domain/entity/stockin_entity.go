@@ -9,15 +9,14 @@ import (
 type StockInEntity struct {
 	Id        uuid.UUID
 	Place     string
-	StoreId   uuid.UUID
-	ItemId    uuid.UUID
 	Price     int
 	Stocks    int
+	Item      ItemEntity
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func NewStockInEntity(place string, storeId, itemId uuid.UUID, price, stocks int) (*StockInEntity, error) {
+func NewStockInEntity(place string, item ItemEntity, price, stocks int) (*StockInEntity, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
 		return nil, err
@@ -25,8 +24,7 @@ func NewStockInEntity(place string, storeId, itemId uuid.UUID, price, stocks int
 	return &StockInEntity{
 		Id:        id,
 		Place:     place,
-		StoreId:   storeId,
-		ItemId:    itemId,
+		Item:      item,
 		Stocks:    stocks,
 		Price:     price,
 		CreatedAt: time.Now(),

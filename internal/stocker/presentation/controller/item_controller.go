@@ -1,25 +1,26 @@
 package controller
 
 import (
-	"h11/backend/internal/stocker/application/service"
-	"h11/backend/internal/stocker/common"
 	"net/http"
 	"time"
+
+	"h11/backend/internal/stocker/application/usecase"
+	"h11/backend/internal/stocker/common"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
 type ItemController struct {
-	itemService          service.ItemService
-	authorizationService service.StoreAuthorizationService
+	itemUsecase          usecase.ItemUsecase
+	authorizationUsecase usecase.StoreAuthorizationUsecase
 }
 
 // NewItemController /* アイテムコントローラーのプロバイダ
-func NewItemController(itemService service.ItemService, authorizationService service.StoreAuthorizationService) ItemController {
+func NewItemController(itemUsecase usecase.ItemUsecase, authorizationUsecase usecase.StoreAuthorizationUsecase) ItemController {
 	return ItemController{
-		itemService,
-		authorizationService,
+		itemUsecase,
+		authorizationUsecase,
 	}
 }
 
@@ -50,11 +51,11 @@ func (c ItemController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// アイテムを取得
-	listOutput, err := c.itemService.GetItems(storeId, query.jancode, query.name)
+	listOutput, err := c.itemUsecase.GetItems(storeId, query.jancode, query.name)
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).SendString("internal error")
 	}
@@ -94,11 +95,11 @@ func (c ItemController) Create(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// 商品作成
-	output, err := c.itemService.CreateItem(service.ItemServiceInput{
+	output, err := c.itemUsecase.CreateItem(usecase.ItemUsecaseInput{
 		StoreId: storeId,
 		Name:    request.Name,
 		JanCode: request.JanCode,
@@ -141,11 +142,11 @@ func (c ItemController) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// 商品更新
-	output, err := c.itemService.UpdateItem(service.ItemServiceUpdateInput{
+	output, err := c.itemUsecase.UpdateItem(usecase.ItemUsecaseUpdateInput{
 		StoreId: storeId,
 		Id:      id,
 		Name:    request.Name,

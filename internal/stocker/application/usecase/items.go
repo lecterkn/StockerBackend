@@ -1,4 +1,4 @@
-package service
+package usecase
 
 import (
 	"h11/backend/internal/stocker/domain/entity"
@@ -8,19 +8,19 @@ import (
 	"github.com/google/uuid"
 )
 
-type ItemService struct {
+type ItemUsecase struct {
 	itemRepository repository.ItemRepository
 }
 
-// NewItemService /* ItemServiceのプロバイダ
-func NewItemService(itemRepository repository.ItemRepository) ItemService {
-	return ItemService{
+// NewItemUsecase /* ItemUsecaseのプロバイダ
+func NewItemUsecase(itemRepository repository.ItemRepository) ItemUsecase {
+	return ItemUsecase{
 		itemRepository,
 	}
 }
 
 // GetItems /* アイテム一覧を取得する
-func (s ItemService) GetItems(storeId uuid.UUID, jancode, name *string) (*ItemServiceListOutput, error) {
+func (s ItemUsecase) GetItems(storeId uuid.UUID, jancode, name *string) (*ItemUsecaseListOutput, error) {
 	entities, err := s.itemRepository.Index(storeId, jancode, name)
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func (s ItemService) GetItems(storeId uuid.UUID, jancode, name *string) (*ItemSe
 }
 
 // CreateItem /* アイテムを作成する
-func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, error) {
+func (s ItemUsecase) CreateItem(input ItemUsecaseInput) (*ItemUsecaseOutput, error) {
 	entity, err := entity.NewItemEntity(input.StoreId, input.Name, input.JanCode)
 	if err != nil {
 		return nil, err
@@ -38,12 +38,12 @@ func (s ItemService) CreateItem(input ItemServiceInput) (*ItemServiceOutput, err
 	if err != nil {
 		return nil, err
 	}
-	output := ItemServiceOutput(*entity)
+	output := ItemUsecaseOutput(*entity)
 	return &output, nil
 }
 
 // UpdateItem /* アイテムを更新
-func (s ItemService) UpdateItem(input ItemServiceUpdateInput) (*ItemServiceOutput, error) {
+func (s ItemUsecase) UpdateItem(input ItemUsecaseUpdateInput) (*ItemUsecaseOutput, error) {
 	// 更新対象を取得
 	entity, err := s.itemRepository.Select(input.StoreId, input.Id)
 	if err != nil {
@@ -55,24 +55,24 @@ func (s ItemService) UpdateItem(input ItemServiceUpdateInput) (*ItemServiceOutpu
 	if err != nil {
 		return nil, err
 	}
-	output := ItemServiceOutput(*entity)
+	output := ItemUsecaseOutput(*entity)
 	return &output, nil
 }
 
-func (ItemService) toOutput(entities []entity.ItemEntity) *ItemServiceListOutput {
-	var list []ItemServiceOutput
+func (ItemUsecase) toOutput(entities []entity.ItemEntity) *ItemUsecaseListOutput {
+	var list []ItemUsecaseOutput
 	for _, entity := range entities {
 		list = append(
 			list,
-			ItemServiceOutput(entity),
+			ItemUsecaseOutput(entity),
 		)
 	}
-	return &ItemServiceListOutput{
+	return &ItemUsecaseListOutput{
 		List: list,
 	}
 }
 
-type ItemServiceOutput struct {
+type ItemUsecaseOutput struct {
 	Id        uuid.UUID
 	StoreId   uuid.UUID
 	Name      string
@@ -81,19 +81,19 @@ type ItemServiceOutput struct {
 	UpdatedAt time.Time
 }
 
-type ItemServiceInput struct {
+type ItemUsecaseInput struct {
 	StoreId uuid.UUID
 	Name    string
 	JanCode string
 }
 
-type ItemServiceUpdateInput struct {
+type ItemUsecaseUpdateInput struct {
 	Id      uuid.UUID
 	StoreId uuid.UUID
 	Name    string
 	JanCode string
 }
 
-type ItemServiceListOutput struct {
-	List []ItemServiceOutput
+type ItemUsecaseListOutput struct {
+	List []ItemUsecaseOutput
 }

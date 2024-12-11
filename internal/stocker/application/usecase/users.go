@@ -1,33 +1,34 @@
-package service
+package usecase
 
 import (
+	"time"
+
 	"h11/backend/internal/stocker/domain/entity"
 	"h11/backend/internal/stocker/domain/repository"
-	"time"
 
 	"github.com/google/uuid"
 )
 
-type UserService struct {
+type UserUsecase struct {
 	userRepository repository.UserRepository
 }
 
-func NewUserService(userRepository repository.UserRepository) UserService {
-	return UserService{
+func NewUserUsecase(userRepository repository.UserRepository) UserUsecase {
+	return UserUsecase{
 		userRepository,
 	}
 }
 
-func (s UserService) GetUserByName(name string) (*UserServiceOutput, error) {
+func (s UserUsecase) GetUserByName(name string) (*UserUsecaseOutput, error) {
 	entity, err := s.userRepository.SelectByName(name)
 	if err != nil {
 		return nil, err
 	}
-	output := UserServiceOutput(*entity)
+	output := UserUsecaseOutput(*entity)
 	return &output, nil
 }
 
-func (s UserService) CreateUser(input UserServiceInput) (*UserServiceOutput, error) {
+func (s UserUsecase) CreateUser(input UserUsecaseInput) (*UserUsecaseOutput, error) {
 	// ユーザーエンティティ作成
 	entity, err := entity.NewUserEntity(input.Name, input.Password)
 	if err != nil {
@@ -39,16 +40,16 @@ func (s UserService) CreateUser(input UserServiceInput) (*UserServiceOutput, err
 		return nil, err
 	}
 	// アウトプット
-	output := UserServiceOutput(*entity)
+	output := UserUsecaseOutput(*entity)
 	return &output, nil
 }
 
-type UserServiceInput struct {
+type UserUsecaseInput struct {
 	Name     string
 	Password string
 }
 
-type UserServiceOutput struct {
+type UserUsecaseOutput struct {
 	Id        uuid.UUID
 	Name      string
 	Password  []byte

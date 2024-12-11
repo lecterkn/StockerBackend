@@ -1,21 +1,22 @@
 package controller
 
 import (
-	"h11/backend/internal/stocker/application/service"
-	"h11/backend/internal/stocker/common"
 	"time"
+
+	"h11/backend/internal/stocker/application/usecase"
+	"h11/backend/internal/stocker/common"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
 type StoreController struct {
-	storeService service.StoreService
+	storeUsecase usecase.StoreUsecase
 }
 
-func NewStoreController(storeService service.StoreService) StoreController {
+func NewStoreController(storeUsecase usecase.StoreUsecase) StoreController {
 	return StoreController{
-		storeService,
+		storeUsecase,
 	}
 }
 
@@ -33,7 +34,7 @@ func (c StoreController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗一覧取得
-	listOutput, err := c.storeService.Index(service.StoreServiceQueryListInput{
+	listOutput, err := c.storeUsecase.Index(usecase.StoreUsecaseQueryListInput{
 		UserId: *userId,
 	})
 	if err != nil {
@@ -68,7 +69,7 @@ func (c StoreController) Create(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗作成
-	output, err := c.storeService.Create(service.StoreServiceCommandInput{
+	output, err := c.storeUsecase.Create(usecase.StoreUsecaseCommandInput{
 		UserId: *userId,
 		Name:   request.Name,
 	})
@@ -103,7 +104,7 @@ func (c StoreController) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗作成
-	output, err := c.storeService.Update(service.StoreServiceCommandUpdateInput{
+	output, err := c.storeUsecase.Update(usecase.StoreUsecaseCommandUpdateInput{
 		Id:     id,
 		UserId: *userId,
 		Name:   request.Name,
@@ -114,7 +115,7 @@ func (c StoreController) Update(ctx *fiber.Ctx) error {
 	return ctx.JSON(c.toResponse(output))
 }
 
-func (StoreController) toResponse(output *service.StoreServiceOutput) *StoreResponse {
+func (StoreController) toResponse(output *usecase.StoreUsecaseOutput) *StoreResponse {
 	return &StoreResponse{
 		Id:        output.Id.String(),
 		UserId:    output.UserId.String(),

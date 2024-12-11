@@ -1,20 +1,21 @@
 package controller
 
 import (
-	"h11/backend/internal/stocker/application/service"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+
+	"h11/backend/internal/stocker/application/usecase"
 )
 
 type StockInController struct {
-	stockInService service.StockInService
+	stockInUsecase usecase.StockInUsecase
 }
 
-func NewStockInController(stockInService service.StockInService) StockInController {
+func NewStockInController(stockInUsecase usecase.StockInUsecase) StockInController {
 	return StockInController{
-		stockInService,
+		stockInUsecase,
 	}
 }
 
@@ -31,7 +32,7 @@ func (c StockInController) Index(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	listOutput, err := c.stockInService.GetStockIns(storeId)
+	listOutput, err := c.stockInUsecase.GetStockIns(storeId)
 	if err != nil {
 		return err
 	}
@@ -62,7 +63,7 @@ func (c StockInController) Create(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(&request); err != nil {
 		return err
 	}
-	output, err := c.stockInService.CreateStockIn(storeId, service.StockInCommandInput(request))
+	output, err := c.stockInUsecase.CreateStockIn(storeId, usecase.StockInCommandInput(request))
 	if err != nil {
 		return err
 	}
@@ -70,19 +71,20 @@ func (c StockInController) Create(ctx *fiber.Ctx) error {
 }
 
 type StockInCreateRequest struct {
-	Place  string    `json:"place" validate:"required"`
+	Place  string    `json:"place"  validate:"required"`
 	ItemId uuid.UUID `json:"itemId" validate:"required"`
-	Price  int       `json:"price" validate:"required"`
+	Price  int       `json:"price"  validate:"required"`
 	Stocks int       `json:"stocks" validate:"required"`
 }
 
 type StockInResponse struct {
-	Id        uuid.UUID `json:"id" validate:"required"`
-	Place     string    `json:"place" validate:"required"`
-	StoreId   uuid.UUID `json:"storeId" validate:"required"`
-	ItemId    uuid.UUID `json:"itemId" validate:"required"`
-	Price     int       `json:"price" validate:"required"`
-	Stocks    int       `json:"stocks" validate:"required"`
+	Id        uuid.UUID `json:"id"        validate:"required"`
+	Place     string    `json:"place"     validate:"required"`
+	StoreId   uuid.UUID `json:"storeId"   validate:"required"`
+	ItemId    uuid.UUID `json:"itemId"    validate:"required"`
+	Name      string    `json:"name"      validate:"required"`
+	Price     int       `json:"price"     validate:"required"`
+	Stocks    int       `json:"stocks"    validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }

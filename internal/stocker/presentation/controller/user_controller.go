@@ -1,21 +1,22 @@
 package controller
 
 import (
-	"h11/backend/internal/stocker/application/service"
 	"time"
+
+	"h11/backend/internal/stocker/application/usecase"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type UserController struct {
-	userService          service.UserService
-	authorizationService service.AuthorizationService
+	userUsecase          usecase.UserUsecase
+	authorizationUsecase usecase.AuthorizationUsecase
 }
 
-func NewUserController(userService service.UserService, authorizationService service.AuthorizationService) UserController {
+func NewUserController(userUsecase usecase.UserUsecase, authorizationUsecase usecase.AuthorizationUsecase) UserController {
 	return UserController{
-		userService,
-		authorizationService,
+		userUsecase,
+		authorizationUsecase,
 	}
 }
 
@@ -32,7 +33,7 @@ func (c UserController) Create(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(&request); err != nil {
 		return err
 	}
-	output, err := c.userService.CreateUser(service.UserServiceInput{
+	output, err := c.userUsecase.CreateUser(usecase.UserUsecaseInput{
 		Name:     request.Name,
 		Password: request.Password,
 	})
@@ -55,14 +56,14 @@ func (c UserController) Login(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(&request); err != nil {
 		return err
 	}
-	output, err := c.authorizationService.Login(service.AuthorizationServiceInput(request))
+	output, err := c.authorizationUsecase.Login(usecase.AuthorizationUsecaseInput(request))
 	if err != nil {
 		return err
 	}
 	return ctx.JSON(UserLoginResponse(*output))
 }
 
-func (UserController) toResponse(output *service.UserServiceOutput) *UserResponse {
+func (UserController) toResponse(output *usecase.UserUsecaseOutput) *UserResponse {
 	return &UserResponse{
 		Id:        output.Id.String(),
 		Name:      output.Name,

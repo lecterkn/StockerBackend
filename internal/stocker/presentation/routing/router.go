@@ -47,9 +47,9 @@ func SetRouting(f *fiber.App) {
 
 	// ItemStockController
 	f.Get("/stores/:storeId/itemStocks", controllerSets.ItemStockController.Index)
-	f.Get("/stores/:storeId/items/:itemId/stocks", controllerSets.ItemStockController.Select)
-	f.Post("/stores/:storeId/items/:itemId/stocks", controllerSets.ItemStockController.Create)
-	f.Patch("/stores/:storeId/items/:itemId/stocks", controllerSets.ItemController.Update)
+	f.Get("/stores/:storeId/itemStocks/:itemId", controllerSets.ItemStockController.Select)
+	f.Post("/stores/:storeId/itemStocks/:itemId", controllerSets.ItemStockController.Create)
+	f.Patch("/stores/:storeId/itemStocks/:itemId", controllerSets.ItemController.Update)
 
 	// StoreController
 	f.Get("/stores", controllerSets.StoreController.Index)
