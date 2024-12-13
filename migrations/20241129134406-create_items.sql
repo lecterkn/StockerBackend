@@ -15,7 +15,7 @@ CREATE TABLE item_stocks (
     store_id BINARY(16) NOT NULL COMMENT "店舗ID",
     place VARCHAR(255) COMMENT "場所",
     stock INTEGER NOT NULL COMMENT "在庫数",
-    stock_min INTEGER NOT NULL COMMENT "在庫の最低値",
+    stock_min INTEGER COMMENT "在庫の最低値",
     created_at DATETIME NOT NULL COMMENT "作成日時",
     updated_at DATETIME NOT NULL COMMENT "更新日時",
     FOREIGN KEY (item_id) REFERENCES items(id),

@@ -52,6 +52,10 @@ func (s JancodeUsecase) GetProductByCode(janCode string) (*JancodeUsecaseOutput,
 		return nil, err
 	}
 
+	if jsonBody.Products == nil || len(jsonBody.Products) == 0 {
+		return nil, fmt.Errorf("not found")
+	}
+
 	return &JancodeUsecaseOutput{
 		Name:      jsonBody.Products[0].ItemName,
 		BrandName: jsonBody.Products[0].BrandName,

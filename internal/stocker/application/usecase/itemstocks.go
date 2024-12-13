@@ -62,9 +62,9 @@ func (s ItemStockUsecase) Create(storeId uuid.UUID, input ItemStockUsecaseInput)
 	return s.toOutput(entity), nil
 }
 
-func (s ItemStockUsecase) Update(storeId uuid.UUID, input ItemStockUsecaseUpdateInput) (*ItemStockUsecaseOutput, error) {
+func (s ItemStockUsecase) Update(storeId, itemId uuid.UUID, input ItemStockUsecaseUpdateInput) (*ItemStockUsecaseOutput, error) {
 	// 商品詳細を取得
-	entity, err := s.itemStockRepository.Select(storeId, input.ItemId)
+	entity, err := s.itemStockRepository.Select(storeId, itemId)
 	if err != nil {
 		return nil, err
 	}
@@ -104,15 +104,13 @@ type ItemStockUsecaseInput struct {
 	JanCode  string
 	Price    *int
 	Stock    int
-	StockMin int
+	StockMin *int
 }
 
 type ItemStockUsecaseUpdateInput struct {
-	StoreId  uuid.UUID
-	ItemId   uuid.UUID
 	Price    *int
 	Stock    int
-	StockMin int
+	StockMin *int
 }
 
 type ItemStockUsecaseListOutput struct {
@@ -126,7 +124,7 @@ type ItemStockUsecaseOutput struct {
 	StoreId   uuid.UUID
 	Price     *int
 	Stock     int
-	StockMin  int
+	StockMin  *int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

@@ -257,13 +257,6 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "商品ID",
-                        "name": "itemId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "商品詳細作成リクエスト",
                         "name": "request",
                         "in": "body",
@@ -344,8 +337,9 @@ const docTemplate = `{
                         "description": "商品詳細更新リクエスト",
                         "name": "request",
                         "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.ItemStockRequest"
+                            "$ref": "#/definitions/controller.ItemStockUpdateRequest"
                         }
                     }
                 ],
@@ -637,8 +631,7 @@ const docTemplate = `{
             "required": [
                 "janCode",
                 "name",
-                "stock",
-                "stockMin"
+                "stock"
             ],
             "properties": {
                 "janCode": {
@@ -697,6 +690,23 @@ const docTemplate = `{
                 },
                 "updatedAt": {
                     "type": "string"
+                }
+            }
+        },
+        "controller.ItemStockUpdateRequest": {
+            "type": "object",
+            "required": [
+                "stock"
+            ],
+            "properties": {
+                "price": {
+                    "type": "integer"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "stockMin": {
+                    "type": "integer"
                 }
             }
         },

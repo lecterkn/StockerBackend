@@ -7,7 +7,7 @@ type ItemStockModel struct {
 	StoreId   []byte `gorm:"column:store_id"`
 	Price     *int
 	Stock     int
-	StockMin  int       `gorm:"column:stock_min"`
+	StockMin  *int      `gorm:"column:stock_min"`
 	CreatedAt time.Time `gorm:"column:created_at"`
 	UpdatedAt time.Time `gorm:"column:updated_at"`
 }
@@ -25,7 +25,7 @@ type ItemStockQueryModel struct {
 	StoreId       []byte `gorm:"column:store_id"`
 	Price         *int
 	Stock         int
-	StockMin      int       `gorm:"column:stock_min"`
+	StockMin      *int      `gorm:"column:stock_min"`
 	CreatedAt     time.Time `gorm:"column:created_at"`
 	UpdatedAt     time.Time `gorm:"column:updated_at"`
 }

@@ -110,7 +110,6 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 //	@Tags		item_stock
 //	@Produce	json
 //	@Param		storeId	path string		true				"店舗ID"
-//	@Param		itemId	path string		true				"商品ID"
 //	@Param		request	body		ItemStockRequest	true	"商品詳細作成リクエスト"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/itemStocks [post]
@@ -155,7 +154,7 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 //	@Produce	json
 //	@Param		storeId	path string		true				"店舗ID"
 //	@Param		itemId	path string		true				"商品ID"
-//	@Param		request	body		ItemStockRequest	false	"商品詳細更新リクエスト"
+//	@Param		request	body		ItemStockUpdateRequest	true	"商品詳細更新リクエスト"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/itemStocks/{itemId} [patch]
 func (c ItemStockController) Update(ctx *fiber.Ctx) error {
@@ -184,8 +183,7 @@ func (c ItemStockController) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 商品詳細更新
-	output, err := c.itemStockUsecase.Update(storeId, usecase.ItemStockUsecaseUpdateInput{
-		ItemId:   id,
+	output, err := c.itemStockUsecase.Update(storeId, id, usecase.ItemStockUsecaseUpdateInput{
 		Price:    request.Price,
 		Stock:    request.Stock,
 		StockMin: request.StockMin,
@@ -207,9 +205,15 @@ type ItemStockResponse struct {
 	StoreId   uuid.UUID `json:"storeId" validate:"required"`
 	Price     *int      `json:"price"`
 	Stock     int       `json:"stock" validate:"required"`
-	StockMin  int       `json:"stockMin" validate:"required"`
+	StockMin  *int      `json:"stockMin" validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
+}
+
+type ItemStockUpdateRequest struct {
+	Price    *int `json:"price"`
+	Stock    int  `json:"stock" validate:"required"`
+	StockMin *int `json:"stockMin"`
 }
 
 type ItemStockRequest struct {
@@ -217,5 +221,5 @@ type ItemStockRequest struct {
 	JanCode  string `json:"janCode" validate:"required"`
 	Price    *int   `json:"price"`
 	Stock    int    `json:"stock" validate:"required"`
-	StockMin int    `json:"stockMin" validate:"required"`
+	StockMin *int   `json:"stockMin"`
 }

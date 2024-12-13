@@ -66,7 +66,6 @@ definitions:
     - janCode
     - name
     - stock
-    - stockMin
     type: object
   controller.ItemStockResponse:
     properties:
@@ -97,6 +96,17 @@ definitions:
     - stockMin
     - storeId
     - updatedAt
+    type: object
+  controller.ItemStockUpdateRequest:
+    properties:
+      price:
+        type: integer
+      stock:
+        type: integer
+      stockMin:
+        type: integer
+    required:
+    - stock
     type: object
   controller.JancodeResponse:
     properties:
@@ -394,11 +404,6 @@ paths:
         name: storeId
         required: true
         type: string
-      - description: 商品ID
-        in: path
-        name: itemId
-        required: true
-        type: string
       - description: 商品詳細作成リクエスト
         in: body
         name: request
@@ -453,8 +458,9 @@ paths:
       - description: 商品詳細更新リクエスト
         in: body
         name: request
+        required: true
         schema:
-          $ref: '#/definitions/controller.ItemStockRequest'
+          $ref: '#/definitions/controller.ItemStockUpdateRequest'
       produces:
       - application/json
       responses:

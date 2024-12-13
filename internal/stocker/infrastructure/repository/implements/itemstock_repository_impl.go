@@ -61,7 +61,6 @@ func (r ItemStockRepositoryImpl) Select(storeId, id uuid.UUID) (*entity.ItemStoc
 
 // Insert /* 商品をデータベースに挿入
 func (r ItemStockRepositoryImpl) Insert(entity *entity.ItemStockEntity) (*entity.ItemStockEntity, error) {
-	itemEntity := r.item
 	model := r.toModel(entity)
 	if err := r.database.Create(model).Error; err != nil {
 		return nil, err
@@ -89,7 +88,6 @@ func (ItemStockRepositoryImpl) toModel(entity *entity.ItemStockEntity) *model.It
 	return &model.ItemStockModel{
 		ItemId:    entity.Item.Id[:],
 		StoreId:   entity.Item.StoreId[:],
-		Place:     entity.Place,
 		Price:     entity.Price,
 		Stock:     entity.Stock,
 		StockMin:  entity.StockMin,
@@ -101,7 +99,6 @@ func (ItemStockRepositoryImpl) toModel(entity *entity.ItemStockEntity) *model.It
 func (ItemStockRepositoryImpl) toEntity(model *model.ItemStockModel, itemEntity entity.ItemEntity) (*entity.ItemStockEntity, error) {
 	return &entity.ItemStockEntity{
 		Item:      itemEntity,
-		Place:     model.Place,
 		Price:     model.Price,
 		Stock:     model.Stock,
 		StockMin:  model.StockMin,
@@ -128,7 +125,6 @@ func (ItemStockRepositoryImpl) queryModelToEntity(model *model.ItemStockQueryMod
 			CreatedAt: model.ItemCreatedAt,
 			UpdatedAt: model.ItemUpdatedAt,
 		},
-		Place:     model.Place,
 		Price:     model.Price,
 		Stock:     model.Stock,
 		StockMin:  model.StockMin,

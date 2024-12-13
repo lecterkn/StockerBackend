@@ -55,7 +55,7 @@ func (c ItemController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 	// アイテムを取得
-	listOutput, err := c.itemUsecase.GetItems(storeId, query.jancode, query.name)
+	listOutput, err := c.itemUsecase.GetItems(storeId, query.JanCode, query.Name)
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).SendString("internal error")
 	}
@@ -159,8 +159,8 @@ func (c ItemController) Update(ctx *fiber.Ctx) error {
 }
 
 type ItemListQuery struct {
-	name    *string `query:"name"`
-	jancode *string `query:"janCode"`
+	Name    *string `query:"name"`
+	JanCode *string `query:"janCode"`
 }
 
 type ItemRequest struct {
