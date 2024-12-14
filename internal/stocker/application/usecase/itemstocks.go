@@ -84,6 +84,7 @@ func (ItemStockUsecase) toOutput(entity *entity.ItemStockEntity) *ItemStockUseca
 		ItemId:    entity.Item.Id,
 		StoreId:   entity.Item.StoreId,
 		Stock:     entity.Stock,
+		Price:     entity.Price,
 		StockMin:  entity.StockMin,
 		CreatedAt: entity.CreatedAt,
 		UpdatedAt: entity.UpdatedAt,

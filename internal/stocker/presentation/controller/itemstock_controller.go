@@ -203,7 +203,7 @@ type ItemStockResponse struct {
 	JanCode   string    `json:"janCode" validate:"required"`
 	ItemId    uuid.UUID `json:"itemId" validate:"required"`
 	StoreId   uuid.UUID `json:"storeId" validate:"required"`
-	Price     *int      `json:"price"`
+	Price     *int      `json:"price" validate:"required"`
 	Stock     int       `json:"stock" validate:"required"`
 	StockMin  *int      `json:"stockMin" validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`

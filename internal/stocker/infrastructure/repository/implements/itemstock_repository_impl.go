@@ -47,7 +47,7 @@ func (r ItemStockRepositoryImpl) Select(storeId, id uuid.UUID) (*entity.ItemStoc
 	if err := r.database.
 		Model(&model.ItemStockModel{}).
 		Select("item_stocks.*, items.name, items.jan_code, items.created_at as item_created_at, items.updated_at as item_updated_at").
-		Where("store_id = ? AND id = ?", storeId[:], id[:]).
+		Where("items.store_id = ? AND items.id = ?", storeId[:], id[:]).
 		Joins("JOIN items ON items.id = item_stocks.item_id").
 		First(&itemStockQueryModel).Error; err != nil {
 		return nil, err
@@ -73,11 +73,13 @@ func (r ItemStockRepositoryImpl) Insert(entity *entity.ItemStockEntity) (*entity
 }
 
 func (r ItemStockRepositoryImpl) Update(entity *entity.ItemStockEntity) (*entity.ItemStockEntity, error) {
-	model := r.toModel(entity)
-	if err := r.database.Save(model).Error; err != nil {
+	itemModel := r.toModel(entity)
+	if err := r.database.
+		Where("item_id = ?", itemModel.ItemId).
+		Save(itemModel).Error; err != nil {
 		return nil, err
 	}
-	entity, err := r.toEntity(model, entity.Item)
+	entity, err := r.toEntity(itemModel, entity.Item)
 	if err != nil {
 		return nil, err
 	}
