@@ -1,25 +1,26 @@
 package controller
 
 import (
-	"h11/backend/internal/stocker/application/service"
-	"h11/backend/internal/stocker/common"
 	"net/http"
 	"time"
+
+	"h11/backend/internal/stocker/application/usecase"
+	"h11/backend/internal/stocker/common"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
 type ItemController struct {
-	itemService          service.ItemService
-	authorizationService service.StoreAuthorizationService
+	itemUsecase          usecase.ItemUsecase
+	authorizationUsecase usecase.StoreAuthorizationUsecase
 }
 
 // NewItemController /* アイテムコントローラーのプロバイダ
-func NewItemController(itemService service.ItemService, authorizationService service.StoreAuthorizationService) ItemController {
+func NewItemController(itemUsecase usecase.ItemUsecase, authorizationUsecase usecase.StoreAuthorizationUsecase) ItemController {
 	return ItemController{
-		itemService,
-		authorizationService,
+		itemUsecase,
+		authorizationUsecase,
 	}
 }
 
@@ -29,6 +30,8 @@ func NewItemController(itemService service.ItemService, authorizationService ser
 //	@Tags		item
 //	@Produce	json
 //	@Param		storeId	path		string	true	"店舗ID"
+//	@Param		name	query		string	false	"商品名"
+//	@Param		janCode	query		string	false	"Janコード"
 //	@Success	200		{object}	ItemListResponse{list=[]ItemResponse}
 //	@Router		/stores/{storeId}/items [get]
 func (c ItemController) Index(ctx *fiber.Ctx) error {
@@ -42,14 +45,17 @@ func (c ItemController) Index(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+	// クエリパラメータを取得
+	var query ItemListQuery
+	if err := ctx.QueryParser(&query); err != nil {
+		return err
+	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// アイテムを取得
-	listOutput, err := c.itemService.GetItems(service.ItemServiceQueryListInput{
-		StoreId: storeId,
-	})
+	listOutput, err := c.itemUsecase.GetItems(storeId, query.JanCode, query.Name)
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).SendString("internal error")
 	}
@@ -61,39 +67,6 @@ func (c ItemController) Index(ctx *fiber.Ctx) error {
 	return ctx.JSON(ItemListResponse{
 		List: list,
 	})
-}
-
-// SelectByJancode /* 商品をJanCodeから取得
-//
-//	@Summary	商品をJanCodeから取得
-//	@Tags		item
-//	@Produce	json
-//	@Param		request	query		string	true	"Jancodeによる商品取得リクエスト"
-//	@Param		storeId	path		string	true	"店舗ID"
-//	@Success	200		{object}	ItemResponse
-//	@Router		/stores/{storeId}/items [get]
-func (c ItemController) SelectByJancode(ctx *fiber.Ctx) error {
-	// ユーザーID取得
-	userId, err := common.GetUserIdByContext(ctx)
-	if err != nil {
-		return err
-	}
-	// 店舗ID
-	storeId, err := uuid.Parse(ctx.Params("storeId"))
-	if err != nil {
-		return err
-	}
-	// Jancode取得
-	jancode := ctx.Query("janCode")
-	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
-		return err
-	}
-	output, err := c.itemService.SelectByJancode(storeId, jancode)
-	if err != nil {
-		return err
-	}
-	return ctx.JSON(ItemResponse(*output))
 }
 
 // Create /* 商品を新規作成
@@ -122,11 +95,11 @@ func (c ItemController) Create(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// 商品作成
-	output, err := c.itemService.CreateItem(service.ItemServiceInput{
+	output, err := c.itemUsecase.CreateItem(usecase.ItemUsecaseInput{
 		StoreId: storeId,
 		Name:    request.Name,
 		JanCode: request.JanCode,
@@ -169,11 +142,11 @@ func (c ItemController) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// 商品更新
-	output, err := c.itemService.UpdateItem(service.ItemServiceUpdateInput{
+	output, err := c.itemUsecase.UpdateItem(usecase.ItemUsecaseUpdateInput{
 		StoreId: storeId,
 		Id:      id,
 		Name:    request.Name,
@@ -183,6 +156,11 @@ func (c ItemController) Update(ctx *fiber.Ctx) error {
 		return err
 	}
 	return ctx.JSON(ItemResponse(*output))
+}
+
+type ItemListQuery struct {
+	Name    *string `query:"name"`
+	JanCode *string `query:"janCode"`
 }
 
 type ItemRequest struct {

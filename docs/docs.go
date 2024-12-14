@@ -198,23 +198,16 @@ const docTemplate = `{
                 }
             }
         },
-        "/stores/{storeId}/items": {
+        "/stores/{storeId}/itemStocks": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "item"
+                    "item_stock"
                 ],
-                "summary": "商品をJanCodeから取得",
+                "summary": "商品詳細一覧取得",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Jancodeによる商品取得リクエスト",
-                        "name": "request",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "店舗ID",
@@ -227,7 +220,189 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.ItemResponse"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controller.ItemStockListResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "list": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/controller.ItemStockResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item_stock"
+                ],
+                "summary": "商品詳細登録",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "商品詳細作成リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ItemStockRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ItemStockResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/{storeId}/itemStocks/{itemId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item_stock"
+                ],
+                "summary": "商品詳細取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品ID",
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ItemStockResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item_stock"
+                ],
+                "summary": "商品詳細更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品ID",
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "商品詳細更新リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ItemStockUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ItemStockResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/stores/{storeId}/items": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item"
+                ],
+                "summary": "商品一覧取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品名",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Janコード",
+                        "name": "janCode",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controller.ItemListResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "list": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/controller.ItemResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -312,27 +487,20 @@ const docTemplate = `{
                 }
             }
         },
-        "/stores/{storeId}/items/{itemId}/stocks": {
+        "/stores/{storeId}/stockIns": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "item_stock"
+                    "stock_ins"
                 ],
-                "summary": "商品詳細取得",
+                "summary": "入荷履歴一覧取得",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "店舗ID",
                         "name": "storeId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "商品ID",
-                        "name": "itemId",
                         "in": "path",
                         "required": true
                     }
@@ -341,7 +509,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.ItemStockResponse"
+                            "$ref": "#/definitions/controller.StockInListResponse"
                         }
                     }
                 }
@@ -351,9 +519,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "item_stock"
+                    "stock_ins"
                 ],
-                "summary": "商品詳細登録",
+                "summary": "入荷履歴作成取得",
                 "parameters": [
                     {
                         "type": "string",
@@ -363,18 +531,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
-                        "description": "商品ID",
-                        "name": "itemId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "商品詳細作成リクエスト",
+                        "description": "入荷履歴作成リクエスト",
                         "name": "request",
                         "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.ItemStockRequest"
+                            "$ref": "#/definitions/controller.StockInCreateRequest"
                         }
                     }
                 ],
@@ -382,91 +544,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.ItemStockResponse"
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "item_stock"
-                ],
-                "summary": "商品詳細更新",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "店舗ID",
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "商品ID",
-                        "name": "itemId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "商品詳細更新リクエスト",
-                        "name": "request",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ItemStockRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controller.ItemStockResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/stores/{storeId}/itemsStocks": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "item_stock"
-                ],
-                "summary": "商品詳細一覧取得",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "店舗ID",
-                        "name": "storeId",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/controller.ItemStockListResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "list": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/controller.ItemStockResponse"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/controller.StockInResponse"
                         }
                     }
                 }
@@ -551,12 +629,15 @@ const docTemplate = `{
         "controller.ItemStockRequest": {
             "type": "object",
             "required": [
-                "place",
-                "stock",
-                "stockMin"
+                "janCode",
+                "name",
+                "stock"
             ],
             "properties": {
-                "place": {
+                "janCode": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "price": {
@@ -575,7 +656,8 @@ const docTemplate = `{
             "required": [
                 "createdAt",
                 "itemId",
-                "place",
+                "janCode",
+                "name",
                 "stock",
                 "stockMin",
                 "storeId",
@@ -588,7 +670,10 @@ const docTemplate = `{
                 "itemId": {
                     "type": "string"
                 },
-                "place": {
+                "janCode": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 },
                 "price": {
@@ -608,6 +693,23 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.ItemStockUpdateRequest": {
+            "type": "object",
+            "required": [
+                "stock"
+            ],
+            "properties": {
+                "price": {
+                    "type": "integer"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "stockMin": {
+                    "type": "integer"
+                }
+            }
+        },
         "controller.JancodeResponse": {
             "type": "object",
             "required": [
@@ -623,6 +725,86 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.StockInCreateRequest": {
+            "type": "object",
+            "required": [
+                "itemId",
+                "place",
+                "price",
+                "stocks"
+            ],
+            "properties": {
+                "itemId": {
+                    "type": "string"
+                },
+                "place": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "stocks": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controller.StockInListResponse": {
+            "type": "object",
+            "required": [
+                "list"
+            ],
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.StockInResponse"
+                    }
+                }
+            }
+        },
+        "controller.StockInResponse": {
+            "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "itemId",
+                "name",
+                "place",
+                "price",
+                "stocks",
+                "storeId",
+                "updatedAt"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "itemId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "place": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "stocks": {
+                    "type": "integer"
+                },
+                "storeId": {
+                    "type": "string"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }

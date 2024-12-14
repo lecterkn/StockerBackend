@@ -1,25 +1,26 @@
 package controller
 
 import (
-	"h11/backend/internal/stocker/application/service"
-	"h11/backend/internal/stocker/common"
 	"net/http"
 	"time"
+
+	"h11/backend/internal/stocker/application/usecase"
+	"h11/backend/internal/stocker/common"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
 type ItemStockController struct {
-	itemStockService     service.ItemStockService
-	authorizationService service.StoreAuthorizationService
+	itemStockUsecase     usecase.ItemStockUsecase
+	authorizationUsecase usecase.StoreAuthorizationUsecase
 }
 
 // NewItemStockController /* プロバイダ
-func NewItemStockController(itemStockService service.ItemStockService, authorizationService service.StoreAuthorizationService) ItemStockController {
+func NewItemStockController(itemStockUsecase usecase.ItemStockUsecase, authorizationUsecase usecase.StoreAuthorizationUsecase) ItemStockController {
 	return ItemStockController{
-		itemStockService,
-		authorizationService,
+		itemStockUsecase,
+		authorizationUsecase,
 	}
 }
 
@@ -30,7 +31,7 @@ func NewItemStockController(itemStockService service.ItemStockService, authoriza
 //	@Produce	json
 //	@Param		storeId	path string		true	"店舗ID"
 //	@Success	200		{object}	ItemStockListResponse{list=[]ItemStockResponse}
-//	@Router		/stores/{storeId}/itemsStocks [get]
+//	@Router		/stores/{storeId}/itemStocks [get]
 func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 	// ユーザーID取得
 	userId, err := common.GetUserIdByContext(ctx)
@@ -43,11 +44,11 @@ func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 		return err
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// 商品詳細一覧取得
-	listOutput, err := c.itemStockService.Index(service.ItemStockServiceQueryListInput{
+	listOutput, err := c.itemStockUsecase.Index(usecase.ItemStockUsecaseQueryListInput{
 		StoreId: storeId,
 	})
 	if err != nil {
@@ -71,7 +72,7 @@ func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 //	@Param		storeId	path string		true	"店舗ID"
 //	@Param		itemId	path string		true	"商品ID"
 //	@Success	200		{object}	ItemStockResponse
-//	@Router		/stores/{storeId}/items/{itemId}/stocks [get]
+//	@Router		/stores/{storeId}/itemStocks/{itemId} [get]
 func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 	// ユーザーID取得
 	userId, err := common.GetUserIdByContext(ctx)
@@ -89,13 +90,13 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusForbidden).SendString("invalid id")
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// 商品詳細取得
-	output, err := c.itemStockService.Select(service.ItemStockServiceQueryInput{
+	output, err := c.itemStockUsecase.Select(usecase.ItemStockUsecaseQueryInput{
 		StoreId: storeId,
-		Id:      id,
+		ItemId:  id,
 	})
 	if err != nil {
 		return ctx.Status(http.StatusNotFound).SendString("not found")
@@ -109,10 +110,9 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 //	@Tags		item_stock
 //	@Produce	json
 //	@Param		storeId	path string		true				"店舗ID"
-//	@Param		itemId	path string		true				"商品ID"
-//	@Param		request	body		ItemStockRequest	false	"商品詳細作成リクエスト"
+//	@Param		request	body		ItemStockRequest	true	"商品詳細作成リクエスト"
 //	@Success	200		{object}	ItemStockResponse
-//	@Router		/stores/{storeId}/items/{itemId}/stocks [post]
+//	@Router		/stores/{storeId}/itemStocks [post]
 func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 	// ユーザーID取得
 	userId, err := common.GetUserIdByContext(ctx)
@@ -124,25 +124,19 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	// 商品ID取得
-	id, err := uuid.Parse(ctx.Params("itemId"))
-	if err != nil {
-		return ctx.Status(http.StatusForbidden).SendString("invalid id")
-	}
 	// 商品詳細作成リクエスト取得
 	var request ItemStockRequest
 	if err = ctx.BodyParser(&request); err != nil {
 		return ctx.Status(http.StatusForbidden).SendString("invalid requestBody")
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// 商品詳細作成
-	output, err := c.itemStockService.Create(service.ItemStockServiceInput{
-		StoreId:  storeId,
-		ItemId:   id,
-		Place:    request.Place,
+	output, err := c.itemStockUsecase.Create(storeId, usecase.ItemStockUsecaseInput{
+		Name:     request.Name,
+		JanCode:  request.JanCode,
 		Price:    request.Price,
 		Stock:    request.Stock,
 		StockMin: request.StockMin,
@@ -160,9 +154,9 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 //	@Produce	json
 //	@Param		storeId	path string		true				"店舗ID"
 //	@Param		itemId	path string		true				"商品ID"
-//	@Param		request	body		ItemStockRequest	false	"商品詳細更新リクエスト"
+//	@Param		request	body		ItemStockUpdateRequest	true	"商品詳細更新リクエスト"
 //	@Success	200		{object}	ItemStockResponse
-//	@Router		/stores/{storeId}/items/{itemId}/stocks [patch]
+//	@Router		/stores/{storeId}/itemStocks/{itemId} [patch]
 func (c ItemStockController) Update(ctx *fiber.Ctx) error {
 	// ユーザーID取得
 	userId, err := common.GetUserIdByContext(ctx)
@@ -185,14 +179,11 @@ func (c ItemStockController) Update(ctx *fiber.Ctx) error {
 		return ctx.Status(http.StatusBadRequest).SendString("invalid requestBody")
 	}
 	// 店舗とユーザーの認証
-	if err := c.authorizationService.IsUserRelated(storeId, *userId); err != nil {
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
 		return err
 	}
 	// 商品詳細更新
-	output, err := c.itemStockService.Update(service.ItemStockServiceInput{
-		StoreId:  storeId,
-		ItemId:   id,
-		Place:    request.Place,
+	output, err := c.itemStockUsecase.Update(storeId, id, usecase.ItemStockUsecaseUpdateInput{
 		Price:    request.Price,
 		Stock:    request.Stock,
 		StockMin: request.StockMin,
@@ -208,19 +199,27 @@ type ItemStockListResponse struct {
 }
 
 type ItemStockResponse struct {
+	Name      string    `json:"name" validate:"required"`
+	JanCode   string    `json:"janCode" validate:"required"`
 	ItemId    uuid.UUID `json:"itemId" validate:"required"`
 	StoreId   uuid.UUID `json:"storeId" validate:"required"`
-	Place     string    `json:"place" validate:"required"`
-	Price     *int      `json:"price"`
+	Price     *int      `json:"price" validate:"required"`
 	Stock     int       `json:"stock" validate:"required"`
-	StockMin  int       `json:"stockMin" validate:"required"`
+	StockMin  *int      `json:"stockMin" validate:"required"`
 	CreatedAt time.Time `json:"createdAt" validate:"required"`
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
+type ItemStockUpdateRequest struct {
+	Price    *int `json:"price"`
+	Stock    int  `json:"stock" validate:"required"`
+	StockMin *int `json:"stockMin"`
+}
+
 type ItemStockRequest struct {
-	Place    string `json:"place" validate:"required"`
-	Price    *int    `json:"price"`
+	Name     string `json:"name" validate:"required"`
+	JanCode  string `json:"janCode" validate:"required"`
+	Price    *int   `json:"price"`
 	Stock    int    `json:"stock" validate:"required"`
-	StockMin int    `json:"stockMin" validate:"required"`
+	StockMin *int   `json:"stockMin"`
 }

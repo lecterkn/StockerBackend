@@ -52,7 +52,9 @@ definitions:
     type: object
   controller.ItemStockRequest:
     properties:
-      place:
+      janCode:
+        type: string
+      name:
         type: string
       price:
         type: integer
@@ -61,9 +63,9 @@ definitions:
       stockMin:
         type: integer
     required:
-    - place
+    - janCode
+    - name
     - stock
-    - stockMin
     type: object
   controller.ItemStockResponse:
     properties:
@@ -71,7 +73,9 @@ definitions:
         type: string
       itemId:
         type: string
-      place:
+      janCode:
+        type: string
+      name:
         type: string
       price:
         type: integer
@@ -86,11 +90,23 @@ definitions:
     required:
     - createdAt
     - itemId
-    - place
+    - janCode
+    - name
     - stock
     - stockMin
     - storeId
     - updatedAt
+    type: object
+  controller.ItemStockUpdateRequest:
+    properties:
+      price:
+        type: integer
+      stock:
+        type: integer
+      stockMin:
+        type: integer
+    required:
+    - stock
     type: object
   controller.JancodeResponse:
     properties:
@@ -104,6 +120,62 @@ definitions:
     - brandName
     - makerName
     - name
+    type: object
+  controller.StockInCreateRequest:
+    properties:
+      itemId:
+        type: string
+      place:
+        type: string
+      price:
+        type: integer
+      stocks:
+        type: integer
+    required:
+    - itemId
+    - place
+    - price
+    - stocks
+    type: object
+  controller.StockInListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/controller.StockInResponse'
+        type: array
+    required:
+    - list
+    type: object
+  controller.StockInResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      itemId:
+        type: string
+      name:
+        type: string
+      place:
+        type: string
+      price:
+        type: integer
+      stocks:
+        type: integer
+      storeId:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - createdAt
+    - id
+    - itemId
+    - name
+    - place
+    - price
+    - stocks
+    - storeId
+    - updatedAt
     type: object
   controller.StoreCreateRequest:
     properties:
@@ -300,14 +372,9 @@ paths:
       summary: 店舗更新
       tags:
       - store
-  /stores/{storeId}/items:
+  /stores/{storeId}/itemStocks:
     get:
       parameters:
-      - description: Jancodeによる商品取得リクエスト
-        in: query
-        name: request
-        required: true
-        type: string
       - description: 店舗ID
         in: path
         name: storeId
@@ -319,8 +386,122 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.ItemResponse'
-      summary: 商品をJanCodeから取得
+            allOf:
+            - $ref: '#/definitions/controller.ItemStockListResponse'
+            - properties:
+                list:
+                  items:
+                    $ref: '#/definitions/controller.ItemStockResponse'
+                  type: array
+              type: object
+      summary: 商品詳細一覧取得
+      tags:
+      - item_stock
+    post:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      - description: 商品詳細作成リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ItemStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemStockResponse'
+      summary: 商品詳細登録
+      tags:
+      - item_stock
+  /stores/{storeId}/itemStocks/{itemId}:
+    get:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      - description: 商品ID
+        in: path
+        name: itemId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemStockResponse'
+      summary: 商品詳細取得
+      tags:
+      - item_stock
+    patch:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      - description: 商品ID
+        in: path
+        name: itemId
+        required: true
+        type: string
+      - description: 商品詳細更新リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ItemStockUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemStockResponse'
+      summary: 商品詳細更新
+      tags:
+      - item_stock
+  /stores/{storeId}/items:
+    get:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      - description: 商品名
+        in: query
+        name: name
+        type: string
+      - description: Janコード
+        in: query
+        name: janCode
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controller.ItemListResponse'
+            - properties:
+                list:
+                  items:
+                    $ref: '#/definitions/controller.ItemResponse'
+                  type: array
+              type: object
+      summary: 商品一覧取得
       tags:
       - item
     post:
@@ -375,7 +556,7 @@ paths:
       summary: 商品更新
       tags:
       - item
-  /stores/{storeId}/items/{itemId}/stocks:
+  /stores/{storeId}/stockIns:
     get:
       parameters:
       - description: 店舗ID
@@ -383,48 +564,16 @@ paths:
         name: storeId
         required: true
         type: string
-      - description: 商品ID
-        in: path
-        name: itemId
-        required: true
-        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.ItemStockResponse'
-      summary: 商品詳細取得
+            $ref: '#/definitions/controller.StockInListResponse'
+      summary: 入荷履歴一覧取得
       tags:
-      - item_stock
-    patch:
-      parameters:
-      - description: 店舗ID
-        in: path
-        name: storeId
-        required: true
-        type: string
-      - description: 商品ID
-        in: path
-        name: itemId
-        required: true
-        type: string
-      - description: 商品詳細更新リクエスト
-        in: body
-        name: request
-        schema:
-          $ref: '#/definitions/controller.ItemStockRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.ItemStockResponse'
-      summary: 商品詳細更新
-      tags:
-      - item_stock
+      - stock_ins
     post:
       parameters:
       - description: 店舗ID
@@ -432,49 +581,20 @@ paths:
         name: storeId
         required: true
         type: string
-      - description: 商品ID
-        in: path
-        name: itemId
-        required: true
-        type: string
-      - description: 商品詳細作成リクエスト
+      - description: 入荷履歴作成リクエスト
         in: body
         name: request
-        schema:
-          $ref: '#/definitions/controller.ItemStockRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controller.ItemStockResponse'
-      summary: 商品詳細登録
-      tags:
-      - item_stock
-  /stores/{storeId}/itemsStocks:
-    get:
-      parameters:
-      - description: 店舗ID
-        in: path
-        name: storeId
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/controller.StockInCreateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            allOf:
-            - $ref: '#/definitions/controller.ItemStockListResponse'
-            - properties:
-                list:
-                  items:
-                    $ref: '#/definitions/controller.ItemStockResponse'
-                  type: array
-              type: object
-      summary: 商品詳細一覧取得
+            $ref: '#/definitions/controller.StockInResponse'
+      summary: 入荷履歴作成取得
       tags:
-      - item_stock
+      - stock_ins
 swagger: "2.0"

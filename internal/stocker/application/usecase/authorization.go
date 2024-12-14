@@ -1,4 +1,4 @@
-package service
+package usecase
 
 import (
 	"fmt"
@@ -9,17 +9,17 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type AuthorizationService struct {
+type AuthorizationUsecase struct {
 	userRepository repository.UserRepository
 }
 
-func NewAuthorizationService(userRepository repository.UserRepository) AuthorizationService {
-	return AuthorizationService{
+func NewAuthorizationUsecase(userRepository repository.UserRepository) AuthorizationUsecase {
+	return AuthorizationUsecase{
 		userRepository,
 	}
 }
 
-func (s AuthorizationService) Login(input AuthorizationServiceInput) (*AuthorizationServiceOutput, error) {
+func (s AuthorizationUsecase) Login(input AuthorizationUsecaseInput) (*AuthorizationUsecaseOutput, error) {
 	// ユーザー取得
 	userEntity, err := s.userRepository.SelectByName(input.Name)
 	if err != nil {
@@ -38,16 +38,16 @@ func (s AuthorizationService) Login(input AuthorizationServiceInput) (*Authoriza
 	if err != nil {
 		return nil, err
 	}
-	return &AuthorizationServiceOutput{
+	return &AuthorizationUsecaseOutput{
 		Token: *jwtToken,
 	}, nil
 }
 
-type AuthorizationServiceInput struct {
+type AuthorizationUsecaseInput struct {
 	Name     string
 	Password string
 }
 
-type AuthorizationServiceOutput struct {
+type AuthorizationUsecaseOutput struct {
 	Token string
 }

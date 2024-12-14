@@ -8,8 +8,9 @@ package stocker
 
 import (
 	"github.com/google/wire"
-	"h11/backend/internal/stocker/application/service"
+	"h11/backend/internal/stocker/application/usecase"
 	"h11/backend/internal/stocker/domain/repository"
+	"h11/backend/internal/stocker/domain/service"
 	"h11/backend/internal/stocker/infrastructure/database"
 	"h11/backend/internal/stocker/infrastructure/repository/implements"
 	"h11/backend/internal/stocker/presentation/controller"
@@ -19,29 +20,34 @@ import (
 
 // コントローラーセット作成
 func InitializeController() *ControllersSet {
-	jancodeService := service.NewJancodeService()
-	jancodeController := controller.NewJancodeController(jancodeService)
+	jancodeUsecase := usecase.NewJancodeUsecase()
+	jancodeController := controller.NewJancodeController(jancodeUsecase)
 	db := database.GetMySQLConnection()
 	itemRepositoryImpl := implements.NewItemRepositoryImpl(db)
-	itemService := service.NewItemService(itemRepositoryImpl)
+	itemUsecase := usecase.NewItemUsecase(itemRepositoryImpl)
 	storeRepositoryImpl := implements.NewStoreRepositoryImpl(db)
-	storeAuthorizationService := service.NewStoreAuthorizationService(storeRepositoryImpl)
-	itemController := controller.NewItemController(itemService, storeAuthorizationService)
+	storeAuthorizationUsecase := usecase.NewStoreAuthorizationUsecase(storeRepositoryImpl)
+	itemController := controller.NewItemController(itemUsecase, storeAuthorizationUsecase)
 	itemStockRepositoryImpl := implements.NewItemStockRepositoryImpl(db)
-	itemStockService := service.NewItemStockService(itemStockRepositoryImpl)
-	itemStockController := controller.NewItemStockController(itemStockService, storeAuthorizationService)
+	itemStockDomainService := service.NewItemStockDomainService(itemRepositoryImpl, itemStockRepositoryImpl)
+	itemStockUsecase := usecase.NewItemStockUsecase(itemStockRepositoryImpl, itemRepositoryImpl, itemStockDomainService)
+	itemStockController := controller.NewItemStockController(itemStockUsecase, storeAuthorizationUsecase)
 	userRepositoryImpl := implements.NewUserRepositoryImpl(db)
-	userService := service.NewUserService(userRepositoryImpl)
-	authorizationService := service.NewAuthorizationService(userRepositoryImpl)
-	userController := controller.NewUserController(userService, authorizationService)
-	storeService := service.NewStoreService(userRepositoryImpl, storeRepositoryImpl)
-	storeController := controller.NewStoreController(storeService)
+	userUsecase := usecase.NewUserUsecase(userRepositoryImpl)
+	authorizationUsecase := usecase.NewAuthorizationUsecase(userRepositoryImpl)
+	userController := controller.NewUserController(userUsecase, authorizationUsecase)
+	storeUsecase := usecase.NewStoreUsecase(userRepositoryImpl, storeRepositoryImpl)
+	storeController := controller.NewStoreController(storeUsecase)
+	stockInRepositoryImpl := implements.NewStockInRepositoryImpl(db)
+	stockInUsecase := usecase.NewStockInUsecase(stockInRepositoryImpl, itemRepositoryImpl)
+	stockInController := controller.NewStockInController(stockInUsecase)
 	controllersSet := &ControllersSet{
 		JancodeController:   jancodeController,
 		ItemController:      itemController,
 		ItemStockController: itemStockController,
 		UserController:      userController,
 		StoreController:     storeController,
+		StockInController:   stockInController,
 	}
 	return controllersSet
 }
@@ -52,13 +58,15 @@ func InitializeController() *ControllersSet {
 var databaseSet = wire.NewSet(database.GetMySQLConnection)
 
 // リポジトリ
-var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)), implements.NewItemStockRepositoryImpl, wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)), implements.NewUserRepositoryImpl, wire.Bind(new(repository.UserRepository), new(implements.UserRepositoryImpl)), implements.NewStoreRepositoryImpl, wire.Bind(new(repository.StoreRepository), new(implements.StoreRepositoryImpl)))
+var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)), implements.NewItemStockRepositoryImpl, wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)), implements.NewUserRepositoryImpl, wire.Bind(new(repository.UserRepository), new(implements.UserRepositoryImpl)), implements.NewStoreRepositoryImpl, wire.Bind(new(repository.StoreRepository), new(implements.StoreRepositoryImpl)), implements.NewStockInRepositoryImpl, wire.Bind(new(repository.StockInRepository), new(implements.StockInRepositoryImpl)))
+
+var serviceSet = wire.NewSet(service.NewItemStockDomainService)
 
 // サービス
-var serviceSet = wire.NewSet(service.NewJancodeService, service.NewItemService, service.NewItemStockService, service.NewUserService, service.NewAuthorizationService, service.NewStoreService, service.NewStoreAuthorizationService)
+var usecaseSet = wire.NewSet(usecase.NewJancodeUsecase, usecase.NewItemUsecase, usecase.NewItemStockUsecase, usecase.NewUserUsecase, usecase.NewAuthorizationUsecase, usecase.NewStoreUsecase, usecase.NewStoreAuthorizationUsecase, usecase.NewStockInUsecase)
 
 // コントローラー
-var controllerSet = wire.NewSet(controller.NewJancodeController, controller.NewItemController, controller.NewItemStockController, controller.NewUserController, controller.NewStoreController)
+var controllerSet = wire.NewSet(controller.NewJancodeController, controller.NewItemController, controller.NewItemStockController, controller.NewUserController, controller.NewStoreController, controller.NewStockInController)
 
 // コントローラーセット
 type ControllersSet struct {
@@ -67,4 +75,5 @@ type ControllersSet struct {
 	ItemStockController controller.ItemStockController
 	UserController      controller.UserController
 	StoreController     controller.StoreController
+	StockInController   controller.StockInController
 }

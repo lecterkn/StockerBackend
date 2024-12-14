@@ -1,18 +1,18 @@
 package controller
 
 import (
-	"h11/backend/internal/stocker/application/service"
+	"h11/backend/internal/stocker/application/usecase"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type JancodeController struct {
-	jancodeService service.JancodeService
+	jancodeUsecase usecase.JancodeUsecase
 }
 
-func NewJancodeController(jancodeService service.JancodeService) JancodeController {
+func NewJancodeController(jancodeUsecase usecase.JancodeUsecase) JancodeController {
 	return JancodeController{
-		jancodeService,
+		jancodeUsecase,
 	}
 }
 
@@ -26,7 +26,7 @@ func NewJancodeController(jancodeService service.JancodeService) JancodeControll
 //	@Router		/products/{janCode} [get]
 func (c JancodeController) Select(ctx *fiber.Ctx) error {
 	janCode := ctx.Params("janCode")
-	output, err := c.jancodeService.GetProductByCode(janCode)
+	output, err := c.jancodeUsecase.GetProductByCode(janCode)
 	if err != nil {
 		return err
 	}

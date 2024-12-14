@@ -1,4 +1,4 @@
-package service
+package usecase
 
 import (
 	"fmt"
@@ -7,17 +7,17 @@ import (
 	"github.com/google/uuid"
 )
 
-type StoreAuthorizationService struct {
+type StoreAuthorizationUsecase struct {
 	storeRepository repository.StoreRepository
 }
 
-func NewStoreAuthorizationService(storeRepository repository.StoreRepository) StoreAuthorizationService {
-	return StoreAuthorizationService{
+func NewStoreAuthorizationUsecase(storeRepository repository.StoreRepository) StoreAuthorizationUsecase {
+	return StoreAuthorizationUsecase{
 		storeRepository,
 	}
 }
 
-func (s StoreAuthorizationService) IsUserRelated(storeId, userId uuid.UUID) error {
+func (s StoreAuthorizationUsecase) IsUserRelated(storeId, userId uuid.UUID) error {
 	storeEntity, err := s.storeRepository.Select(storeId)
 	if err != nil {
 		return err

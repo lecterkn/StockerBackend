@@ -4,12 +4,14 @@
 package stocker
 
 import (
-	"github.com/google/wire"
-	"h11/backend/internal/stocker/application/service"
+	"h11/backend/internal/stocker/application/usecase"
 	"h11/backend/internal/stocker/domain/repository"
+	"h11/backend/internal/stocker/domain/service"
 	"h11/backend/internal/stocker/infrastructure/database"
 	"h11/backend/internal/stocker/infrastructure/repository/implements"
 	"h11/backend/internal/stocker/presentation/controller"
+
+	"github.com/google/wire"
 )
 
 // データベース
@@ -27,17 +29,24 @@ var repositorySet = wire.NewSet(
 	wire.Bind(new(repository.UserRepository), new(implements.UserRepositoryImpl)),
 	implements.NewStoreRepositoryImpl,
 	wire.Bind(new(repository.StoreRepository), new(implements.StoreRepositoryImpl)),
+	implements.NewStockInRepositoryImpl,
+	wire.Bind(new(repository.StockInRepository), new(implements.StockInRepositoryImpl)),
+)
+
+var serviceSet = wire.NewSet(
+	service.NewItemStockDomainService,
 )
 
 // サービス
-var serviceSet = wire.NewSet(
-	service.NewJancodeService,
-	service.NewItemService,
-	service.NewItemStockService,
-	service.NewUserService,
-	service.NewAuthorizationService,
-	service.NewStoreService,
-	service.NewStoreAuthorizationService,
+var usecaseSet = wire.NewSet(
+	usecase.NewJancodeUsecase,
+	usecase.NewItemUsecase,
+	usecase.NewItemStockUsecase,
+	usecase.NewUserUsecase,
+	usecase.NewAuthorizationUsecase,
+	usecase.NewStoreUsecase,
+	usecase.NewStoreAuthorizationUsecase,
+	usecase.NewStockInUsecase,
 )
 
 // コントローラー
@@ -47,6 +56,7 @@ var controllerSet = wire.NewSet(
 	controller.NewItemStockController,
 	controller.NewUserController,
 	controller.NewStoreController,
+	controller.NewStockInController,
 )
 
 // コントローラーセット
@@ -56,6 +66,7 @@ type ControllersSet struct {
 	ItemStockController controller.ItemStockController
 	UserController      controller.UserController
 	StoreController     controller.StoreController
+	StockInController   controller.StockInController
 }
 
 // コントローラーセット作成
@@ -64,6 +75,7 @@ func InitializeController() *ControllersSet {
 		databaseSet,
 		repositorySet,
 		serviceSet,
+		usecaseSet,
 		controllerSet,
 		wire.Struct(new(ControllersSet), "*"),
 	)

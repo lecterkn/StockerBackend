@@ -1,4 +1,4 @@
-package service
+package usecase
 
 import (
 	"fmt"
@@ -9,42 +9,42 @@ import (
 	"github.com/google/uuid"
 )
 
-type StoreService struct {
+type StoreUsecase struct {
 	userRepository  repository.UserRepository
 	storeRepository repository.StoreRepository
 }
 
-func NewStoreService(userRepository repository.UserRepository, storeRepository repository.StoreRepository) StoreService {
-	return StoreService{
+func NewStoreUsecase(userRepository repository.UserRepository, storeRepository repository.StoreRepository) StoreUsecase {
+	return StoreUsecase{
 		userRepository,
 		storeRepository,
 	}
 }
 
-func (s StoreService) Index(input StoreServiceQueryListInput) (*StoreServiceListOutput, error) {
+func (s StoreUsecase) Index(input StoreUsecaseQueryListInput) (*StoreUsecaseListOutput, error) {
 	entities, err := s.storeRepository.Index(input.UserId)
 	if err != nil {
 		return nil, err
 	}
-	var list []StoreServiceOutput
+	var list []StoreUsecaseOutput
 	for _, entity := range entities {
-		list = append(list, StoreServiceOutput(entity))
+		list = append(list, StoreUsecaseOutput(entity))
 	}
-	return &StoreServiceListOutput{
+	return &StoreUsecaseListOutput{
 		List: list,
 	}, nil
 }
 
-func (s StoreService) Select(input StoreServiceQueryInput) (*StoreServiceOutput, error) {
+func (s StoreUsecase) Select(input StoreUsecaseQueryInput) (*StoreUsecaseOutput, error) {
 	entity, err := s.storeRepository.Select(input.Id)
 	if err != nil {
 		return nil, err
 	}
-	output := StoreServiceOutput(*entity)
+	output := StoreUsecaseOutput(*entity)
 	return &output, nil
 }
 
-func (s StoreService) Create(input StoreServiceCommandInput) (*StoreServiceOutput, error) {
+func (s StoreUsecase) Create(input StoreUsecaseCommandInput) (*StoreUsecaseOutput, error) {
 	entity, err := entity.NewStoreEntity(input.UserId, input.Name)
 	if err != nil {
 		return nil, err
@@ -53,11 +53,11 @@ func (s StoreService) Create(input StoreServiceCommandInput) (*StoreServiceOutpu
 	if err != nil {
 		return nil, err
 	}
-	output := StoreServiceOutput(*entity)
+	output := StoreUsecaseOutput(*entity)
 	return &output, nil
 }
 
-func (s StoreService) Update(input StoreServiceCommandUpdateInput) (*StoreServiceOutput, error) {
+func (s StoreUsecase) Update(input StoreUsecaseCommandUpdateInput) (*StoreUsecaseOutput, error) {
 	entity, err := s.storeRepository.Select(input.Id)
 	if err != nil {
 		return nil, err
@@ -70,30 +70,30 @@ func (s StoreService) Update(input StoreServiceCommandUpdateInput) (*StoreServic
 	if err != nil {
 		return nil, err
 	}
-	output := StoreServiceOutput(*entity)
+	output := StoreUsecaseOutput(*entity)
 	return &output, nil
 }
 
-type StoreServiceQueryListInput struct {
+type StoreUsecaseQueryListInput struct {
 	UserId uuid.UUID
 }
 
-type StoreServiceQueryInput struct {
+type StoreUsecaseQueryInput struct {
 	Id uuid.UUID
 }
 
-type StoreServiceCommandInput struct {
+type StoreUsecaseCommandInput struct {
 	UserId uuid.UUID
 	Name   string
 }
 
-type StoreServiceCommandUpdateInput struct {
+type StoreUsecaseCommandUpdateInput struct {
 	Id     uuid.UUID
 	UserId uuid.UUID
 	Name   string
 }
 
-type StoreServiceOutput struct {
+type StoreUsecaseOutput struct {
 	Id        uuid.UUID
 	UserId    uuid.UUID
 	Name      string
@@ -101,6 +101,6 @@ type StoreServiceOutput struct {
 	UpdatedAt time.Time
 }
 
-type StoreServiceListOutput struct {
-	List []StoreServiceOutput
+type StoreUsecaseListOutput struct {
+	List []StoreUsecaseOutput
 }
