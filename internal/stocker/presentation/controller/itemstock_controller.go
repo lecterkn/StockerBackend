@@ -29,7 +29,7 @@ func NewItemStockController(itemStockUsecase usecase.ItemStockUsecase, authoriza
 //	@Summary	商品詳細一覧取得
 //	@Tags		item_stock
 //	@Produce	json
-//	@Param		storeId	path string		true	"店舗ID"
+//	@Param		storeId	path		string	true	"店舗ID"
 //	@Success	200		{object}	ItemStockListResponse{list=[]ItemStockResponse}
 //	@Router		/stores/{storeId}/itemStocks [get]
 func (c ItemStockController) Index(ctx *fiber.Ctx) error {
@@ -69,8 +69,8 @@ func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 //	@Summary	商品詳細取得
 //	@Tags		item_stock
 //	@Produce	json
-//	@Param		storeId	path string		true	"店舗ID"
-//	@Param		itemId	path string		true	"商品ID"
+//	@Param		storeId	path		string	true	"店舗ID"
+//	@Param		itemId	path		string	true	"商品ID"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/itemStocks/{itemId} [get]
 func (c ItemStockController) Select(ctx *fiber.Ctx) error {
@@ -109,7 +109,7 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 //	@Summary	商品詳細登録
 //	@Tags		item_stock
 //	@Produce	json
-//	@Param		storeId	path string		true				"店舗ID"
+//	@Param		storeId	path		string				true	"店舗ID"
 //	@Param		request	body		ItemStockRequest	true	"商品詳細作成リクエスト"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/itemStocks [post]
@@ -152,8 +152,8 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 //	@Summary	商品詳細更新
 //	@Tags		item_stock
 //	@Produce	json
-//	@Param		storeId	path string		true				"店舗ID"
-//	@Param		itemId	path string		true				"商品ID"
+//	@Param		storeId	path		string					true	"店舗ID"
+//	@Param		itemId	path		string					true	"商品ID"
 //	@Param		request	body		ItemStockUpdateRequest	true	"商品詳細更新リクエスト"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/itemStocks/{itemId} [patch]
