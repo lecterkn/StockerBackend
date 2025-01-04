@@ -88,5 +88,5 @@ type StockOutCreateRequest struct {
 }
 
 type StockOutListResponse struct {
-	List []StockOutResponse `validate:"required"`
+	List []StockOutResponse `json:"list" validate:"required"`
 }

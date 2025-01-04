@@ -20,7 +20,13 @@ func NewStockOutRepositoryImpl(database *gorm.DB) StockOutRepositoryImpl {
 
 func (r StockOutRepositoryImpl) Index(storeId uuid.UUID) ([]entity.StockOutEntity, error) {
 	var models []model.StockOutQueryModel
-	if err := r.database.Where("store_id = ?", storeId[:]).Find(&models).Error; err != nil {
+	if err := r.database.
+		Model(&model.StockOutModel{}).
+		Select("stock_outs.*, items.name, items.jan_code, items.created_at as item_created_at, items.updated_at as item_updated_at").
+		Joins("join items on stock_outs.item_id = items.id").
+		Where("stock_outs.store_id = ?", storeId[:]).
+		Order("stock_outs.id DESC").
+		Find(&models).Error; err != nil {
 		return nil, err
 	}
 	var entities []entity.StockOutEntity
@@ -87,6 +93,7 @@ func (StockOutRepositoryImpl) toEntity(model *model.StockOutModel, itemEntity en
 		Stocks:    model.Stocks,
 		CreatedAt: model.CreatedAt,
 		UpdatedAt: model.UpdatedAt,
+		Item:      itemEntity,
 	}, nil
 }
 
@@ -95,7 +102,6 @@ func (StockOutRepositoryImpl) toModel(entity *entity.StockOutEntity) *model.Stoc
 		Id:        entity.Id[:],
 		StoreId:   entity.Item.StoreId[:],
 		ItemId:    entity.Item.Id[:],
-		Place:     entity.Place,
 		Price:     entity.Price,
 		Stocks:    entity.Stocks,
 		CreatedAt: entity.CreatedAt,
