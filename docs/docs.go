@@ -607,7 +607,22 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.StockOutListResponse"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/controller.StockOutListResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "list": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/controller.StockOutResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -931,7 +946,18 @@ const docTemplate = `{
             }
         },
         "controller.StockOutListResponse": {
-            "type": "object"
+            "type": "object",
+            "required": [
+                "list"
+            ],
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.StockOutResponse"
+                    }
+                }
+            }
         },
         "controller.StockOutResponse": {
             "type": "object",

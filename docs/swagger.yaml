@@ -194,6 +194,13 @@ definitions:
     - stocks
     type: object
   controller.StockOutListResponse:
+    properties:
+      list:
+        items:
+          $ref: '#/definitions/controller.StockOutResponse'
+        type: array
+    required:
+    - list
     type: object
   controller.StockOutResponse:
     properties:
@@ -683,7 +690,14 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.StockOutListResponse'
+            allOf:
+            - $ref: '#/definitions/controller.StockOutListResponse'
+            - properties:
+                list:
+                  items:
+                    $ref: '#/definitions/controller.StockOutResponse'
+                  type: array
+              type: object
       summary: 販売履歴一覧取得取得
       tags:
       - stock_outs

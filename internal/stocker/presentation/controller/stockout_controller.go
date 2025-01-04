@@ -25,7 +25,7 @@ func NewStockOutController(stockOutUsecase usecase.StockOutUsecase) StockOutCont
 //	@Tags		stock_outs
 //	@Produce	json
 //	@Param		storeId	path		string	true	"店舗ID"
-//	@Success	200		{object}	StockOutListResponse
+//	@Success	200		{object}	StockOutListResponse{list=[]StockOutResponse}
 //	@Router		/stores/{storeId}/stockOuts [get]
 func (c StockOutController) Index(ctx *fiber.Ctx) error {
 	storeId, err := uuid.Parse(ctx.Params("storeId"))
@@ -90,5 +90,5 @@ type StockOutCreateRequest struct {
 }
 
 type StockOutListResponse struct {
-	list []StockOutResponse `validate:"required"`
+	List []StockOutResponse `validate:"required"`
 }
