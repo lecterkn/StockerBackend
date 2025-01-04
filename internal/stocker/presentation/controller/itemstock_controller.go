@@ -29,7 +29,7 @@ func NewItemStockController(itemStockUsecase usecase.ItemStockUsecase, authoriza
 //	@Summary	商品詳細一覧取得
 //	@Tags		item_stock
 //	@Produce	json
-//	@Param		storeId	path string		true	"店舗ID"
+//	@Param		storeId	path		string	true	"店舗ID"
 //	@Success	200		{object}	ItemStockListResponse{list=[]ItemStockResponse}
 //	@Router		/stores/{storeId}/itemStocks [get]
 func (c ItemStockController) Index(ctx *fiber.Ctx) error {
@@ -69,8 +69,8 @@ func (c ItemStockController) Index(ctx *fiber.Ctx) error {
 //	@Summary	商品詳細取得
 //	@Tags		item_stock
 //	@Produce	json
-//	@Param		storeId	path string		true	"店舗ID"
-//	@Param		itemId	path string		true	"商品ID"
+//	@Param		storeId	path		string	true	"店舗ID"
+//	@Param		itemId	path		string	true	"商品ID"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/itemStocks/{itemId} [get]
 func (c ItemStockController) Select(ctx *fiber.Ctx) error {
@@ -104,12 +104,49 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 	return ctx.JSON(ItemStockResponse(*output))
 }
 
+// SelectByJancode /* 商品詳細取得用エンドポイント
+//
+//	@Summary	Jancodeから商品詳細取得
+//	@Tags		item_stock
+//	@Produce	json
+//	@Param		storeId	path		string	true	"店舗ID"
+//	@Param		jancode	path		string	true	"JANコード"
+//	@Success	200		{object}	ItemStockResponse
+//	@Router		/stores/{storeId}/itemStocks/jancodes/{jancode} [get]
+func (c ItemStockController) SelectByJancode(ctx *fiber.Ctx) error {
+	// ユーザーID取得
+	userId, err := common.GetUserIdByContext(ctx)
+	if err != nil {
+		return err
+	}
+	// 店舗ID取得
+	storeId, err := uuid.Parse(ctx.Params("storeId"))
+	if err != nil {
+		return err
+	}
+	// 商品ID取得
+	jancode := ctx.Params("jancode")
+	// 店舗とユーザーの認証
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
+		return err
+	}
+	// 商品詳細取得
+	output, err := c.itemStockUsecase.SelectByJancode(usecase.ItemStockUsecaseJancodeQueryInput{
+		StoreId: storeId,
+		Jancode: jancode,
+	})
+	if err != nil {
+		return ctx.Status(http.StatusNotFound).SendString("not found")
+	}
+	return ctx.JSON(ItemStockResponse(*output))
+}
+
 // Create /* 商品詳細作成用エンドポイント
 //
 //	@Summary	商品詳細登録
 //	@Tags		item_stock
 //	@Produce	json
-//	@Param		storeId	path string		true				"店舗ID"
+//	@Param		storeId	path		string				true	"店舗ID"
 //	@Param		request	body		ItemStockRequest	true	"商品詳細作成リクエスト"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/itemStocks [post]
@@ -152,8 +189,8 @@ func (c ItemStockController) Create(ctx *fiber.Ctx) error {
 //	@Summary	商品詳細更新
 //	@Tags		item_stock
 //	@Produce	json
-//	@Param		storeId	path string		true				"店舗ID"
-//	@Param		itemId	path string		true				"商品ID"
+//	@Param		storeId	path		string					true	"店舗ID"
+//	@Param		itemId	path		string					true	"商品ID"
 //	@Param		request	body		ItemStockUpdateRequest	true	"商品詳細更新リクエスト"
 //	@Success	200		{object}	ItemStockResponse
 //	@Router		/stores/{storeId}/itemStocks/{itemId} [patch]

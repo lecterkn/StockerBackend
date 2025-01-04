@@ -31,6 +31,8 @@ var repositorySet = wire.NewSet(
 	wire.Bind(new(repository.StoreRepository), new(implements.StoreRepositoryImpl)),
 	implements.NewStockInRepositoryImpl,
 	wire.Bind(new(repository.StockInRepository), new(implements.StockInRepositoryImpl)),
+	implements.NewStockOutRepositoryImpl,
+	wire.Bind(new(repository.StockOutRepository), new(implements.StockOutRepositoryImpl)),
 )
 
 var serviceSet = wire.NewSet(
@@ -47,6 +49,7 @@ var usecaseSet = wire.NewSet(
 	usecase.NewStoreUsecase,
 	usecase.NewStoreAuthorizationUsecase,
 	usecase.NewStockInUsecase,
+	usecase.NewStockOutUsecase,
 )
 
 // コントローラー
@@ -57,6 +60,7 @@ var controllerSet = wire.NewSet(
 	controller.NewUserController,
 	controller.NewStoreController,
 	controller.NewStockInController,
+	controller.NewStockOutController,
 )
 
 // コントローラーセット
@@ -67,6 +71,7 @@ type ControllersSet struct {
 	UserController      controller.UserController
 	StoreController     controller.StoreController
 	StockInController   controller.StockInController
+	StockOutController  controller.StockOutController
 }
 
 // コントローラーセット作成
