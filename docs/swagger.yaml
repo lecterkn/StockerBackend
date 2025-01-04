@@ -182,8 +182,6 @@ definitions:
     properties:
       itemId:
         type: string
-      place:
-        type: string
       price:
         type: integer
       stocks:
@@ -212,8 +210,6 @@ definitions:
         type: string
       name:
         type: string
-      place:
-        type: string
       price:
         type: integer
       stocks:
@@ -227,7 +223,6 @@ definitions:
     - id
     - itemId
     - name
-    - place
     - price
     - stocks
     - storeId

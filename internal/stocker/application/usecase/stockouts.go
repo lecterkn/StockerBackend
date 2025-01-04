@@ -26,7 +26,7 @@ func (u StockOutUsecase) CreateStockOut(storeId uuid.UUID, input StockOutUsecase
 	if err != nil {
 		return nil, err
 	}
-	entity, err := entity.NewStockOutEntity(*itemEntity, input.Place, input.Price, input.Stocks)
+	entity, err := entity.NewStockOutEntity(*itemEntity, input.Price, input.Stocks)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,6 @@ func (StockOutUsecase) toOutput(entity *entity.StockOutEntity) StockOutUsecaseOu
 		Id:        entity.Id,
 		StoreId:   entity.Item.StoreId,
 		ItemId:    entity.Item.Id,
-		Place:     entity.Place,
 		Price:     entity.Price,
 		Stocks:    entity.Stocks,
 		Name:      entity.Item.Name,
@@ -69,7 +68,6 @@ func (StockOutUsecase) toOutput(entity *entity.StockOutEntity) StockOutUsecaseOu
 
 type StockOutUsecaseCommandInput struct {
 	ItemId uuid.UUID
-	Place  *string
 	Price  int
 	Stocks int
 }
@@ -82,7 +80,6 @@ type StockOutUsecaseOutput struct {
 	Id        uuid.UUID
 	StoreId   uuid.UUID
 	ItemId    uuid.UUID
-	Place     *string
 	Price     int
 	Stocks    int
 	Name      string

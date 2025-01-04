@@ -928,9 +928,6 @@
                 "itemId": {
                     "type": "string"
                 },
-                "place": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "integer"
                 },
@@ -960,7 +957,6 @@
                 "id",
                 "itemId",
                 "name",
-                "place",
                 "price",
                 "stocks",
                 "storeId",
@@ -977,9 +973,6 @@
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "place": {
                     "type": "string"
                 },
                 "price": {

@@ -6,7 +6,6 @@ type StockOutModel struct {
 	Id        []byte
 	StoreId   []byte
 	ItemId    []byte
-	Place     *string
 	Stocks    int
 	Price     int
 	CreatedAt time.Time
@@ -21,7 +20,6 @@ type StockOutQueryModel struct {
 	Id            []byte
 	StoreId       []byte
 	ItemId        []byte
-	Place         *string
 	Stocks        int
 	Price         int
 	CreatedAt     time.Time

@@ -934,9 +934,6 @@ const docTemplate = `{
                 "itemId": {
                     "type": "string"
                 },
-                "place": {
-                    "type": "string"
-                },
                 "price": {
                     "type": "integer"
                 },
@@ -966,7 +963,6 @@ const docTemplate = `{
                 "id",
                 "itemId",
                 "name",
-                "place",
                 "price",
                 "stocks",
                 "storeId",
@@ -983,9 +979,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "place": {
                     "type": "string"
                 },
                 "price": {

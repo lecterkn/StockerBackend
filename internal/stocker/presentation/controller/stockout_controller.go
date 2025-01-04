@@ -74,7 +74,6 @@ type StockOutResponse struct {
 	Id        uuid.UUID `json:"id"        validate:"required"`
 	StoreId   uuid.UUID `json:"storeId"   validate:"required"`
 	ItemId    uuid.UUID `json:"itemId"    validate:"required"`
-	Place     *string   `json:"place"     validate:"required"`
 	Price     int       `json:"price"     validate:"required"`
 	Stocks    int       `json:"stocks"    validate:"required"`
 	Name      string    `json:"name"      validate:"required"`
@@ -84,7 +83,6 @@ type StockOutResponse struct {
 
 type StockOutCreateRequest struct {
 	ItemId uuid.UUID `json:"itemId" validate:"required"`
-	Place  *string   `json:"place"`
 	Price  int       `json:"price" validate:"required"`
 	Stocks int       `json:"stocks" validate:"required"`
 }

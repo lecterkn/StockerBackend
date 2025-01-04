@@ -61,7 +61,6 @@ func (StockOutRepositoryImpl) fromQueryModelToEntity(model *model.StockOutQueryM
 	}
 	return &entity.StockOutEntity{
 		Id:        id,
-		Place:     model.Place,
 		Price:     model.Price,
 		Stocks:    model.Stocks,
 		CreatedAt: model.CreatedAt,
@@ -84,7 +83,6 @@ func (StockOutRepositoryImpl) toEntity(model *model.StockOutModel, itemEntity en
 	}
 	return &entity.StockOutEntity{
 		Id:        id,
-		Place:     model.Place,
 		Price:     model.Price,
 		Stocks:    model.Stocks,
 		CreatedAt: model.CreatedAt,
