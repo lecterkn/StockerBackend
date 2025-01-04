@@ -276,6 +276,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/stores/{storeId}/itemStocks/jancodes/{jancode}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "item_stock"
+                ],
+                "summary": "Jancodeから商品詳細取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "JANコード",
+                        "name": "jancode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ItemStockResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/stores/{storeId}/itemStocks/{itemId}": {
             "get": {
                 "produces": [

@@ -104,6 +104,43 @@ func (c ItemStockController) Select(ctx *fiber.Ctx) error {
 	return ctx.JSON(ItemStockResponse(*output))
 }
 
+// SelectByJancode /* 商品詳細取得用エンドポイント
+//
+//	@Summary	Jancodeから商品詳細取得
+//	@Tags		item_stock
+//	@Produce	json
+//	@Param		storeId	path		string	true	"店舗ID"
+//	@Param		jancode	path		string	true	"JANコード"
+//	@Success	200		{object}	ItemStockResponse
+//	@Router		/stores/{storeId}/itemStocks/jancodes/{jancode} [get]
+func (c ItemStockController) SelectByJancode(ctx *fiber.Ctx) error {
+	// ユーザーID取得
+	userId, err := common.GetUserIdByContext(ctx)
+	if err != nil {
+		return err
+	}
+	// 店舗ID取得
+	storeId, err := uuid.Parse(ctx.Params("storeId"))
+	if err != nil {
+		return err
+	}
+	// 商品ID取得
+	jancode := ctx.Params("jancode")
+	// 店舗とユーザーの認証
+	if err := c.authorizationUsecase.IsUserRelated(storeId, *userId); err != nil {
+		return err
+	}
+	// 商品詳細取得
+	output, err := c.itemStockUsecase.SelectByJancode(usecase.ItemStockUsecaseJancodeQueryInput{
+		StoreId: storeId,
+		Jancode: jancode,
+	})
+	if err != nil {
+		return ctx.Status(http.StatusNotFound).SendString("not found")
+	}
+	return ctx.JSON(ItemStockResponse(*output))
+}
+
 // Create /* 商品詳細作成用エンドポイント
 //
 //	@Summary	商品詳細登録

@@ -59,6 +59,24 @@ func (r ItemStockRepositoryImpl) Select(storeId, id uuid.UUID) (*entity.ItemStoc
 	return entity, err
 }
 
+// Select /* Jancodeから商品を取得
+func (r ItemStockRepositoryImpl) SelectByJancode(storeId uuid.UUID, jancode string) (*entity.ItemStockEntity, error) {
+	var itemStockQueryModel model.ItemStockQueryModel
+	if err := r.database.
+		Model(&model.ItemStockModel{}).
+		Select("item_stocks.*, items.name, items.jan_code, items.created_at as item_created_at, items.updated_at as item_updated_at").
+		Where("items.store_id = ? AND items.jan_code = ?", storeId[:], jancode).
+		Joins("JOIN items ON items.id = item_stocks.item_id").
+		First(&itemStockQueryModel).Error; err != nil {
+		return nil, err
+	}
+	entity, err := r.queryModelToEntity(&itemStockQueryModel)
+	if err != nil {
+		return nil, err
+	}
+	return entity, err
+}
+
 // Insert /* 商品をデータベースに挿入
 func (r ItemStockRepositoryImpl) Insert(entity *entity.ItemStockEntity) (*entity.ItemStockEntity, error) {
 	model := r.toModel(entity)

@@ -49,6 +49,15 @@ func (s ItemStockUsecase) Select(input ItemStockUsecaseQueryInput) (*ItemStockUs
 	return s.toOutput(entity), nil
 }
 
+// SelectByJancode /* 商品詳細を取得
+func (s ItemStockUsecase) SelectByJancode(input ItemStockUsecaseJancodeQueryInput) (*ItemStockUsecaseOutput, error) {
+	entity, err := s.itemStockRepository.SelectByJancode(input.StoreId, input.Jancode)
+	if err != nil {
+		return nil, err
+	}
+	return s.toOutput(entity), nil
+}
+
 // Create /* 商品詳細を作成
 func (s ItemStockUsecase) Create(storeId uuid.UUID, input ItemStockUsecaseInput) (*ItemStockUsecaseOutput, error) {
 	entity, err := entity.NewItemStockEntity(storeId, input.Name, input.JanCode, input.Price, input.Stock, input.StockMin)
@@ -98,6 +107,11 @@ type ItemStockUsecaseQueryListInput struct {
 type ItemStockUsecaseQueryInput struct {
 	StoreId uuid.UUID
 	ItemId  uuid.UUID
+}
+
+type ItemStockUsecaseJancodeQueryInput struct {
+	StoreId uuid.UUID
+	Jancode string
 }
 
 type ItemStockUsecaseInput struct {

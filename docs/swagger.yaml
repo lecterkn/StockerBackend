@@ -520,6 +520,29 @@ paths:
       summary: 商品詳細更新
       tags:
       - item_stock
+  /stores/{storeId}/itemStocks/jancodes/{jancode}:
+    get:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      - description: JANコード
+        in: path
+        name: jancode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ItemStockResponse'
+      summary: Jancodeから商品詳細取得
+      tags:
+      - item_stock
   /stores/{storeId}/items:
     get:
       parameters:
