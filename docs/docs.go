@@ -549,6 +549,69 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/stores/{storeId}/stockOuts": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stock_outs"
+                ],
+                "summary": "販売履歴一覧取得取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.StockOutListResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stock_outs"
+                ],
+                "summary": "販売履歴作成取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "店舗ID",
+                        "name": "storeId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "販売履歴作成リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.StockOutCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.StockOutResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -658,6 +721,7 @@ const docTemplate = `{
                 "itemId",
                 "janCode",
                 "name",
+                "price",
                 "stock",
                 "stockMin",
                 "storeId",
@@ -767,6 +831,74 @@ const docTemplate = `{
             }
         },
         "controller.StockInResponse": {
+            "type": "object",
+            "required": [
+                "createdAt",
+                "id",
+                "itemId",
+                "name",
+                "place",
+                "price",
+                "stocks",
+                "storeId",
+                "updatedAt"
+            ],
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "itemId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "place": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "stocks": {
+                    "type": "integer"
+                },
+                "storeId": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.StockOutCreateRequest": {
+            "type": "object",
+            "required": [
+                "itemId",
+                "price",
+                "stocks"
+            ],
+            "properties": {
+                "itemId": {
+                    "type": "string"
+                },
+                "place": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "stocks": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controller.StockOutListResponse": {
+            "type": "object"
+        },
+        "controller.StockOutResponse": {
             "type": "object",
             "required": [
                 "createdAt",

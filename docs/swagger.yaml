@@ -92,6 +92,7 @@ definitions:
     - itemId
     - janCode
     - name
+    - price
     - stock
     - stockMin
     - storeId
@@ -147,6 +148,54 @@ definitions:
     - list
     type: object
   controller.StockInResponse:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: string
+      itemId:
+        type: string
+      name:
+        type: string
+      place:
+        type: string
+      price:
+        type: integer
+      stocks:
+        type: integer
+      storeId:
+        type: string
+      updatedAt:
+        type: string
+    required:
+    - createdAt
+    - id
+    - itemId
+    - name
+    - place
+    - price
+    - stocks
+    - storeId
+    - updatedAt
+    type: object
+  controller.StockOutCreateRequest:
+    properties:
+      itemId:
+        type: string
+      place:
+        type: string
+      price:
+        type: integer
+      stocks:
+        type: integer
+    required:
+    - itemId
+    - price
+    - stocks
+    type: object
+  controller.StockOutListResponse:
+    type: object
+  controller.StockOutResponse:
     properties:
       createdAt:
         type: string
@@ -597,4 +646,45 @@ paths:
       summary: 入荷履歴作成取得
       tags:
       - stock_ins
+  /stores/{storeId}/stockOuts:
+    get:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.StockOutListResponse'
+      summary: 販売履歴一覧取得取得
+      tags:
+      - stock_outs
+    post:
+      parameters:
+      - description: 店舗ID
+        in: path
+        name: storeId
+        required: true
+        type: string
+      - description: 販売履歴作成リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.StockOutCreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.StockOutResponse'
+      summary: 販売履歴作成取得
+      tags:
+      - stock_outs
 swagger: "2.0"

@@ -59,7 +59,7 @@ func (c StockOutController) Create(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	var request StockOutCreateRequset
+	var request StockOutCreateRequest
 	if err := ctx.BodyParser(&request); err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ type StockOutResponse struct {
 	UpdatedAt time.Time `json:"updatedAt" validate:"required"`
 }
 
-type StockOutCreateRequset struct {
+type StockOutCreateRequest struct {
 	ItemId uuid.UUID `json:"itemId" validate:"required"`
 	Place  *string   `json:"place"`
 	Price  int       `json:"price" validate:"required"`
