@@ -8,6 +8,7 @@ import (
 
 type ItemEntity struct {
 	Id        uuid.UUID
+	StoreId   uuid.UUID
 	Name      string
 	JanCode   string
 	CreatedAt time.Time
@@ -15,13 +16,14 @@ type ItemEntity struct {
 }
 
 // NewItemEntity /* エンティティのプロバイダ
-func NewItemEntity(name, janCode string) (*ItemEntity, error) {
+func NewItemEntity(storeId uuid.UUID, name, janCode string) (*ItemEntity, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
 		return nil, err
 	}
 	return &ItemEntity{
 		Id:        id,
+		StoreId:   storeId,
 		Name:      name,
 		JanCode:   janCode,
 		CreatedAt: time.Now(),

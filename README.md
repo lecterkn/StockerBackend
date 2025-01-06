@@ -22,9 +22,12 @@ go mod tidy
 # swag インストール
 go install github.com/swaggo/swag/cmd/swag@latest
 
-#sql-migrate インストール
+# sql-migrate インストール
 
 go install github.com/rubenv/sql-migrate/...@latest
+
+# wire インストール
+go install github.com/google/wire/cmd/wire@latest
 ```
 
 2. MySQLのサーバーを起動する
@@ -57,8 +60,24 @@ go run cmd/stocker/main.go
 
 アプリケーションを開いた状態で[Swaggerのページ](http://127.0.0.1:8810/swagger/index.html)を開く
 
-```
+```http
 http://127.0.0.1:8810/swagger/index.html
+```
+
+生成方法
+
+```shell
+swag init -g cmd/stocker/main.go 
+```
+
+## 依存性注入
+
+- wireを使用して依存性注入を行う
+- `internal\stocker\wire.go`に依存関係を記載する
+- 下記のコマンドで`wire_gen.go`を生成する
+
+```shell
+wire gen ./internal/stocker/
 ```
 
 ## MySQL接続方法

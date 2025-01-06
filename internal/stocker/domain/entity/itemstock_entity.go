@@ -7,18 +7,22 @@ import (
 )
 
 type ItemStockEntity struct {
-	ItemId    uuid.UUID
-	Place     string
+	Item      ItemEntity
+	Price     *int
 	Stock     int
-	StockMin  int
+	StockMin  *int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func NewItemStockEntity(itemId uuid.UUID, place string, stock, stockMin int) (*ItemStockEntity, error) {
+func NewItemStockEntity(storeId uuid.UUID, name, janCode string, price *int, stock int, stockMin *int) (*ItemStockEntity, error) {
+	item, err := NewItemEntity(storeId, name, janCode)
+	if err != nil {
+		return nil, err
+	}
 	return &ItemStockEntity{
-		ItemId:    itemId,
-		Place:     place,
+		Item:      *item,
+		Price:     price,
 		Stock:     stock,
 		StockMin:  stockMin,
 		CreatedAt: time.Now(),
@@ -26,13 +30,9 @@ func NewItemStockEntity(itemId uuid.UUID, place string, stock, stockMin int) (*I
 	}, nil
 }
 
-func (entity ItemStockEntity) Update(place string, stock, stockMin int) *ItemStockEntity {
-	return &ItemStockEntity{
-		ItemId:    entity.ItemId,
-		Place:     place,
-		Stock:     stock,
-		StockMin:  stockMin,
-		CreatedAt: entity.CreatedAt,
-		UpdatedAt: time.Now(),
-	}
+func (entity *ItemStockEntity) Update(price *int, stock int, stockMin *int) {
+	entity.Price = price
+	entity.Stock = stock
+	entity.StockMin = stockMin
+	entity.UpdatedAt = time.Now()
 }
