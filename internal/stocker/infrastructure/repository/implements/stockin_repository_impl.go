@@ -69,7 +69,6 @@ func (StockInRepositoryImpl) queryModelToEntity(queryModel *model.StockInQueryMo
 	}
 	return &entity.StockInEntity{
 		Id:     id,
-		Place:  queryModel.Place,
 		Price:  queryModel.Price,
 		Stocks: queryModel.Stocks,
 		Item: entity.ItemEntity{
@@ -92,7 +91,6 @@ func (StockInRepositoryImpl) toEntity(stockInModel *model.StockInModel, itemEnti
 	}
 	return &entity.StockInEntity{
 		Id:        id,
-		Place:     stockInModel.Place,
 		Stocks:    stockInModel.Stocks,
 		Price:     stockInModel.Price,
 		Item:      itemEntity,
@@ -104,7 +102,6 @@ func (StockInRepositoryImpl) toEntity(stockInModel *model.StockInModel, itemEnti
 func (StockInRepositoryImpl) toModel(entity *entity.StockInEntity) *model.StockInModel {
 	return &model.StockInModel{
 		Id:        entity.Id[:],
-		Place:     entity.Place,
 		StoreId:   entity.Item.StoreId[:],
 		ItemId:    entity.Item.Id[:],
 		Stocks:    entity.Stocks,

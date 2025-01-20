@@ -5,17 +5,20 @@ import (
 
 	"h11/backend/internal/stocker/domain/entity"
 	"h11/backend/internal/stocker/domain/repository"
+	"h11/backend/internal/stocker/domain/service"
 
 	"github.com/google/uuid"
 )
 
 type StockOutUsecase struct {
-	itemRepository     repository.ItemRepository
-	stockOutRepository repository.StockOutRepository
+	stockOutDomainService service.StockOutDomainService
+	itemRepository        repository.ItemRepository
+	stockOutRepository    repository.StockOutRepository
 }
 
-func NewStockOutUsecase(itemRepository repository.ItemRepository, stockOutRepository repository.StockOutRepository) StockOutUsecase {
+func NewStockOutUsecase(stockOutDomainService service.StockOutDomainService, itemRepository repository.ItemRepository, stockOutRepository repository.StockOutRepository) StockOutUsecase {
 	return StockOutUsecase{
+		stockOutDomainService,
 		itemRepository,
 		stockOutRepository,
 	}
@@ -26,15 +29,14 @@ func (u StockOutUsecase) CreateStockOut(storeId uuid.UUID, input StockOutUsecase
 	if err != nil {
 		return nil, err
 	}
-	entity, err := entity.NewStockOutEntity(*itemEntity, input.Price, input.Stocks)
+	stockOutDomainServiceOutput, err := u.stockOutDomainService.AddStockOut(storeId, *itemEntity, service.StockOutDomainServiceCommandInput{
+		Price:  input.Price,
+		Stocks: input.Stocks,
+	})
 	if err != nil {
 		return nil, err
 	}
-	entity, err = u.stockOutRepository.Create(entity)
-	if err != nil {
-		return nil, err
-	}
-	output := u.toOutput(entity)
+	output := StockOutUsecaseOutput(*stockOutDomainServiceOutput)
 	return &output, nil
 }
 
