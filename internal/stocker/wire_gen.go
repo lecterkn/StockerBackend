@@ -39,12 +39,10 @@ func InitializeController() *ControllersSet {
 	storeUsecase := usecase.NewStoreUsecase(userRepositoryImpl, storeRepositoryImpl)
 	storeController := controller.NewStoreController(storeUsecase)
 	stockInRepositoryImpl := implements.NewStockInRepositoryImpl(db)
-	stockInDomainService := service.NewStockInDomainService(itemStockRepositoryImpl, stockInRepositoryImpl)
-	stockInUsecase := usecase.NewStockInUsecase(stockInDomainService, stockInRepositoryImpl, itemRepositoryImpl)
+	stockInUsecase := usecase.NewStockInUsecase(stockInRepositoryImpl, itemRepositoryImpl)
 	stockInController := controller.NewStockInController(stockInUsecase)
 	stockOutRepositoryImpl := implements.NewStockOutRepositoryImpl(db)
-	stockOutDomainService := service.NewStockOutDomainService(itemStockRepositoryImpl, stockOutRepositoryImpl)
-	stockOutUsecase := usecase.NewStockOutUsecase(stockOutDomainService, itemRepositoryImpl, stockOutRepositoryImpl)
+	stockOutUsecase := usecase.NewStockOutUsecase(itemRepositoryImpl, stockOutRepositoryImpl)
 	stockOutController := controller.NewStockOutController(stockOutUsecase)
 	controllersSet := &ControllersSet{
 		JancodeController:   jancodeController,
@@ -66,7 +64,7 @@ var databaseSet = wire.NewSet(database.GetMySQLConnection)
 // リポジトリ
 var repositorySet = wire.NewSet(implements.NewItemRepositoryImpl, wire.Bind(new(repository.ItemRepository), new(implements.ItemRepositoryImpl)), implements.NewItemStockRepositoryImpl, wire.Bind(new(repository.ItemStockRepository), new(implements.ItemStockRepositoryImpl)), implements.NewUserRepositoryImpl, wire.Bind(new(repository.UserRepository), new(implements.UserRepositoryImpl)), implements.NewStoreRepositoryImpl, wire.Bind(new(repository.StoreRepository), new(implements.StoreRepositoryImpl)), implements.NewStockInRepositoryImpl, wire.Bind(new(repository.StockInRepository), new(implements.StockInRepositoryImpl)), implements.NewStockOutRepositoryImpl, wire.Bind(new(repository.StockOutRepository), new(implements.StockOutRepositoryImpl)))
 
-var serviceSet = wire.NewSet(service.NewItemStockDomainService, service.NewStockOutDomainService, service.NewStockInDomainService)
+var serviceSet = wire.NewSet(service.NewItemStockDomainService)
 
 // サービス
 var usecaseSet = wire.NewSet(usecase.NewJancodeUsecase, usecase.NewItemUsecase, usecase.NewItemStockUsecase, usecase.NewUserUsecase, usecase.NewAuthorizationUsecase, usecase.NewStoreUsecase, usecase.NewStoreAuthorizationUsecase, usecase.NewStockInUsecase, usecase.NewStockOutUsecase)

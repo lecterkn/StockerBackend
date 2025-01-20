@@ -37,8 +37,6 @@ var repositorySet = wire.NewSet(
 
 var serviceSet = wire.NewSet(
 	service.NewItemStockDomainService,
-	service.NewStockOutDomainService,
-	service.NewStockInDomainService,
 )
 
 // サービス

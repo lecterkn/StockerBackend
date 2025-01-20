@@ -4,6 +4,7 @@ import "time"
 
 type StockInModel struct {
 	Id        []byte
+	Place     string
 	StoreId   []byte
 	ItemId    []byte
 	Stocks    int
@@ -18,6 +19,7 @@ func (StockInModel) TableName() string {
 
 type StockInQueryModel struct {
 	Id            []byte
+	Place         string
 	StoreId       []byte
 	ItemId        []byte
 	Stocks        int
