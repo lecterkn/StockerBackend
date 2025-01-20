@@ -5,17 +5,20 @@ import (
 
 	"h11/backend/internal/stocker/domain/entity"
 	"h11/backend/internal/stocker/domain/repository"
+	"h11/backend/internal/stocker/domain/service"
 
 	"github.com/google/uuid"
 )
 
 type StockInUsecase struct {
-	stockInRepository repository.StockInRepository
-	itemRepository    repository.ItemRepository
+	stockInDomainService service.StockInDomainService
+	stockInRepository    repository.StockInRepository
+	itemRepository       repository.ItemRepository
 }
 
-func NewStockInUsecase(stockInRepository repository.StockInRepository, itemRepository repository.ItemRepository) StockInUsecase {
+func NewStockInUsecase(stockInDomainService service.StockInDomainService, stockInRepository repository.StockInRepository, itemRepository repository.ItemRepository) StockInUsecase {
 	return StockInUsecase{
+		stockInDomainService,
 		stockInRepository,
 		itemRepository,
 	}
@@ -43,21 +46,20 @@ func (s StockInUsecase) CreateStockIn(storeId uuid.UUID, input StockInCommandInp
 	if err != nil {
 		return nil, err
 	}
-	entity, err := entity.NewStockInEntity(input.Place, *itemEntity, input.Price, input.Stocks)
+	stockInDomainServiceOutput, err := s.stockInDomainService.AddStockIn(storeId, *itemEntity, service.StockInDomainServiceCommandInput{
+		Price:  input.Price,
+		Stocks: input.Stocks,
+	})
 	if err != nil {
 		return nil, err
 	}
-	entity, err = s.stockInRepository.Create(entity)
-	if err != nil {
-		return nil, err
-	}
-	return s.toOutput(entity), nil
+	output := StockInOutput(*stockInDomainServiceOutput)
+	return &output, nil
 }
 
 func (StockInUsecase) toOutput(entity *entity.StockInEntity) *StockInOutput {
 	return &StockInOutput{
 		Id:        entity.Id,
-		Place:     entity.Place,
 		StoreId:   entity.Item.StoreId,
 		ItemId:    entity.Item.Id,
 		Name:      entity.Item.Name,
@@ -69,7 +71,6 @@ func (StockInUsecase) toOutput(entity *entity.StockInEntity) *StockInOutput {
 }
 
 type StockInCommandInput struct {
-	Place  string
 	ItemId uuid.UUID
 	Price  int
 	Stocks int
@@ -81,7 +82,6 @@ type StockInListOutput struct {
 
 type StockInOutput struct {
 	Id        uuid.UUID
-	Place     string
 	StoreId   uuid.UUID
 	ItemId    uuid.UUID
 	Name      string
