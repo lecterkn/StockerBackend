@@ -71,7 +71,6 @@ func (c StockInController) Create(ctx *fiber.Ctx) error {
 }
 
 type StockInCreateRequest struct {
-	Place  string    `json:"place"  validate:"required"`
 	ItemId uuid.UUID `json:"itemId" validate:"required"`
 	Price  int       `json:"price"  validate:"required"`
 	Stocks int       `json:"stocks" validate:"required"`
@@ -79,7 +78,6 @@ type StockInCreateRequest struct {
 
 type StockInResponse struct {
 	Id        uuid.UUID `json:"id"        validate:"required"`
-	Place     string    `json:"place"     validate:"required"`
 	StoreId   uuid.UUID `json:"storeId"   validate:"required"`
 	ItemId    uuid.UUID `json:"itemId"    validate:"required"`
 	Name      string    `json:"name"      validate:"required"`
